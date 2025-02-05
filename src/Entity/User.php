@@ -12,7 +12,7 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $userId = null;
+    private ?int $idUser = null;
 
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
@@ -50,9 +50,9 @@ class User
     #[ORM\Column(nullable: true)]
     private ?float $salaire = null;
 
-    public function getUserId(): ?int
+    public function getIdUser(): ?int
     {
-        return $this->userId;
+        return $this->idUser;
     }
 
     public function getNom(): ?string
