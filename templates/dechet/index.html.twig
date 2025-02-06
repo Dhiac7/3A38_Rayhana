@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dechet index{% endblock %}
+
+{% block body %}
+    <h1>Dechet index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Quantite</th>
+                <th>DateProduction</th>
+                <th>Statut</th>
+                <th>Date_expiration</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for dechet in dechets %}
+            <tr>
+                <td>{{ dechet.id }}</td>
+                <td>{{ dechet.type }}</td>
+                <td>{{ dechet.quantite }}</td>
+                <td>{{ dechet.dateProduction ? dechet.dateProduction|date('Y-m-d') : '' }}</td>
+                <td>{{ dechet.statut }}</td>
+                <td>{{ dechet.dateExpiration ? dechet.dateExpiration|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_dechet_show', {'id': dechet.id}) }}">show</a>
+                    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_dechet_new') }}">Create new</a>
+{% endblock %}
