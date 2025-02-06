@@ -14,9 +14,9 @@
                 <th>Date_atelier</th>
                 <th>Capacite_max</th>
                 <th>Prix</th>
-                <th>IdUser</th>
+                {#<th>IdUser</th>#}
                 <th>Statut</th>
-                <th>Role</th>
+               {# <th>Role</th>#}
                 <th>actions</th>
             </tr>
         </thead>
@@ -29,12 +29,12 @@
                 <td>{{ atelier.dateAtelier ? atelier.dateAtelier|date('Y-m-d') : '' }}</td>
                 <td>{{ atelier.capaciteMax }}</td>
                 <td>{{ atelier.prix }}</td>
-                <td>{{ atelier.idUser }}</td>
+               {# <td>{{ atelier.idUser }}</td>#}
                 <td>{{ atelier.statut }}</td>
-                <td>{{ atelier.Role }}</td>
+                 {#<td>{{ atelier.Role }}</td>#}
                 <td>
-                    <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}">show</a>
-                    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}">edit</a>
+                    <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}">Afficher</a>
+                    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -45,5 +45,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_atelier_new') }}">Create new</a>
+    <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
 {% endblock %}

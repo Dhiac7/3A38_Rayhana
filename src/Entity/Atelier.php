@@ -30,15 +30,15 @@ class Atelier
     private ?float $prix = null;
 
     #[ORM\Column]
-    private ?int $idUser = null;
+    private ?int $idUser = 0;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(Choice: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(Choice: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
-    private ?string $Role = null;
+    #[Assert\Choice(choices: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
+    private ?string $Role = 'client';
 
     public function getId(): ?int
     {
@@ -111,7 +111,7 @@ class Atelier
     }
 
     public function setIdUser(int $idUser): static
-    {
+    { $idUser=0;
         $this->idUser = $idUser;
 
         return $this;
