@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DechetRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert ;
 
 #[ORM\Entity(repositoryClass: DechetRepository::class)]
 class Dechet
@@ -14,7 +15,10 @@ class Dechet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+
+
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['organique','plastique','métalique','vegetale'],message: "le type doit étre 'organique','plastique','métalique','vegetale'")]
     private ?string $type = null;
 
     #[ORM\Column]
@@ -39,8 +43,11 @@ class Dechet
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
+        if(!in_array($type,['organique','plastique','métalique','vegetale'])){
+            throw new \InvalidArgumentException("le type doit etre 'organique','plastique','métalique','vegetale' ");
+        }
         $this->type = $type;
 
         return $this;
@@ -76,7 +83,9 @@ class Dechet
     }
 
     public function setStatut(string $statut): static
-    {
+    {if(!in_array($statut,['resycler','eliminer'])){
+        throw new \InvalidArgumentException("le statut doit etre 'resycler','eliminer' ");
+    }
         $this->statut = $statut;
 
         return $this;
