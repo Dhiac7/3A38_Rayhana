@@ -1,0 +1,45 @@
+{{ form_start(form,{'attr': {'novalidate': 'novalidate'}}) }}
+<table>
+<tr>
+    <td>{{form_label(form.nom,"nom")}}</td>
+    <td>{{form_widget(form.nom)}}</td>
+    <td>{{form_errors(form.nom)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.prenom,"prenom")}}</td>
+    <td>{{form_widget(form.prenom)}}</td>
+    <td>{{form_errors(form.prenom)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.cin,"cin")}}</td>
+    <td>{{form_widget(form.cin)}}</td>
+    <td>{{form_errors(form.cin)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.photo,"photo")}}</td>
+    <td>{{form_widget(form.photo)}}</td>
+    <td>{{form_errors(form.photo)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.role,"role")}}</td>
+    <td>{{form_widget(form.role)}}</td>
+    <td>{{form_errors(form.role)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.mdp,"mdp")}}</td>
+    <td>{{form_widget(form.mdp)}}</td>
+    <td>{{form_errors(form.mdp)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.email,"email")}}</td>
+    <td>{{form_widget(form.email)}}</td>
+    <td>{{form_errors(form.email)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.tel,"tel")}}</td>
+    <td>{{form_widget(form.tel)}}</td>
+    <td>{{form_errors(form.tel)}}</td>
+</tr>
+</table>
+    {{form_widget(form.save)}}
+{{form_end(form)}}
