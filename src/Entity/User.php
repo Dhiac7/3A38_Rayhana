@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert ;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
@@ -52,6 +54,17 @@ class User
 
     #[ORM\Column(nullable: true)]
     private ?float $salaire = null;
+
+    /**
+     * @var Collection<int, Atelier>
+     */
+    #[ORM\ManyToMany(targetEntity: Atelier::class, mappedBy: 'users')]
+    private Collection $ateliers;
+
+    public function __construct()
+    {
+        $this->ateliers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -205,6 +218,33 @@ class User
     public function setSalaire(?float $salaire): static
     {
         $this->salaire = $salaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Atelier>
+     */
+    public function getAteliers(): Collection
+    {
+        return $this->ateliers;
+    }
+
+    public function addAtelier(Atelier $atelier): static
+    {
+        if (!$this->ateliers->contains($atelier)) {
+            $this->ateliers->add($atelier);
+            $atelier->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAtelier(Atelier $atelier): static
+    {
+        if ($this->ateliers->removeElement($atelier)) {
+            $atelier->removeUser($this);
+        }
 
         return $this;
     }
