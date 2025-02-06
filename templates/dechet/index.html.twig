@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dechet index{% endblock %}
+{% block title %}Dechet {% endblock %}
 
 {% block body %}
-    <h1>Dechet index</h1>
+    <h1>Dechet </h1>
 
     <table class="table">
         <thead>
@@ -27,17 +27,17 @@
                 <td>{{ dechet.statut }}</td>
                 <td>{{ dechet.dateExpiration ? dechet.dateExpiration|date('Y-m-d') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_dechet_show', {'id': dechet.id}) }}">show</a>
-                    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}">edit</a>
+                    <a href="{{ path('app_dechet_show', {'id': dechet.id}) }}">Afficher</a>
+                    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="7">aucun enregistrement trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_dechet_new') }}">Create new</a>
+    <a href="{{ path('app_dechet_new') }}">Ajouter dechet</a>
 {% endblock %}
