@@ -18,7 +18,7 @@ class Dechet
 
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['organique','plastique','métalique','vegetale'],message: "le type doit étre 'organique','plastique','métalique','vegetale'")]
+    #[Assert\Choice(choices: ['organique','plastique','métalique','vegetale'],message: "le type de dechet doit étre 'organique','plastique','métalique','vegetale'")]
     private ?string $type = null;
 
     #[ORM\Column]
