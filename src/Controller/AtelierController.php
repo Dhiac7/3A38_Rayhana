@@ -10,16 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Knp\Component\Pager\PaginatorInterface;
 #[Route('/atelier')]
 final class AtelierController extends AbstractController
 {
     #[Route(name: 'app_atelier_index', methods: ['GET'])]
-    public function index(AtelierRepository $atelierRepository): Response
+   // public function index(AtelierRepository $atelierRepository): Response
+   public function index(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator): Response
     {
+        $query = $atelierRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query, // Donneili bch namlou pagination
+            $request->query->getInt('page', 1), // Num page 
+            4 // nbr element par page 
+        );
         return $this->render('atelier/index.html.twig', [
-            'ateliers' => $atelierRepository->findAll(),
+            'pagination' => $pagination,
         ]);
+        /*return $this->render('atelier/index.html.twig', [
+            'ateliers' => $atelierRepository->findAll(),
+        ]);*/
     }
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
