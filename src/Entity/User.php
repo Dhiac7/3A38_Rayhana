@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Entity;
-use App\Enum\Role;
-use App\Enum\StatutUser;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert ;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -12,7 +14,7 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idUser = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
@@ -26,8 +28,9 @@ class User
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-    #[ORM\Column(length: 100)]
-    private Role $role;
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['client','fermier','agriculteur','inspecteur','livreur'],message: "erreur")]
+    private ?string $role;
 
     #[ORM\Column(length: 255)]
     private ?string $mdp = null;
@@ -41,8 +44,10 @@ class User
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?StatutUser $statut = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['client','fermier','agriculteur','inspecteur','livreur'],message: "erreur")]
+    private ?string $statut = null;
+
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
@@ -50,9 +55,20 @@ class User
     #[ORM\Column(nullable: true)]
     private ?float $salaire = null;
 
-    public function getIdUser(): ?int
+    /**
+     * @var Collection<int, Atelier>
+     */
+    #[ORM\ManyToMany(targetEntity: Atelier::class, mappedBy: 'users')]
+    private Collection $ateliers;
+
+    public function __construct()
     {
-        return $this->idUser;
+        $this->ateliers = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getNom(): ?string
@@ -103,18 +119,22 @@ class User
         return $this;
     }
 
-    public function getRole(): Role
+
+    public function getRole(): string
     {
         return $this->role;
     }
 
+    
     public function setRole(string $role): static
     {
+        if(!in_array($role,['client','fermier','agriculteur','inspecteur','livreur'])){
+            throw new \InvalidArgumentException("erreur");
+        }
         $this->role = $role;
-
         return $this;
     }
-
+    
     public function getMdp(): ?string
     {
         return $this->mdp;
@@ -163,13 +183,16 @@ class User
         return $this;
     }
 
-    public function getStatut(): StatutUser
+    public function getStatut(): ?string
     {
         return $this->statut;
     }
 
     public function setStatut(?string $statut): static
     {
+        if(!in_array($statut,['actif','inactif','banni'])){
+            throw new \InvalidArgumentException("erreur");
+        }
         $this->statut = $statut;
 
         return $this;
@@ -198,4 +221,33 @@ class User
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Atelier>
+     */
+    public function getAteliers(): Collection
+    {
+        return $this->ateliers;
+    }
+
+    public function addAtelier(Atelier $atelier): static
+    {
+        if (!$this->ateliers->contains($atelier)) {
+            $this->ateliers->add($atelier);
+            $atelier->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAtelier(Atelier $atelier): static
+    {
+        if ($this->ateliers->removeElement($atelier)) {
+            $atelier->removeUser($this);
+        }
+
+        return $this;
+    }
+
+   
 }

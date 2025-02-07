@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Atelier index{% endblock %}
+
+{% block body %}
+    <h1>Atelier index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Date_atelier</th>
+                <th>Capacite_max</th>
+                <th>Prix</th>
+                {#<th>IdUser</th>#}
+                <th>Statut</th>
+               {# <th>Role</th>#}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for atelier in pagination %}
+            <tr>
+                <td>{{ atelier.id }}</td>
+                <td>{{ atelier.nom }}</td>
+                <td>{{ atelier.description }}</td>
+                <td>{{ atelier.dateAtelier ? atelier.dateAtelier|date('Y-m-d') : '' }}</td>
+                <td>{{ atelier.capaciteMax }}</td>
+                <td>{{ atelier.prix }}</td>
+               {# <td>{{ atelier.idUser }}</td>#}
+                <td>{{ atelier.statut }}</td>
+                 {#<td>{{ atelier.Role }}</td>#}
+                <td>
+                    <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}">Afficher</a>
+                    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">aucun enregistrement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+</div>
+    <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
+{% endblock %}
