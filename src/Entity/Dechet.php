@@ -18,23 +18,38 @@ class Dechet
 
 
     #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\NotBlank(message: "Tu dois choisir un type.")]//controle de saisie 
     #[Assert\Choice(choices: ['organique','plastique','métalique','vegetale'],message: "le type de dechet doit étre 'organique','plastique','métalique','vegetale'")]
     private ?string $type = null;
 
     #[ORM\Column]
+    #[Assert\Range(
+        min: 1,  
+        notInRangeMessage: "La capacité doit être comprise entre differente de 0"
+    )]
     private ?float $quantite = null;
 
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de production ne peut pas être vide.")]
+#[Assert\Date(message: "La date de production doit être une date valide.")]
+
     private ?\DateTimeInterface $dateProduction = null;
 
     #[ORM\Column(length: 255)]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date expiration ne peut pas être vide.")]
+#[Assert\Date(message: "La date expiration doit être une date valide.")]
+
     private ?\DateTimeInterface $date_expiration = null;
 
     #[ORM\ManyToOne(inversedBy: 'dechet')]
     private ?Stock $stock = null;
+
+    #[ORM\ManyToOne(inversedBy: 'dechets')]
+    private ?Stock $stock_id = null;
 
     public function getId(): ?int
     {
@@ -114,6 +129,18 @@ class Dechet
     public function setStock(?Stock $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getStockId(): ?Stock
+    {
+        return $this->stock_id;
+    }
+
+    public function setStockId(?Stock $stock_id): static
+    {
+        $this->stock_id = $stock_id;
 
         return $this;
     }
