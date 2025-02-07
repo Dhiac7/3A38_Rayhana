@@ -542,7 +542,7 @@
   $(document).ready(function () {
     $('#atelierTable').DataTable({
         ordering: true,       // Active le tri
-        paging: true,         // Active la pagination
+        paging: false,         // Active la pagination
         searching: true,      // Active la barre de recherche
         pageLength: 4,        // Nombre d'éléments par page
         lengthChange: false,  // Désactive le menu pour modifier le nombre d'éléments par page
@@ -555,7 +555,7 @@ $.noConflict();
 jQuery(document).ready(function ($) {
     $('#atelierTable').DataTable({
         ordering: true,
-        paging: true,
+        paging: false,
         searching: true,
         pageLength: 4,
         lengthChange: false,
@@ -564,5 +564,6 @@ jQuery(document).ready(function ($) {
         }
     });
 });
+
 
 })(jQuery); // End jQuery

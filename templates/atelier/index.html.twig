@@ -55,12 +55,12 @@
         $(document).ready(function () {
             $('#atelierTable').DataTable({
                 "ordering": true,  // tri 3al colonne
-                "paging": true,    // nactiviw l pagination
+                "paging": false,    // nactiviw l pagination
                 "searching": true, // nactiviw l recherche
                 "pageLength": 4,   // nbr element par page
                 "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
                 "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.12.1/i18n/French.json" // Traduction en fr
+                     "url": "{{ asset('js/French.json') }}"
                 }
             });
         });
