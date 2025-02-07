@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for atelier in ateliers %}
+        {% for atelier in pagination %}
             <tr>
                 <td>{{ atelier.id }}</td>
                 <td>{{ atelier.nom }}</td>
@@ -45,5 +45,8 @@
         </tbody>
     </table>
 
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+</div>
     <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
 {% endblock %}
