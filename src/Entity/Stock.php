@@ -62,11 +62,18 @@ class Stock
     #[ORM\OneToMany(targetEntity: CultureAgricole::class, mappedBy: 'stock')]
     private Collection $recolte;
 
+    /**
+     * @var Collection<int, Dechet>
+     */
+    #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'stock_id')]
+    private Collection $dechets;
+
     public function __construct()
     {
         $this->stock = new ArrayCollection();
         $this->dechet = new ArrayCollection();
         $this->recolte = new ArrayCollection();
+        $this->dechets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -264,5 +271,13 @@ class Stock
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Dechet>
+     */
+    public function getDechets(): Collection
+    {
+        return $this->dechets;
     }
 }

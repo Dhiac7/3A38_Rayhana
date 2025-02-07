@@ -26,4 +26,10 @@
 
 {{ form_widget(form.save) }}
 
-{{ form_end(form) }}
+   {{ form_end(form) }}
+
+ {% for flash_message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ flash_message }}
+        </div>
+    {% endfor %}

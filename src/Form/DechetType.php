@@ -8,6 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+
 class DechetType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -25,9 +27,14 @@ class DechetType extends AbstractType
             'required' => true,
         ])
         ->add('quantite')
-            ->add('dateProduction', null, [
-                'widget' => 'single_text',
-            ])
+
+        //controle de saisie sur la date 
+        ->add('dateProduction', DateType::class, [
+            'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date
+            'required' => false,        // Autoriser la valeur vide
+            'empty_data' => null,       // Si la date est vide, la valeur -> null
+            'attr' => ['placeholder' => 'YYYY-MM-DD']  // Optionnel, pour ajouter un placeholder
+        ])
             ->add('statut', ChoiceType::class, [
                 'choices' => [
                     'resycler' => 'resycler',
@@ -36,8 +43,12 @@ class DechetType extends AbstractType
                 'placeholder' => 'Sélectionnez statut',
                 'required' => true,
             ])           
-             ->add('date_expiration', null, [
-                'widget' => 'single_text',
+        
+            ->add('date_expiration', DateType::class, [
+                'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date
+                'required' => false,        // Autoriser la valeur vide
+                'empty_data' => null,       // Si la date est vide, la valeur -> null
+                'attr' => ['placeholder' => 'YYYY-MM-DD']  // Optionnel, pour ajouter un placeholder
             ])
             ->add('save', SubmitType::class, ['label' => 'Ajouter dechet']);
             

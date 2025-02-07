@@ -16,16 +16,30 @@ class Atelier
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le nom de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Length(
+        max: 15, 
+        maxMessage: "Le nom de l'atelier ne peut pas dépasser 30 caractères."
+    )]//controle de saisie 
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]//controle de saisie 
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_atelier = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La capacite maximal de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Range(
+        min: 1, 
+        max: 500, 
+        notInRangeMessage: "La capacité doit être comprise entre {{ min }} et {{ max }}."
+    )]//controle de saisie 
     private ?int $capacite_max = null;
 
     #[ORM\Column]
@@ -35,16 +49,24 @@ class Atelier
     private ?int $idUser = 0;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
+
     #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")] //controle de saisie 
+
     #[Assert\Choice(choices: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
     private ?string $Role = 'client';
 
     /**
      * @var Collection<int, User>
      */
+
+
+
+
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'ateliers')]
     private Collection $users;
 
