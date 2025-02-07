@@ -33,6 +33,9 @@ class Dechet
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_expiration = null;
 
+    #[ORM\ManyToOne(inversedBy: 'dechet')]
+    private ?Stock $stock = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,6 +102,18 @@ class Dechet
     public function setDateExpiration(\DateTimeInterface $date_expiration): static
     {
         $this->date_expiration = $date_expiration;
+
+        return $this;
+    }
+
+    public function getStock(): ?Stock
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?Stock $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }

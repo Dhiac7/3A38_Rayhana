@@ -32,6 +32,9 @@ class CultureAgricole
     #[ORM\Column]
     private ?float $rendementEstime = null;
 
+    #[ORM\ManyToOne(inversedBy: 'recolte')]
+    private ?Stock $stock = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class CultureAgricole
     public function setRendementEstime(float $rendementEstime): static
     {
         $this->rendementEstime = $rendementEstime;
+
+        return $this;
+    }
+
+    public function getStock(): ?Stock
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?Stock $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }

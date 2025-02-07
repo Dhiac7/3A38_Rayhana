@@ -47,6 +47,9 @@ class Produit
     #[ORM\Column(length: 255)]
     private ?string $raison_retour = null;
 
+    #[ORM\ManyToOne(inversedBy: 'stock')]
+    private ?Stock $stock = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +183,18 @@ class Produit
     public function setRaisonRetour(string $raison_retour): static
     {
         $this->raison_retour = $raison_retour;
+
+        return $this;
+    }
+
+    public function getStock(): ?Stock
+    {
+        return $this->stock;
+    }
+
+    public function setStock(?Stock $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }

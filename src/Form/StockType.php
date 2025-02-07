@@ -6,6 +6,8 @@ use App\Entity\Stock;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class StockType extends AbstractType
 {
@@ -22,8 +24,25 @@ class StockType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('lieu')
-            ->add('conditionn')
-            ->add('statut')
+            ->add('conditionn', ChoiceType::class, [
+                'choices' => [
+                    'Ouvert' => 'ouvert',
+                    'Complet' => 'complet',
+                    'Annulé' => 'annulé',
+                ],
+                'placeholder' => 'Sélectionnez un statut',
+                'required' => true,
+            ])
+            ->add('statut', ChoiceType::class, [
+                'choices' => [
+                    'Ouvert' => 'ouvert',
+                    'Complet' => 'complet',
+                    'Annulé' => 'annulé',
+                ],
+                'placeholder' => 'Sélectionnez un statut',
+                'required' => true,
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Ajouter un atelier']);
         ;
     }
 
