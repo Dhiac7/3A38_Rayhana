@@ -505,7 +505,7 @@ p {
 
 .text-gradient {
 	background: var(--text-gradient);
-	-webkit-background-clip: text;
+	background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	font-weight: 600;
@@ -806,7 +806,7 @@ p {
 .bg-gradient .sub-title,
 .bg-theme .sub-title {
 	color: var(--white);
-	-webkit-background-clip: inherit;
+	background-clip: inherit;
 	background-clip: inherit;
 	-webkit-text-fill-color: inherit;
 	background: transparent;
@@ -898,7 +898,7 @@ p {
 	color: var(--color-primary);
 	font-weight: 600;
 	background: var(--bg-gradient-reverse);
-	-webkit-background-clip: text;
+	background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	display: inline-block;
@@ -915,7 +915,7 @@ p {
 .bg-gradient .sub-heading {
 	color: var(--white);
 	background: transparent;
-	-webkit-background-clip: inherit;
+	background-clip: inherit;
 	background-clip: inherit;
 	-webkit-text-fill-color: inherit;
 	opacity: 0.9;
@@ -1594,7 +1594,7 @@ p {
 }
 
 .btn:focus, .btn.active {
-	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-ms-border-radius: 5px;
 	-o-border-radius: 5px;
@@ -2321,7 +2321,7 @@ button i {
 .text-shine {
 	background: linear-gradient(to right, var(--dark) 0, var(--white) 10%, var(--color-primary) 20%);
 	background-position: 0;
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	-webkit-animation: shine 3s infinite linear;
 	animation: shine 3s infinite linear;
@@ -4996,7 +4996,7 @@ ul.list-standard {
 }
 
 .mask-text {
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-size: cover;
 	background-position: center;
@@ -5925,8 +5925,8 @@ ul.list-item li::after {
 
 .farmer-style-one-item .info {
 	display: inline-block;
-	float: right;
-	margin-top: 24px;
+	float: none;
+		margin-top: 24px;
 }
 
 .farmer-style-one-item .info h4 {
@@ -6385,7 +6385,7 @@ ul.list-item li::after {
 .thumb-style-two h2 strong {
 	display: inline-block;
 	color: var(--color-secondary);
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-size: cover;
 	background-position: center;
