@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cultures Agricoles{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2 class="heading">Liste des Cultures Agricoles</h2>
+    <div class="text-right mb-3">
+        <a href="{{ path('app_culture_agricole_new') }}" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Ajouter une Culture
+        </a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Superficie</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for culture in culture_agricoles %}
+                <tr>
+                    <td>{{ culture.id }}</td>
+                    <td>{{ culture.nom }}</td>
+                    <td>{{ culture.type }}</td>
+                    <td>{{ culture.superficie }} m²</td>
+                    <td>
+                        <a href="{{ path('app_culture_agricole_show', {'id': culture.id}) }}" class="btn btn-info">Voir</a>
+                        <a href="{{ path('app_culture_agricole_edit', {'id': culture.id}) }}" class="btn btn-warning">Modifier</a>
+                        {{ include('culture_agricole/_delete_form.html.twig', {'culture_agricole': culture}) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucune culture enregistrée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

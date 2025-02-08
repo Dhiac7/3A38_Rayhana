@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Culture Agricole{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Ajouter une Culture Agricole</h1>
+
+        <div class="card shadow p-4">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.nom) }}
+                {{ form_widget(form.nom, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.type) }}
+                {{ form_widget(form.type, { 'attr': {'class': 'form-select'} }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.dateSemi) }}
+                {{ form_widget(form.dateSemi, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.superficie) }}
+                {{ form_widget(form.superficie, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.statut) }}
+                {{ form_widget(form.statut, { 'attr': {'class': 'form-select'} }) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.rendementEstime) }}
+                {{ form_widget(form.rendementEstime, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+
+            <button class="btn btn-success">Enregistrer</button>
+            <a href="{{ path('app_culture_agricole_index') }}" class="btn btn-secondary">Annuler</a>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
