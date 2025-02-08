@@ -32,7 +32,11 @@
                 {{ form_widget(form.date_expiration, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
                 {{ form_errors(form.date_expiration) }}
             </div>
-
+<div class="mb-3">
+                {{ form_label(form.type) }}
+                {{ form_widget(form.type, { 'class': 'form-select', 'required': 'required' }) }}
+                {{ form_errors(form.type) }}
+            </div>
             <button class="btn btn-success">Mettre à jour</button>
             <a href="{{ path('app_dechet_index') }}" class="btn btn-secondary">Annuler</a>
 

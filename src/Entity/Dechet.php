@@ -31,9 +31,11 @@ class Dechet
     private ?float $quantite = null;
 
 
+    #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]//controle de saisie 
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date de production ne peut pas être vide.")]
-#[Assert\Date(message: "La date de production doit être une date valide.")]
+//#[Assert\Date(message: "La date de production doit être une date valide.")]
 
     private ?\DateTimeInterface $dateProduction = null;
 
@@ -42,7 +44,7 @@ class Dechet
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date expiration ne peut pas être vide.")]
-#[Assert\Date(message: "La date expiration doit être une date valide.")]
+//#[Assert\Date(message: "La date expiration doit être une date valide.")]
 
     private ?\DateTimeInterface $date_expiration = null;
 
