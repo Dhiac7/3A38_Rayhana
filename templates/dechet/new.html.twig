@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Dechet{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un nouveau dechet</h1>
+
+    {{ include('dechet/_form.html.twig') }}
+
+    <a href="{{ path('app_dechet_index') }}">Revenir à la list</a>
+{% endblock %}

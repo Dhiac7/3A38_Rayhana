@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stock{% endblock %}
+
+{% block body %}
+    <h1>Stock</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ stock.id }}</td>
+            </tr>
+            <tr>
+                <th>Quantite</th>
+                <td>{{ stock.quantite }}</td>
+            </tr>
+            <tr>
+                <th>Date_stock</th>
+                <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Quantite_initiale</th>
+                <td>{{ stock.quantiteInitiale }}</td>
+            </tr>
+            <tr>
+                <th>Quantite_utilise</th>
+                <td>{{ stock.quantiteUtilise }}</td>
+            </tr>
+            <tr>
+                <th>Date_expiration</th>
+                <td>{{ stock.dateExpiration ? stock.dateExpiration|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Lieu</th>
+                <td>{{ stock.lieu }}</td>
+            </tr>
+            <tr>
+                <th>Conditionn</th>
+                <td>{{ stock.conditionn }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ stock.statut }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_stock_index') }}">back to list</a>
+
+    <a href="{{ path('app_stock_edit', {'id': stock.id}) }}">edit</a>
+
+    {{ include('stock/_delete_form.html.twig') }}
+{% endblock %}

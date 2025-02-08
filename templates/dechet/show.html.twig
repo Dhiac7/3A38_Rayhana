@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dechet{% endblock %}
+
+{% block body %}
+    <h1>Dechet</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ dechet.id }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ dechet.type }}</td>
+            </tr>
+            <tr>
+                <th>Quantite</th>
+                <td>{{ dechet.quantite }}</td>
+            </tr>
+            <tr>
+                <th>DateProduction</th>
+                <td>{{ dechet.dateProduction ? dechet.dateProduction|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ dechet.statut }}</td>
+            </tr>
+            <tr>
+                <th>Date_expiration</th>
+                <td>{{ dechet.dateExpiration ? dechet.dateExpiration|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_dechet_index') }}">Revenir à la list</a>
+
+    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}">Modifier</a>
+
+    {{ include('dechet/_delete_form.html.twig') }}
+{% endblock %}

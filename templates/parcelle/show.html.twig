@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Parcelle - {{ parcelle.nom }}{% endblock %}
+
+{% block body %}
+
+    <!-- 🟢 Breadcrumb -->
+    <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" 
+         style="background-image: url(assets/img/2440x1578.png); padding: 80px 0;">
+        <div class="container">
+            <h1 class="fw-bold">{{ parcelle.nom }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_home') }}"><i class="fas fa-home"></i> Accueil</a>
+                    </li>
+                    <li class="breadcrumb-item active">Détails de la parcelle</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 🌿 Parcelle Details -->
+    <div class="project-details-style-one default-padding">
+        <div class="container">
+            <div class="row">
+                <!-- 🗺️ Carte -->
+                <div class="col-lg-12">
+                    <div id="map" style="
+                        width: 100%; 
+                        height: 500px; 
+                        border-radius: 12px; 
+                        box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
+                        margin-bottom: 20px;
+                    "></div>
+                </div>
+            </div>
+
+            <div class="project-detail-content">
+                <div class="row">
+                    <!-- 📋 Informations Parcelle -->
+                    <div class="col-lg-4">
+                        <div class="card bg-dark text-light p-4 rounded">
+                            <h4 class="text-center mb-4">🌿 Informations Parcelle</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item bg-transparent text-light">
+                                    <strong>📌 Nom :</strong> {{ parcelle.nom }}
+                                </li>
+                                <li class="list-group-item bg-transparent text-light">
+                                    <strong>📏 Superficie :</strong> {{ parcelle.superficie }} m²
+                                </li>
+                                <li class="list-group-item bg-transparent text-light">
+                                    <strong>🧭 Latitude :</strong> {{ parcelle.latitude }}
+                                </li>
+                                <li class="list-group-item bg-transparent text-light">
+                                    <strong>🧭 Longitude :</strong> {{ parcelle.longitude }}
+                                </li>
+                                <li class="list-group-item bg-transparent text-light">
+                                    <strong>💦 Irrigation :</strong> 
+                                    <span class="badge {{ parcelle.irrigationDisponible ? 'bg-success' : 'bg-danger' }}">
+                                        {{ parcelle.irrigationDisponible ? 'Oui' : 'Non' }}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 📝 Description -->
+                    <div class="col-lg-8 ps-lg-5 mt-4 mt-lg-0">
+                        <h3 class="mb-3">📖 Description</h3>
+                        <p>
+                            Voici la carte affichant la localisation de votre parcelle. 
+                            Vous pouvez visualiser son emplacement exact et gérer son suivi en temps réel.
+                        </p>
+                        <p>
+                            Utilisez les outils de navigation pour zoomer et explorer l'environnement 
+                            autour de la parcelle.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎯 Actions -->
+    <div class="container text-center mt-4">
+        <a href="{{ path('app_parcelle_index') }}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+        <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning me-2">
+            <i class="fas fa-edit"></i> Modifier
+        </a>
+        {{ include('parcelle/_delete_form.html.twig') }}
+    </div>
+
+    <!-- 🌍 Mapbox Integration -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+    <script>
+        mapboxgl.accessToken = "{{ MAPBOX_API_KEY }}";
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/satellite-streets-v11', // Style satellite amélioré
+            center: [{{ parcelle.longitude }}, {{ parcelle.latitude }}],
+            zoom: 15,
+            pitch: 45, // Inclinaison pour un meilleur rendu
+            bearing: -17.6 // Orientation de la carte
+        });
+
+        var marker = new mapboxgl.Marker({ color: 'red' })
+            .setLngLat([{{ parcelle.longitude }}, {{ parcelle.latitude }}])
+            .setPopup(new mapboxgl.Popup({ offset: 25 })
+                .setHTML(`<h6>{{ parcelle.nom }}</h6><p>{{ parcelle.superficie }} m²</p>`))
+            .addTo(map);
+        
+        // Ajout du contrôle de navigation
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Ajout du contrôle en plein écran
+        map.addControl(new mapboxgl.FullscreenControl());
+    </script>
+
+{% endblock %}

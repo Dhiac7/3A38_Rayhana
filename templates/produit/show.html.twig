@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit{% endblock %}
+
+{% block body %}
+    <h1>Produit</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ produit.id }}</td>
+            </tr>
+            <tr>
+                <th>Quantite</th>
+                <td>{{ produit.quantite }}</td>
+            </tr>
+            <tr>
+                <th>Prix_vente</th>
+                <td>{{ produit.prixVente }}</td>
+            </tr>
+            <tr>
+                <th>Quantite_vendues</th>
+                <td>{{ produit.quantiteVendues }}</td>
+            </tr>
+            <tr>
+                <th>EnPromotion</th>
+                <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Pourcentage_promo</th>
+                <td>{{ produit.pourcentagePromo }}</td>
+            </tr>
+            <tr>
+                <th>Date_debut_promo</th>
+                <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date_fin_promo</th>
+                <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Quantite_retourne</th>
+                <td>{{ produit.quantiteRetourne }}</td>
+            </tr>
+            <tr>
+                <th>Date_retour</th>
+                <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ produit.statut }}</td>
+            </tr>
+            <tr>
+                <th>Raison_retour</th>
+                <td>{{ produit.raisonRetour }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_produit_index') }}">back to list</a>
+
+    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
+
+    {{ include('produit/_delete_form.html.twig') }}
+{% endblock %}
