@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ParcelleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ParcelleRepository::class)]
 class Parcelle
@@ -11,21 +13,44 @@ class Parcelle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la parcelle est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La superficie est obligatoire.")]
+    #[Assert\Positive(message: "La superficie doit être un nombre positif.")]
     private ?float $superficie = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La latitude est obligatoire.")]
+    #[Assert\Range(
+        min: -90,
+        max: 90,
+        notInRangeMessage: "La latitude doit être comprise entre -90 et 90."
+    )]
     private ?float $latitude = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La longitude est obligatoire.")]
+    #[Assert\Range(
+        min: -180,
+        max: 180,
+        notInRangeMessage: "La longitude doit être comprise entre -180 et 180."
+    )]
     private ?float $longitude = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotNull(message: "Veuillez indiquer si l'irrigation est disponible.")]
     private ?string $irrigationDisponible = null;
 
     public function getId(): ?int
@@ -92,4 +117,7 @@ class Parcelle
 
         return $this;
     }
+
+
+    
 }
