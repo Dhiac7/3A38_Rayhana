@@ -1,36 +1,4 @@
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
- <table>
-    <tr>
-        <td>{{ form_label(form.type, "Type") }}</td>
-        <td>{{ form_widget(form.type) }}</td>
-        <td>{{ form_errors(form.type) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.quantite, "Quantite") }}</td>
-        <td>{{ form_widget(form.quantite) }}</td>
-        <td>{{ form_errors(form.quantite) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.dateProduction, "Date de Production") }}</td>
-        <td>{{ form_widget(form.dateProduction) }}</td>
-        <td>{{ form_errors(form.dateProduction) }}</td>
-    </tr>
-
-    <tr>
-        <td>{{ form_label(form.statut, "statut") }}</td>
-        <td>{{ form_widget(form.statut) }}</td>
-        <td>{{ form_errors(form.statut) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.date_expiration, "date_expiration") }}</td>
-        <td>{{ form_widget(form.date_expiration) }}</td>
-        <td>{{ form_errors(form.date_expiration) }}</td>
-    </tr>
-</table>
-    {{ form_end(form) }}
-
- {% for flash_message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -45,8 +45,8 @@ class ReservationType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez un rôle',
                 'required' => true,
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Enregistrer']);
+            ]);
+           // ->add('save', SubmitType::class, ['label' => 'Enregistrer']);
 
     }
 

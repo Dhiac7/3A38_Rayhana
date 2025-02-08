@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 use App\Repository\DechetRepository;
 use Doctrine\DBAL\Types\Types;
@@ -25,7 +26,7 @@ class Dechet
     #[ORM\Column]
     #[Assert\Range(
         min: 1,  
-        notInRangeMessage: "La capacité doit être comprise entre differente de 0"
+        notInRangeMessage: "La capacité doit être  differente de 0"
     )]
     private ?float $quantite = null;
 
@@ -50,7 +51,17 @@ class Dechet
 
     #[ORM\ManyToOne(inversedBy: 'dechets')]
     private ?Stock $stock_id = null;
-
+    #[Assert\Callback]
+    public function validateDates(ExecutionContextInterface $context): void
+    {
+        if ($this->dateProduction && $this->date_expiration) {
+            if ($this->date_expiration <= $this->dateProduction) {
+                $context->buildViolation("La date d'expiration doit être supérieure à la date de production.")
+                    ->atPath('date_expiration')
+                    ->addViolation();
+            }
+        }
+    } 
     public function getId(): ?int
     {
         return $this->id;
