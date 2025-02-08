@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Reservation</h1>
 
-    <table class="table">
+    <table id="atelierTable" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Id</th>
@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for reservation in reservations %}
+        {% for reservation in pagination %}
             <tr>
                 <td>{{ reservation.id }}</td>
                 <td>{{ reservation.atelierid }}</td>
@@ -47,7 +47,7 @@
     {{ knp_pagination_render(pagination) }}
 </div>   
 
- <a href="{{ path('app_reservation_new') }}">Ajouter dechet</a>
+ <a href="{{ path('app_reservation_new') }}">Ajouter une reservation</a>
      <script>
 //tri 
         $(document).ready(function () {

@@ -10,16 +10,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/reservation')]
 final class ReservationController extends AbstractController
-{
-    #[Route(name: 'app_reservation_index', methods: ['GET'])]
-    public function index(ReservationRepository $reservationRepository): Response
+{    #[Route(name: 'app_reservation_index', methods: ['GET'])]
+
+    public function index(Request $request, ReservationRepository $reservationRepository, PaginatorInterface $paginator): Response
     {
+        $query = $reservationRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query, // Donneili bch namlou pagination
+            $request->query->getInt('page', 1), // Num page 
+            4 // nbr element par page 
+        );
         return $this->render('reservation/index.html.twig', [
-            'reservations' => $reservationRepository->findAll(),
+            'pagination' => $pagination,
         ]);
+        
     }
 
     #[Route('/new', name: 'app_reservation_new', methods: ['GET', 'POST'])]

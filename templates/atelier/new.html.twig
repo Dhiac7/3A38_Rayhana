@@ -7,7 +7,13 @@
         <div class="contact-form-style-one mb-md-50">
             <h5 class="sub-title text-success">Nouveau atelier</h5>
             <h2 class="heading">Créer un nouveau atelier</h2>
-
+           {% for label, messages in app.flashes %}
+    <div class="alert alert-{{ label }}">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endfor %}
             <!-- Formulaire Symfony avec Bootstrap Validation -->
             {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
