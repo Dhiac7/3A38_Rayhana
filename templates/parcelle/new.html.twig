@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Parcelle{% endblock %}
+
+{% block body %}
+    <div class="col-tact-stye-one col-xl-7 col-lg-7">
+        <div class="contact-form-style-one mb-md-50">
+            <h5 class="sub-title" style="color: green;">Nouvelle Parcelle</h5>
+            <h2 class="heading">Créer une nouvelle parcelle</h2>
+
+            <!-- Formulaire Symfony -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="form-group">
+                    {{ form_label(form.nom, 'Nom de la Parcelle', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Parcelle Sud'}}) }}
+                    <div class="alert-error">{{ form_errors(form.nom) }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.latitude, 'Latitude', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 36.8065'}}) }}
+                            <div class="alert-error">{{ form_errors(form.latitude) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.longitude, 'Longitude', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 10.1815'}}) }}
+                            <div class="alert-error">{{ form_errors(form.longitude) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.superficie, 'Superficie (m²)', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.superficie, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 5000'}}) }}
+                    <div class="alert-error">{{ form_errors(form.superficie) }}</div>
+                </div>
+
+                <!-- Dropdown for Irrigation -->
+                <div class="form-group">
+                    {{ form_label(form.irrigationDisponible, 'Irrigation disponible', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.irrigationDisponible, {'attr': {'class': 'form-control'}}) }}
+                    <div class="alert-error">{{ form_errors(form.irrigationDisponible) }}</div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Enregistrer
+                    </button>
+                </div>
+            {{ form_end(form) }}
+
+            <!-- Lien de retour -->
+            <div class="text-center mt-3">
+                <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
