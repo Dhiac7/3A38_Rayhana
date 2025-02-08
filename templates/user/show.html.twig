@@ -23,10 +23,17 @@
                 <th>Cin</th>
                 <td>{{ user.cin }}</td>
             </tr>
-            <tr>
-                <th>Photo</th>
-                <td>{{ user.photo }}</td>
-            </tr>
+          <tr>
+            <th>Photo</th>
+            <td>
+                {% if user.photo %}
+                    <img src="{{ user.photo }}" alt="User Photo" style="max-width: 200px;">
+                {% else %}
+                    No photo available.
+                {% endif %}
+            </td>
+        </tr>
+
             <tr>
                 <th>Role</th>
                 <td>{{ user.role }}</td>

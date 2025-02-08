@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class UserType extends AbstractType
 {
@@ -17,7 +18,11 @@ class UserType extends AbstractType
         ->add('nom')
         ->add('prenom')
         ->add('cin')
-        ->add('photo')
+        ->add('photo', UrlType::class, [
+            'label' => 'Photo URL',
+            'required' => false, 
+            //'attr' => ['placeholder' => 'https://www.w3schools.com/html/pic_trulli.jpg']
+        ])
         ->add('role', ChoiceType::class, [
             'choices' => [
                 'agriculteur' => 'agriculteur',
