@@ -1,11 +1,114 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Atelier{% endblock %}
+{% block title %}Nouvelle Reservation {% endblock %}
 
 {% block body %}
-    <h1>Ajouter un nouveau atelier</h1>
+    <div class="col-tact-stye-one col-xl-7 col-lg-7">
+        <div class="contact-form-style-one mb-md-50">
+            <h5 class="sub-title text-success">Nouvelle reservation</h5>
+            <h2 class="heading">Créer une nouvelle reservation</h2>
 
-    {{ include('atelier/_form.html.twig') }}
+            <!-- Formulaire Symfony avec Bootstrap Validation -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-    <a href="{{ path('app_atelier_index') }}">Revenir à la list</a>
+                <!-- Nom de la reservation -->
+                <div class="form-group">
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                    <div class="invalid-feedback">Veuillez entrer un nom valide.</div>
+                    {{ form_errors(form.nom) }}
+                </div>
+
+                <!-- description -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                            <div class="invalid-feedback">description invalide (-90 à 90).</div>
+                            {{ form_errors(form.description) }}
+                        </div>
+                    </div>
+                   <div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.date_atelier) }}
+            {{ form_widget(form.date_atelier, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+            <div class="invalid-feedback">La date de l'atelier est obligatoire.</div>
+            {{ form_errors(form.date_atelier) }}
+        </div>
+    </div>
+</div>
+
+                
+
+               <div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.capacite_max) }}
+            {{ form_widget(form.capacite_max, { 'attr': {'class': 'form-control', 'required': 'required', 'min': '1'} }) }}
+            <div class="invalid-feedback">La capacité maximale doit être supérieure à 0.</div>
+            {{ form_errors(form.capacite_max) }}
+        </div>
+    </div>
+</div>
+
+
+              <div class="row">
+    <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.prix) }}
+            {{ form_widget(form.prix, { 'attr': {'class': 'form-control', 'required': 'required', 'min': '1', 'step': '0.01'} }) }}
+            <div class="invalid-feedback">Le prix doit être un nombre positif supérieur à 0.</div>
+            {{ form_errors(form.prix) }}
+        </div>
+    </div>
+</div>
+<div class="mb-3">
+    {{ form_label(form.statut) }}
+    {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
+    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>
+    {{ form_errors(form.statut) }}
+</div>
+
+
+
+
+                <!-- Bouton de soumission -->
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Ajouter l'atelier
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+
+            <!-- Lien de retour -->
+            <div class="text-center mt-3">
+                <a href="{{ path('app_atelier_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Bootstrap pour la validation -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
 {% endblock %}
