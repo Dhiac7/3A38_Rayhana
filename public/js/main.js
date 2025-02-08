@@ -540,7 +540,7 @@
 	loader();
   // Initialisation de DataTables
   $(document).ready(function () {
-    $('#atelierTable').DataTable({
+    $('#Table').DataTable({
         ordering: true,       // Active le tri
         paging: false,         // Active la pagination
         searching: true,      // Active la barre de recherche

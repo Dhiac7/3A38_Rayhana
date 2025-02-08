@@ -33,25 +33,39 @@ final class AtelierController extends AbstractController
     }
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $atelier = new Atelier();
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($atelier);
-            $entityManager->flush();
-
+            // Vérifie si un atelier existe déjà à la même date
+            $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
+                'date_atelier' => $atelier->getDateAtelier()
+            ]);
+    
+            if ($existingAtelier) {
+                // Si un atelier existe déjà à cette date, afficher un message d'erreur
+                $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d H:i:s') . " Avec le nom  : " . $existingAtelier->getNom());
+                return $this->redirectToRoute('app_atelier_new'); // Redirige vers la page de création pour afficher l'erreur
+            }
+    
+            // Si pas de conflit de date, persister l'atelier
+            $em->persist($atelier);
+            $em->flush();
+            $this->addFlash('success', "L'atelier a été ajouté avec succès.");
             return $this->redirectToRoute('app_atelier_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('atelier/new.html.twig', [
             'atelier' => $atelier,
             'form' => $form,
         ]);
     }
+    
 
+      
     #[Route('/{id}', name: 'app_atelier_show', methods: ['GET'])]
     public function show(Atelier $atelier): Response
     {
