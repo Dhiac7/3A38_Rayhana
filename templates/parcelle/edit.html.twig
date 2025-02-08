@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Parcelle{% endblock %}
+
+{% block body %}
+    <div class="col-tact-stye-one col-xl-7 col-lg-7">
+        <div class="contact-form-style-one mb-md-50">
+            <img src="{{ asset('assets/img/illustration/10.png') }}" alt="Image Not Found">
+            <h5 class="sub-title">Modifier Parcelle</h5>
+            <h2 class="heading">Mettre à jour la parcelle</h2>
+
+            <!-- Formulaire Symfony -->
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(form.nom, 'Nom de la Parcelle') }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                            <span class="alert-error">{{ form_errors(form.nom) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.latitude, 'Latitude') }}
+                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Latitude'}}) }}
+                            <span class="alert-error">{{ form_errors(form.latitude) }}</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.longitude, 'Longitude') }}
+                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Longitude'}}) }}
+                            <span class="alert-error">{{ form_errors(form.longitude) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(form.superficie, 'Superficie') }}
+                            {{ form_widget(form.superficie, {'attr': {'class': 'form-control', 'placeholder': 'Superficie'}}) }}
+                            <span class="alert-error">{{ form_errors(form.superficie) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown for Irrigation -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            {{ form_label(form.irrigationDisponible, 'Irrigation disponible') }}
+                            {{ form_widget(form.irrigationDisponible, {'attr': {'class': 'form-control'}}) }}
+                            <span class="alert-error">{{ form_errors(form.irrigationDisponible) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <button type="submit" name="submit" id="submit">
+                            <i class="fa fa-save"></i> Mettre à jour
+                        </button>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+
+            <!-- Lien de retour -->
+            <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
+
+            <!-- Bouton de suppression -->
+            <div class="mt-3">
+                {{ include('parcelle/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

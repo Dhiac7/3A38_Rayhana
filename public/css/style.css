@@ -9166,3 +9166,58 @@ footer {
 		width: 7em;
 	}
 }
+
+/* Centrer le formulaire */
+.contact-form-style-one {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Espacement et bordures améliorées */
+.form-control {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Styles pour les erreurs */
+.alert-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Style du bouton principal */
+.btn-primary {
+    background-color: #ffcc4d;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #ffaa00;
+}
+
+/* Style du bouton retour */
+.btn-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+/* Style du switch toggle */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
