@@ -5,53 +5,65 @@
 {% block body %}
     <div class="col-tact-stye-one col-xl-7 col-lg-7">
         <div class="contact-form-style-one mb-md-50">
-            <h5 class="sub-title" style="color: green;">Nouvelle Parcelle</h5>
+            <h5 class="sub-title text-success">Nouvelle Parcelle</h5>
             <h2 class="heading">Créer une nouvelle parcelle</h2>
 
-            <!-- Formulaire Symfony -->
+            <!-- Formulaire Symfony avec Bootstrap Validation -->
             {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-                
+
+                <!-- Nom de la parcelle -->
                 <div class="form-group">
-                    {{ form_label(form.nom, 'Nom de la Parcelle', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Parcelle Sud'}}) }}
-                    <div class="alert-error">{{ form_errors(form.nom) }}</div>
+                    {{ form_label(form.nom) }}
+                    {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                    <div class="invalid-feedback">Veuillez entrer un nom valide.</div>
+                    {{ form_errors(form.nom) }}
                 </div>
 
+                <!-- Latitude & Longitude -->
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="form-group">
-                            {{ form_label(form.latitude, 'Latitude', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 36.8065'}}) }}
-                            <div class="alert-error">{{ form_errors(form.latitude) }}</div>
+                            {{ form_label(form.latitude) }}
+                            {{ form_widget(form.latitude, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                            <div class="invalid-feedback">Latitude invalide (-90 à 90).</div>
+                            {{ form_errors(form.latitude) }}
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
-                            {{ form_label(form.longitude, 'Longitude', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 10.1815'}}) }}
-                            <div class="alert-error">{{ form_errors(form.longitude) }}</div>
+                            {{ form_label(form.longitude) }}
+                            {{ form_widget(form.longitude, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                            <div class="invalid-feedback">Longitude invalide (-180 à 180).</div>
+                            {{ form_errors(form.longitude) }}
                         </div>
                     </div>
                 </div>
 
+                <!-- Superficie -->
                 <div class="form-group">
-                    {{ form_label(form.superficie, 'Superficie (m²)', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.superficie, {'attr': {'class': 'form-control', 'placeholder': 'Ex: 5000'}}) }}
-                    <div class="alert-error">{{ form_errors(form.superficie) }}</div>
+                    {{ form_label(form.superficie) }}
+                    {{ form_widget(form.superficie, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                    <div class="invalid-feedback">Superficie invalide (doit être positive).</div>
+                    {{ form_errors(form.superficie) }}
                 </div>
 
-                <!-- Dropdown for Irrigation -->
-                <div class="form-group">
-                    {{ form_label(form.irrigationDisponible, 'Irrigation disponible', {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.irrigationDisponible, {'attr': {'class': 'form-control'}}) }}
-                    <div class="alert-error">{{ form_errors(form.irrigationDisponible) }}</div>
+                <!-- Disponibilité de l'irrigation -->
+                <div class="mb-3">
+                    {{ form_label(form.irrigationDisponible) }}
+                    {{ form_widget(form.irrigationDisponible, { 'attr': {'class': 'form-select'} }) }}
+                    <div class="invalid-feedback">Veuillez sélectionner une option.</div>
+                    {{ form_errors(form.irrigationDisponible) }}
                 </div>
 
+
+
+                <!-- Bouton de soumission -->
                 <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-save"></i> Enregistrer
                     </button>
                 </div>
+
             {{ form_end(form) }}
 
             <!-- Lien de retour -->
@@ -62,4 +74,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Script Bootstrap pour la validation -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
 {% endblock %}
