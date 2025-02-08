@@ -19,21 +19,30 @@ class Reservation
 
     #[ORM\Column]
     private ?int $idUser = null;
-
+   
+    #[Assert\NotBlank(message: "La date de reservation ne peut pas être vide.")]//controle de saisie 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateReservation = null;
 
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Choice(choices : ['enligne','carte','espece'], message: "Le mode de Paiement doit être 'enligne','carte','espece'.")]
     private ?string $modePaiement = null;
 
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\Choice(choices : ['confirmée', 'annulée', 'en attente'], message: "Le statut doit être 'confirmée', 'annulée', ou 'en attente'.")]
     private ?string $statut = null;
 
+
+    #[Assert\Range(
+        min: 1,  
+        notInRangeMessage: "Le nombre de place doit être differente de 0"
+    )]
     #[ORM\Column]
     private ?int $nbrPlace = null;
 
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\Choice(choices : ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
     private ?string $Role = null;

@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvelle Reservation {% endblock %}
+{% block title %}Nouveau atelier {% endblock %}
 
 {% block body %}
     <div class="col-tact-stye-one col-xl-7 col-lg-7">
         <div class="contact-form-style-one mb-md-50">
-            <h5 class="sub-title text-success">Nouvelle reservation</h5>
-            <h2 class="heading">Créer une nouvelle reservation</h2>
+            <h5 class="sub-title text-success">Nouveau atelier</h5>
+            <h2 class="heading">Créer un nouveau atelier</h2>
 
             <!-- Formulaire Symfony avec Bootstrap Validation -->
             {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                <!-- Nom de la reservation -->
+                <!-- Nom de la atelier -->
                 <div class="form-group">
                     {{ form_label(form.nom) }}
                     {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-                    <div class="invalid-feedback">Veuillez entrer un nom valide.</div>
+                    <div class="invalid-feedback">Veuillez entrer un nom valide (uniquement des lettres alphabétiques)</div>
                     {{ form_errors(form.nom) }}
                 </div>
 
@@ -39,9 +39,6 @@
         </div>
     </div>
 </div>
-
-                
-
                <div class="row">
     <div class="col-lg-6">
         <div class="form-group">
@@ -64,7 +61,7 @@
         </div>
     </div>
 </div>
-<div class="mb-3">
+<div  class="form-group">
     {{ form_label(form.statut) }}
     {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
     <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>

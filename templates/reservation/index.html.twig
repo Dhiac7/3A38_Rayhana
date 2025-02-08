@@ -42,6 +42,27 @@
         {% endfor %}
         </tbody>
     </table>
+<!-- pagination -->
+    <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+</div>   
 
-    <a href="{{ path('app_reservation_new') }}">Ajouter une reservation</a>
+ <a href="{{ path('app_reservation_new') }}">Ajouter dechet</a>
+     <script>
+//tri 
+        $(document).ready(function () {
+            $('#atelierTable').DataTable({
+                "ordering": true,  // tri 3al colonne
+                "paging": false,    // nactiviw l pagination
+                "searching": true, // nactiviw l recherche
+                "pageLength": 4,   // nbr element par page
+                "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
+                "language": {
+                     "url": "{{ asset('js/French.json') }}"
+                }
+            });
+        });
+    </script>
 {% endblock %}
+
+   

@@ -22,6 +22,10 @@ class Atelier
     #[Assert\Length(
         max: 15, 
         maxMessage: "Le nom de l'atelier ne peut pas dépasser 30 caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s]+$/",
+        message: "Le nom de l'atelier doit contenir uniquement des lettres alphabétiques."
     )]//controle de saisie 
     private ?string $nom = null;
 

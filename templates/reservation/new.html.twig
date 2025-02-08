@@ -1,11 +1,78 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvelle Reservation{% endblock %}
+{% block title %}Nouvelle reservation {% endblock %}
 
 {% block body %}
-    <h1 class="sub-title text-success">Ajouter une nouvelle  Reservation</h1>
+    <div class="col-tact-stye-one col-xl-7 col-lg-7">
+        <div class="contact-form-style-one mb-md-50">
+            <h5 class="sub-title text-success">Nouveau atelier</h5>
+            <h2 class="heading">Créer un nouveau atelier</h2>
 
-    {{ include('reservation/_form.html.twig') }}
+            <!-- Formulaire Symfony avec Bootstrap Validation -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-    <a href="{{ path('app_reservation_index') }}">Revenir à la list</a>
+
+
+ <div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.dateReservation) }}
+            {{ form_widget(form.dateReservation, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+            <div class="invalid-feedback">La date de Reservation est obligatoire.</div>
+            {{ form_errors(form.dateReservation) }}
+        </div>
+    </div> 
+</div>
+<div  class="form-group">
+    {{ form_label(form.modePaiement) }}
+    {{ form_widget(form.modePaiement, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
+    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le mode de Paiement.</div>
+    {{ form_errors(form.modePaiement) }}
+</div>
+
+<div  class="form-group">
+    {{ form_label(form.statut) }}
+    {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
+    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>
+    {{ form_errors(form.statut) }}
+</div>
+
+
+               
+                <!-- Bouton de soumission -->
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> confirmer la reservation
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+
+            <!-- Lien de retour -->
+            <div class="text-center mt-3">
+                <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Bootstrap pour la validation -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
 {% endblock %}
