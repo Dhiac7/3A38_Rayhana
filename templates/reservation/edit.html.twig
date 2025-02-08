@@ -27,11 +27,6 @@
                 {{ form_errors(form.statut) }}
             </div>
   
-                 <div class="mb-3">
-                {{ form_label(form.date_expiration) }}
-                {{ form_widget(form.date_expiration, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
-                {{ form_errors(form.date_expiration) }}
-            </div>
 
             <button class="btn btn-success">Mettre à jour</button>
             <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">Annuler</a>
