@@ -9,13 +9,15 @@
             <h5 class="sub-title">Modifier Parcelle</h5>
             <h2 class="heading">Mettre à jour la parcelle</h2>
 
-            <!-- Formulaire Symfony -->
-            {{ form_start(form) }}
+            <!-- Formulaire Symfony avec validation Bootstrap -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
                             {{ form_label(form.nom, 'Nom de la Parcelle') }}
-                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom', 'required': 'required'}}) }}
+                            <div class="invalid-feedback">Veuillez entrer un nom valide.</div>
                             <span class="alert-error">{{ form_errors(form.nom) }}</span>
                         </div>
                     </div>
@@ -25,14 +27,16 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             {{ form_label(form.latitude, 'Latitude') }}
-                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Latitude'}}) }}
+                            {{ form_widget(form.latitude, {'attr': {'class': 'form-control', 'placeholder': 'Latitude', 'required': 'required', 'min': '-90', 'max': '90'}}) }}
+                            <div class="invalid-feedback">Latitude invalide (-90 à 90).</div>
                             <span class="alert-error">{{ form_errors(form.latitude) }}</span>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="form-group">
                             {{ form_label(form.longitude, 'Longitude') }}
-                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Longitude'}}) }}
+                            {{ form_widget(form.longitude, {'attr': {'class': 'form-control', 'placeholder': 'Longitude', 'required': 'required', 'min': '-180', 'max': '180'}}) }}
+                            <div class="invalid-feedback">Longitude invalide (-180 à 180).</div>
                             <span class="alert-error">{{ form_errors(form.longitude) }}</span>
                         </div>
                     </div>
@@ -41,40 +45,61 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            {{ form_label(form.superficie, 'Superficie') }}
-                            {{ form_widget(form.superficie, {'attr': {'class': 'form-control', 'placeholder': 'Superficie'}}) }}
+                            {{ form_label(form.superficie, 'Superficie (m²)') }}
+                            {{ form_widget(form.superficie, {'attr': {'class': 'form-control', 'placeholder': 'Superficie', 'required': 'required', 'min': '1'}}) }}
+                            <div class="invalid-feedback">La superficie doit être un nombre positif.</div>
                             <span class="alert-error">{{ form_errors(form.superficie) }}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dropdown for Irrigation -->
+                <!-- Dropdown pour l'irrigation -->
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
                             {{ form_label(form.irrigationDisponible, 'Irrigation disponible') }}
-                            {{ form_widget(form.irrigationDisponible, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_widget(form.irrigationDisponible, {'attr': {'class': 'form-select', 'required': 'required'}}) }}
+                            <div class="invalid-feedback">Veuillez sélectionner une option.</div>
                             <span class="alert-error">{{ form_errors(form.irrigationDisponible) }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row text-center mt-3">
                     <div class="col-lg-12">
-                        <button type="submit" name="submit" id="submit">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save"></i> Mettre à jour
                         </button>
+                        <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left"></i> Retour à la liste
+                        </a>
                     </div>
                 </div>
             {{ form_end(form) }}
 
-            <!-- Lien de retour -->
-            <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary mt-3">Retour à la liste</a>
-
             <!-- Bouton de suppression -->
-            <div class="mt-3">
+            <div class="text-center mt-3">
                 {{ include('parcelle/_delete_form.html.twig') }}
             </div>
         </div>
     </div>
+
+    <!-- Script de validation Bootstrap -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
 {% endblock %}
