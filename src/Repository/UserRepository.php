@@ -40,4 +40,13 @@ class UserRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+public function findByPhoneNumber($tel)
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.tel = :tel')
+        ->setParameter('tel', $tel)
+        ->getQuery()
+        ->getOneOrNullResult();
+}
+
 }
