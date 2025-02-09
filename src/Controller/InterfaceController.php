@@ -29,11 +29,26 @@ class InterfaceController extends AbstractController
 
     }
 
+    #[Route('/{role}', name: 'role_interface', requirements: ['role' => 'client|fermier|agriculteur|inspecteur|livreur'])]
+    public function roleDashboard(SessionInterface $session, string $role): Response
+    {
+        $user = $session->get('user');
+        if (!$user) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        if ($user->getRole() !== $role) {
+            $this->addFlash('error', 'You do not have permission to access this page.');
+            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+        }
+
+        return $this->render("user/{$role}.html.twig");
+    }
 
     #[Route('/client', name: 'client_interface')]
-    public function clientDashboard(): Response
+    public function clientDashboard(SessionInterface $session): Response
     {
-        if (!$this->getUser()) {
+        if (!$session->get('user')) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -41,9 +56,9 @@ class InterfaceController extends AbstractController
     }
 
     #[Route('/fermier', name: 'fermier_interface')]
-    public function fermierDashboard(): Response
+    public function fermierDashboard(SessionInterface $session): Response
     {
-        if (!$this->getUser()) {
+        if (!$session->get('user')) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -51,9 +66,9 @@ class InterfaceController extends AbstractController
     }
 
     #[Route('/agriculteur', name: 'agriculteur_interface')]
-    public function agriculteurDashboard(): Response
+    public function agriculteurDashboard(SessionInterface $session): Response
     {
-        if (!$this->getUser()) {
+        if (!$session->get('user')) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -61,9 +76,9 @@ class InterfaceController extends AbstractController
     }
 
     #[Route('/inspecteur', name: 'inspecteur_interface')]
-    public function inspecteurDashboard(): Response
+    public function inspecteurDashboard(SessionInterface $session): Response
     {
-        if (!$this->getUser()) {
+        if (!$session->get('user')) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -71,9 +86,9 @@ class InterfaceController extends AbstractController
     }
 
     #[Route('/livreur', name: 'livreur_interface')]
-    public function livreurDashboard(): Response
+    public function livreurDashboard(SessionInterface $session): Response
     {
-        if (!$this->getUser()) {
+        if (!$session->get('user')) {
             return $this->redirectToRoute('app_home');
         }
 
@@ -83,7 +98,7 @@ class InterfaceController extends AbstractController
     #[Route('/profile', name: 'user_profile')]
     public function userProfile(SessionInterface $session): Response
     {
-        $user = $this->getUser(); 
+        $user = $session->get('user');
 
         if (!$user) {
             return $this->redirectToRoute('app_user_login');
@@ -174,11 +189,11 @@ class InterfaceController extends AbstractController
             $newPassword = $request->request->get('newPassword');
 
             if (strlen($newPassword) < 6) {
-                return new Response('Password must be at least 8 characters long.');
+                return new Response('Password must be at least 6 characters long.');
             }
 
-        // $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
-            //$user->setPassword($hashedPassword);
+            $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashedPassword);
 
             $user->setMdp($newPassword);
 
