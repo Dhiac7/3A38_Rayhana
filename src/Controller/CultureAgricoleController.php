@@ -10,15 +10,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/culture/agricole')]
 final class CultureAgricoleController extends AbstractController
 {
     #[Route(name: 'app_culture_agricole_index', methods: ['GET'])]
-    public function index(CultureAgricoleRepository $cultureAgricoleRepository): Response
+    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, PaginatorInterface $paginator): Response
     {
+            $query = $cultureAgricoleRepository->findAll();
+            $pagination = $paginator->paginate(
+            $query, // Donneili bch namlou pagination
+            $request->query->getInt('page', 1), // Num page 
+            4 // nbr element par page 
+        );
         return $this->render('culture_agricole/index.html.twig', [
-            'culture_agricoles' => $cultureAgricoleRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
