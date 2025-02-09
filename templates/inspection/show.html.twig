@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inspection{% endblock %}
+
+{% block body %}
+    <h1>Inspection</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ inspection.id }}</td>
+            </tr>
+            <tr>
+                <th>Id_avis</th>
+                <td>{{ inspection.idAvis }}</td>
+            </tr>
+            <tr>
+                <th>Date_inspection</th>
+                <td>{{ inspection.dateInspection ? inspection.dateInspection|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Type_inspection</th>
+                <td>{{ inspection.typeInspection }}</td>
+            </tr>
+            <tr>
+                <th>Inspecteur_id</th>
+                <td>{{ inspection.inspecteurId }}</td>
+            </tr>
+            <tr>
+                <th>Resultat</th>
+                <td>{{ inspection.resultat }}</td>
+            </tr>
+            <tr>
+                <th>Note</th>
+                <td>{{ inspection.note }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_inspection_index') }}">back to list</a>
+
+    <a href="{{ path('app_inspection_edit', {'id': inspection.id}) }}">edit</a>
+
+    {{ include('inspection/_delete_form.html.twig') }}
+{% endblock %}
