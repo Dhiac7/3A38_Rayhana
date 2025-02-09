@@ -15,7 +15,7 @@ class Inspection
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $id_inspection = null;
+    private ?int $id_avis = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_inspection = null;
@@ -37,14 +37,14 @@ class Inspection
         return $this->id;
     }
 
-    public function getIdInspection(): ?int
+    public function getIdAvis(): ?int
     {
-        return $this->id_inspection;
+        return $this->id_avis;
     }
 
-    public function setIdInspection(int $id_inspection): static
+    public function setIdAvis(int $id_avis): static
     {
-        $this->id_inspection = $id_inspection;
+        $this->id_avis = $id_avis;
 
         return $this;
     }
