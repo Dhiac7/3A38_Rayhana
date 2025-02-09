@@ -17,16 +17,25 @@ use Knp\Component\Pager\PaginatorInterface;
 final class CultureAgricoleController extends AbstractController
 {
     #[Route(name: 'app_culture_agricole_index', methods: ['GET'])]
-    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, PaginatorInterface $paginator): Response
+    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository): Response
     {
-            $query = $cultureAgricoleRepository->findAll();
-            $pagination = $paginator->paginate(
-            $query, // Donneili bch namlou pagination
-            $request->query->getInt('page', 1), // Num page 
-            4 // nbr element par page 
-        );
+        $limit = 2; // Nombre d'éléments par page
+        $page = $request->query->getInt('page', 1); // Page actuelle (par défaut la page 1)
+        $offset = ($page - 1) * $limit; // Calculer l'offset
+
+        $totalCultures = $cultureAgricoleRepository->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    
+
+        // Calculer le nombre total de pages
+        $totalPages = ceil($totalCultures / $limit);
+
         return $this->render('culture_agricole/index.html.twig', [
-            'pagination' => $pagination,
+            'cultures' => $cultureAgricoleRepository->findAll(),
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 

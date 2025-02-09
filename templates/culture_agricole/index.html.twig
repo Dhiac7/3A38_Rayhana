@@ -22,7 +22,9 @@
             </tr>
         </thead>
         <tbody>
-            {% for culture in pagination %}
+            {% set start = (currentPage - 1) * 4 %}
+            {% set end = start + 4 %}
+            {% for culture in cultures|slice(start, end) %}
                 <tr>
                     <td>{{ culture.id }}</td>
                     <td>{{ culture.nom }}</td>
@@ -41,7 +43,36 @@
             {% endfor %}
         </tbody>
     </table>
-            {{ knp_pagination_render(pagination) }}
 
+    <nav class="woocommerce-pagination">
+        <ul class="page-numbers">
+            {% if currentPage > 1 %}
+                <li>
+                    <a class="previous page-numbers" href="{{ path('app_culture_agricole_index', {'page': currentPage - 1}) }}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for page in 1..totalPages %}
+                <li>
+                    {% if page == currentPage %}
+                        <span aria-current="page" class="page-numbers current">{{ page }}</span>
+                    {% else %}
+                        <a class="page-numbers" href="{{ path('app_culture_agricole_index', {'page': page}) }}">{{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+
+            {% if currentPage < totalPages %}
+                <li>
+                    <a class="next page-numbers" href="{{ path('app_culture_agricole_index', {'page': currentPage + 1}) }}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div>________</div>
 </div>
 {% endblock %}

@@ -21,15 +21,30 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 final class ParcelleController extends AbstractController
 {
     #[Route(name: 'app_parcelle_index', methods: ['GET'])]
-    public function index(ParcelleRepository $parcelleRepository): Response
+    public function index(Request $request, ParcelleRepository $parcelleRepository): Response
     {
+        $page = (int) $request->query->get('page', 1); // Get the current page from the query parameters
+        $limit = 9; // Number of parcelles per page
+        $offset = ($page - 1) * $limit;
+    
+        // Get the parcelles for the current page
+        $parcelles = $parcelleRepository->findBy([], [], $limit, $offset);
+    
+        // Get the total number of parcelles for pagination
+        $totalParcelles = $parcelleRepository->count([]);
+    
+        // Calculate total pages
+        $totalPages = ceil($totalParcelles / $limit);
+    
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
         return $this->render('parcelle/index.html.twig', [
-            'parcelles' => $parcelleRepository->findAll(),
+            'parcelles' => $parcelles,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
             'MAPBOX_API_KEY' => $mapboxApiKey, // Pass to Twig
-
         ]);
     }
+    
 
     #[Route('/new', name: 'app_parcelle_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
