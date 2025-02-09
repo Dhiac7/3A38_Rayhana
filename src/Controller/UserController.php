@@ -84,8 +84,8 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
+            //$hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            //$user->setPassword($hashedPassword);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -135,7 +135,5 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             'user' => $user,
         ]);
     }
-
-
 
 }

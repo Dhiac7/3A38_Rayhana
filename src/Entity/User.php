@@ -5,14 +5,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert ;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Query\Limit;
-use Doctrine\DBAL\Types\Types;
+use  Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Email deja utilisé.')]
+#[UniqueEntity(fields: ['tel'], message: 'Numéro deja utilisé.')]
+#[UniqueEntity(fields: ['cin'], message: 'Cin deja utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
