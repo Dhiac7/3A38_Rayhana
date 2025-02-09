@@ -8,6 +8,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class ProduitType extends AbstractType
 {
@@ -15,6 +18,15 @@ class ProduitType extends AbstractType
     {
         $builder
             ->add('quantite')
+            ->add('statut', ChoiceType::class, [
+                'choices' => [
+                    'Disponible' => 'Disponible',
+                    'En Rupture' => 'En Rupture',
+                ],
+                'placeholder' => 'Sélectionnez un statut',
+                'required' => true,
+            ])
+            
             ->add('prix_vente')
             ->add('quantite_vendues')
             ->add('enPromotion')
@@ -29,8 +41,16 @@ class ProduitType extends AbstractType
             ->add('date_retour', null, [
                 'widget' => 'single_text',
             ])
-            ->add('statut')
-            ->add('raison_retour')
+       
+            ->add('raison_retour', ChoiceType::class, [
+                'choices' => [
+                    'Erreur de livraison' => 'Erreur de livraison',
+                    'Produit endommagé' => 'Produit endommagé',
+                ],
+                'placeholder' => 'Sélectionnez une raison',
+                'required' => true,
+            ])
+            
             ->add('stock', EntityType::class, [
                 'class' => Stock::class,
                 'choice_label' => 'id',

@@ -5,6 +5,10 @@ namespace App\Entity;
 use App\Repository\ProduitRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert ;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -41,10 +45,15 @@ class Produit
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_retour = null;
 
-    #[ORM\Column(length: 255)]
+  
+
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['Disponible','En repture'],message: "le statut doit étre 'Disponible','En repture' ")]
     private ?string $statut = null;
 
-    #[ORM\Column(length: 255)]
+
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['Erreur de livraison','Produit endommagé'],message: "le raison doit étre 'Erreur de livraison','Produit endommagé' ")]
     private ?string $raison_retour = null;
 
     #[ORM\ManyToOne(inversedBy: 'stock')]
@@ -168,10 +177,13 @@ class Produit
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(string $statut): self
     {
-        $this->statut = $statut;
+        if(!in_array($statut,['Disponible','En Rupture'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En Rupture' ");
+        }
 
+        $this->statut = $statut;
         return $this;
     }
 
@@ -180,10 +192,14 @@ class Produit
         return $this->raison_retour;
     }
 
-    public function setRaisonRetour(string $raison_retour): static
+   
+    public function setRaisonRetour(string $raison_retour): self
     {
-        $this->raison_retour = $raison_retour;
+        if(!in_array($raison_retour,['Erreur de livraison','Produit endommagé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Erreur de livraison','Produit endommagé' ");
+        }
 
+         $this->raison_retour = $raison_retour;
         return $this;
     }
 

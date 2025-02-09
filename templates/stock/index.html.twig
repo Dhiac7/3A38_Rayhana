@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Nom du produit</th>
                 <th>Quantite</th>
                 <th>Date_stock</th>
                 <th>Quantite_initiale</th>
@@ -24,6 +25,7 @@
         {% for stock in stocks %}
             <tr>
                 <td>{{ stock.id }}</td>
+                <td>{{ stock.nom }}</td>
                 <td>{{ stock.quantite }}</td>
                 <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
                 <td>{{ stock.quantiteInitiale }}</td>

@@ -8,42 +8,43 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class StockType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('nom')
             ->add('quantite')
-            ->add('date_stock', null, [
-                'widget' => 'single_text',
+            ->add('date_stock', DateType::class, [
+                'widget' => 'single_text', // Affichage sous forme de champ texte unique
             ])
             ->add('quantite_initiale')
             ->add('quantite_utilise')
-            ->add('date_expiration', null, [
-                'widget' => 'single_text',
+            ->add('date_expiration', DateType::class, [
+                'widget' => 'single_text', // Affichage sous forme de champ texte unique
             ])
             ->add('lieu')
             ->add('conditionn', ChoiceType::class, [
                 'choices' => [
-                    'Ouvert' => 'ouvert',
-                    'Complet' => 'complet',
-                    'Annulé' => 'annulé',
+                    'Sec' => 'Sec',
+                    'Réfrigéré' => 'Réfrigéré',
+                    'Congelé' => 'Congelé',
                 ],
-                'placeholder' => 'Sélectionnez un statut',
+                'placeholder' => 'Sélectionnez une condition',
                 'required' => true,
             ])
             ->add('statut', ChoiceType::class, [
                 'choices' => [
-                    'Ouvert' => 'ouvert',
-                    'Complet' => 'complet',
-                    'Annulé' => 'annulé',
+                    'Disponible' => 'Disponible',
+                    'En Rupture' => 'En Rupture',
+                    'Périmé' => 'Périmé',
                 ],
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
             ])
-            ->add('save', SubmitType::class, ['label' => 'Ajouter un atelier']);
-        ;
+            ->add('save', SubmitType::class, ['label' => 'Ajouter stock']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

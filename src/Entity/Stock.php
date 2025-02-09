@@ -17,6 +17,9 @@ class Stock
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
     #[ORM\Column]
     private ?int $quantite = null;
 
@@ -37,11 +40,11 @@ class Stock
 
    
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\Choice(choices: ['Sec','Réfrigéré','Congelé'],message: "le statut doit étre 'Sec','Réfrigéré','Congelé' ")]
     private ?string $conditionn = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\Choice(choices: ['Disponible','En repture','Périmé'],message: "le statut doit étre 'Disponible','En repture','Périmé' ")]
     private ?string $statut = null;
 
     /**
@@ -67,6 +70,8 @@ class Stock
      */
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'stock_id')]
     private Collection $dechets;
+
+   
 
     public function __construct()
     {
@@ -160,8 +165,8 @@ class Stock
 
     public function setConditionn(string $conditionn): self
     {
-        if(!in_array($conditionn,['ouvert','complet','annulé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
+        if(!in_array($conditionn,['Sec','Réfrigéré','congelé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Sec','Réfrigéré','Congelé' ");
         }
         $this->conditionn = $conditionn;
 
@@ -175,8 +180,8 @@ class Stock
 
     public function setStatut(string $statut): self
     {
-        if(!in_array($statut,['ouvert','complet','annulé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
+        if(!in_array($statut,['Disponible','En Rupture','Périmé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En Rupture','Périmé' ");
         }
 
         $this->statut = $statut;
@@ -279,5 +284,17 @@ class Stock
     public function getDechets(): Collection
     {
         return $this->dechets;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
     }
 }

@@ -7,6 +7,10 @@
 
     <table class="table">
         <tbody>
+           <tr>
+                <th>Nom du produit</th>
+                <td>{{ stock.nom }}</td>
+            </tr>
             <tr>
                 <th>Id</th>
                 <td>{{ stock.id }}</td>
@@ -16,19 +20,19 @@
                 <td>{{ stock.quantite }}</td>
             </tr>
             <tr>
-                <th>Date_stock</th>
+                <th>Date tock</th>
                 <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
             </tr>
             <tr>
-                <th>Quantite_initiale</th>
+                <th>Quantite initiale</th>
                 <td>{{ stock.quantiteInitiale }}</td>
             </tr>
             <tr>
-                <th>Quantite_utilise</th>
+                <th>Quantite utilise</th>
                 <td>{{ stock.quantiteUtilise }}</td>
             </tr>
             <tr>
-                <th>Date_expiration</th>
+                <th>Date expiration</th>
                 <td>{{ stock.dateExpiration ? stock.dateExpiration|date('Y-m-d') : '' }}</td>
             </tr>
             <tr>
