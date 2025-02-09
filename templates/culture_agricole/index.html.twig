@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for culture in culture_agricoles %}
+            {% for culture in pagination %}
                 <tr>
                     <td>{{ culture.id }}</td>
                     <td>{{ culture.nom }}</td>
@@ -41,5 +41,7 @@
             {% endfor %}
         </tbody>
     </table>
+            {{ knp_pagination_render(pagination) }}
+
 </div>
 {% endblock %}
