@@ -59,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Url(message: "L'URL de la photo n'est pas valide.")]
     private ?string $photo = null;
 
+    // Define roles as constants
+    public const ROLE_CLIENT = 'client';
+    public const ROLE_FERMIER = 'fermier';
+    public const ROLE_AGRICULTEUR = 'agriculteur';
+    public const ROLE_INSPECTEUR = 'inspecteur';
+    public const ROLE_LIVREUR = 'livreur';
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank(message: "Le rôle est obligatoire.")]
     #[Assert\Choice(
