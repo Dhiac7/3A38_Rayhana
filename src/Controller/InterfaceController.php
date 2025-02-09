@@ -158,7 +158,7 @@ class InterfaceController extends AbstractController
         #[Route('/reset-password', name: 'reset_password')]
     public function resetPassword(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        $phoneNumber = $request->request->get('phoneNumber'); // Use request->request for POST data
+        $phoneNumber = $request->request->get('phoneNumber'); 
 
         if (!$phoneNumber) {
             return new Response('Unauthorized access! No phone number provided.');
@@ -174,7 +174,7 @@ class InterfaceController extends AbstractController
             $newPassword = $request->request->get('newPassword');
 
             if (strlen($newPassword) < 6) {
-                return new Response('Password must be at least 6 characters long.');
+                return new Response('Password must be at least 8 characters long.');
             }
 
         // $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
