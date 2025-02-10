@@ -44,14 +44,15 @@ class Stock
     private ?string $conditionn = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['Disponible','En repture','Périmé'],message: "le statut doit étre 'Disponible','En repture','Périmé' ")]
+    #[Assert\Choice(choices: ['Disponible','En rupture','Périmé'],message: "le statut doit étre 'Disponible','En rupture','Périmé' ")]
     private ?string $statut = null;
 
     /**
      * @var Collection<int, Produit>
      */
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'stock')]
-    private Collection $stock;
+    #[ORM\OneToMany(mappedBy: 'stock', targetEntity: Produit::class, cascade: ['remove'])]
+    private Collection $produits;
+    
 
     /**
      * @var Collection<int, Dechet>
@@ -70,6 +71,7 @@ class Stock
      */
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'stock_id')]
     private Collection $dechets;
+
 
    
 
@@ -165,7 +167,7 @@ class Stock
 
     public function setConditionn(string $conditionn): self
     {
-        if(!in_array($conditionn,['Sec','Réfrigéré','congelé'])){
+        if(!in_array($conditionn,['Sec','Réfrigéré','Congelé'])){
             throw new \InvalidArgumentException("le statut doit etre 'Sec','Réfrigéré','Congelé' ");
         }
         $this->conditionn = $conditionn;
@@ -297,4 +299,6 @@ class Stock
 
         return $this;
     }
+
+   
 }

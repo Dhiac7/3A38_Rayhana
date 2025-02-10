@@ -17,7 +17,14 @@ class ProduitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+        ->add('stock', EntityType::class, [
+            'class' => Stock::class,
+            'choice_label' => 'nom',
+        ])
             ->add('quantite')
+          
+            
+            ->add('prix_vente')
             ->add('statut', ChoiceType::class, [
                 'choices' => [
                     'Disponible' => 'Disponible',
@@ -26,10 +33,9 @@ class ProduitType extends AbstractType
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
             ])
-            
-            ->add('prix_vente')
             ->add('quantite_vendues')
             ->add('enPromotion')
+            
             ->add('pourcentage_promo')
             ->add('date_debut_promo', null, [
                 'widget' => 'single_text',
@@ -53,7 +59,7 @@ class ProduitType extends AbstractType
             
             ->add('stock', EntityType::class, [
                 'class' => Stock::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
         ;
     }

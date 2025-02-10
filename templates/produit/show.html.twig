@@ -19,18 +19,16 @@
                 <th>Prix_vente</th>
                 <td>{{ produit.prixVente }}</td>
             </tr>
-            <tr>
-                <th>Quantite_vendues</th>
-                <td>{{ produit.quantiteVendues }}</td>
-            </tr>
+           
             <tr>
                 <th>EnPromotion</th>
                 <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
             </tr>
             <tr>
-                <th>Pourcentage_promo</th>
+                <th>Pour_promo</th>
                 <td>{{ produit.pourcentagePromo }}</td>
             </tr>
+         
             <tr>
                 <th>Date_debut_promo</th>
                 <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
@@ -38,6 +36,16 @@
             <tr>
                 <th>Date_fin_promo</th>
                 <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+
+             <tr>
+                <th>Statut</th>
+                <td>{{ produit.statut }}</td>
+            </tr>
+
+             <tr>
+                <th>Quantite_vendues</th>
+                <td>{{ produit.quantiteVendues }}</td>
             </tr>
             <tr>
                 <th>Quantite_retourne</th>
@@ -47,10 +55,7 @@
                 <th>Date_retour</th>
                 <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
             </tr>
-            <tr>
-                <th>Statut</th>
-                <td>{{ produit.statut }}</td>
-            </tr>
+           
             <tr>
                 <th>Raison_retour</th>
                 <td>{{ produit.raisonRetour }}</td>

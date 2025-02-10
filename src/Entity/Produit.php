@@ -56,8 +56,11 @@ class Produit
     #[Assert\Choice(choices: ['Erreur de livraison','Produit endommagé'],message: "le raison doit étre 'Erreur de livraison','Produit endommagé' ")]
     private ?string $raison_retour = null;
 
-    #[ORM\ManyToOne(inversedBy: 'stock')]
+    #[ORM\ManyToOne(targetEntity: Stock::class, inversedBy: 'produits')]
+    #[ORM\JoinColumn(name: 'stock_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Stock $stock = null;
+
+ 
 
     public function getId(): ?int
     {
@@ -214,4 +217,11 @@ class Produit
 
         return $this;
     }
+
+   
+
+    public function getNom(): ?string
+{
+    return $this->stock ? $this->stock->getNom() : null;
+}
 }
