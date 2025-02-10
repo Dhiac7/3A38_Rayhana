@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit index{% endblock %}
+
+{% block body %}
+    <h1>Produit index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Quantite</th>
+                <th>Prix_vente</th>
+                <th>Quantite_vendues</th>
+                <th>EnPromotion</th>
+                <th>Pourcentage_promo</th>
+                <th>Date_debut_promo</th>
+                <th>Date_fin_promo</th>
+                <th>Quantite_retourne</th>
+                <th>Date_retour</th>
+                <th>Statut</th>
+                <th>Raison_retour</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for produit in produits %}
+            <tr>
+                <td>{{ produit.id }}</td>
+                <td>{{ produit.quantite }}</td>
+                <td>{{ produit.prixVente }}</td>
+                <td>{{ produit.quantiteVendues }}</td>
+                <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
+                <td>{{ produit.pourcentagePromo }}</td>
+                <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ produit.quantiteRetourne }}</td>
+                <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
+                <td>{{ produit.statut }}</td>
+                <td>{{ produit.raisonRetour }}</td>
+                <td>
+                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}">show</a>
+                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_produit_new') }}">Create new</a>
+{% endblock %}

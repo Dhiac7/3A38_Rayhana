@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau dechet  {% endblock %}
+
+{% block body %}
+    <div class="col-tact-stye-one col-xl-7 col-lg-7">
+        <div class="contact-form-style-one mb-md-50">
+            <h5 class="sub-title text-success">Nouveau dechet</h5>
+            <h2 class="heading">Créer un nouveau dechet</h2>
+
+            <!-- Formulaire Symfony avec Bootstrap Validation -->
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+                <!-- type de  dechet -->
+
+
+
+
+<div div class="form-group">
+    {{ form_label(form.type) }}
+    {{ form_widget(form.type, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
+    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le type.</div>
+    {{ form_errors(form.type) }}
+</div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            {{ form_label(form.quantite) }}
+                            {{ form_widget(form.quantite, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+                            <div class="invalid-feedback">quantite invalide</div>
+                            {{ form_errors(form.quantite) }}
+                        </div>
+                    </div>
+
+<div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.dateProduction) }}
+            {{ form_widget(form.dateProduction, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+            <div class="invalid-feedback">La date de Production est obligatoire.</div>
+            {{ form_errors(form.dateProduction) }}
+        </div>
+    </div>
+</div> 
+                
+<div  class="form-group">
+    {{ form_label(form.statut) }}
+    {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
+    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>
+    {{ form_errors(form.statut) }}
+</div>
+
+
+<div class="col-lg-6">
+        <div class="form-group">
+            {{ form_label(form.date_expiration) }}
+            {{ form_widget(form.date_expiration, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
+            <div class="invalid-feedback">La date d'expiration est obligatoire.</div>
+            {{ form_errors(form.date_expiration) }}
+        </div>
+    </div>
+</div>
+
+            <!-- Bouton de soumission -->
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Ajouter le dechet
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+
+            <!-- Lien de retour -->
+            <div class="text-center mt-3">
+                <a href="{{ path('app_dechet_index') }}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Bootstrap pour la validation -->
+    <script>
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                var forms = document.getElementsByClassName('needs-validation');
+                Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+
+{% endblock %}

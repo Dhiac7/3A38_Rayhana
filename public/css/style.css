@@ -505,7 +505,7 @@ p {
 
 .text-gradient {
 	background: var(--text-gradient);
-	-webkit-background-clip: text;
+	background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	font-weight: 600;
@@ -806,7 +806,7 @@ p {
 .bg-gradient .sub-title,
 .bg-theme .sub-title {
 	color: var(--white);
-	-webkit-background-clip: inherit;
+	background-clip: inherit;
 	background-clip: inherit;
 	-webkit-text-fill-color: inherit;
 	background: transparent;
@@ -898,7 +898,7 @@ p {
 	color: var(--color-primary);
 	font-weight: 600;
 	background: var(--bg-gradient-reverse);
-	-webkit-background-clip: text;
+	background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	display: inline-block;
@@ -915,7 +915,7 @@ p {
 .bg-gradient .sub-heading {
 	color: var(--white);
 	background: transparent;
-	-webkit-background-clip: inherit;
+	background-clip: inherit;
 	background-clip: inherit;
 	-webkit-text-fill-color: inherit;
 	opacity: 0.9;
@@ -1594,7 +1594,7 @@ p {
 }
 
 .btn:focus, .btn.active {
-	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-ms-border-radius: 5px;
 	-o-border-radius: 5px;
@@ -2321,7 +2321,7 @@ button i {
 .text-shine {
 	background: linear-gradient(to right, var(--dark) 0, var(--white) 10%, var(--color-primary) 20%);
 	background-position: 0;
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	-webkit-animation: shine 3s infinite linear;
 	animation: shine 3s infinite linear;
@@ -4996,7 +4996,7 @@ ul.list-standard {
 }
 
 .mask-text {
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-size: cover;
 	background-position: center;
@@ -5925,8 +5925,8 @@ ul.list-item li::after {
 
 .farmer-style-one-item .info {
 	display: inline-block;
-	float: right;
-	margin-top: 24px;
+	float: none;
+		margin-top: 24px;
 }
 
 .farmer-style-one-item .info h4 {
@@ -6385,7 +6385,7 @@ ul.list-item li::after {
 .thumb-style-two h2 strong {
 	display: inline-block;
 	color: var(--color-secondary);
-	-webkit-background-clip: text;
+	background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-size: cover;
 	background-position: center;
@@ -9165,4 +9165,59 @@ footer {
 		height: 7em;
 		width: 7em;
 	}
+}
+
+/* Centrer le formulaire */
+.contact-form-style-one {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* Espacement et bordures améliorées */
+.form-control {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Styles pour les erreurs */
+.alert-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Style du bouton principal */
+.btn-primary {
+    background-color: #ffcc4d;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #ffaa00;
+}
+
+/* Style du bouton retour */
+.btn-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+/* Style du switch toggle */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

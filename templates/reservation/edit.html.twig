@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un atelier{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Modifier un atelier</h1>
+
+        <div class="card shadow p-4">
+            {{ form_start(form) }}
+
+  <div class="mb-3">
+                {{ form_label(form.dateReservation) }}
+                {{ form_widget(form.dateReservation, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
+                {{ form_errors(form.dateReservation) }}
+            </div>
+
+ <div class="mb-3">
+                {{ form_label(form.modePaiement) }}
+                {{ form_widget(form.modePaiement, { 'class': 'form-select', 'required': 'required' }) }}
+                {{ form_errors(form.modePaiement) }}
+            </div>
+
+<div class="mb-3">
+                {{ form_label(form.statut) }}
+                {{ form_widget(form.statut, { 'class': 'form-select', 'required': 'required' }) }}
+                {{ form_errors(form.statut) }}
+            </div>
+  
+
+            <button class="btn btn-success">Mettre à jour</button>
+            <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">Annuler</a>
+
+            {{ form_end(form) }}
+        </div>
+
+        <div class="mt-3">
+            {{ include('reservation/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AtelierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert ;
@@ -14,31 +16,69 @@ class Atelier
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: "Le nom de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Length(
+        max: 15, 
+        maxMessage: "Le nom de l'atelier ne peut pas dépasser 30 caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s]+$/",
+        message: "Le nom de l'atelier doit contenir uniquement des lettres alphabétiques."
+    )]//controle de saisie 
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]//controle de saisie 
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_atelier = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La capacite maximal de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Range(
+        min: 1, 
+        max: 500, 
+        notInRangeMessage: "La capacité doit être comprise entre {{ min }} et {{ max }}."
+    )]//controle de saisie 
     private ?int $capacite_max = null;
 
     #[ORM\Column]
     private ?float $prix = null;
 
     #[ORM\Column]
-    private ?int $idUser = null;
+    private ?int $idUser = 0;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(Choice: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
+
+    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(Choice: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
-    private ?string $Role = null;
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")] //controle de saisie 
+
+    #[Assert\Choice(choices: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
+    private ?string $Role = 'client';
+
+    /**
+     * @var Collection<int, User>
+     */
+
+
+
+
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'ateliers')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -111,7 +151,7 @@ class Atelier
     }
 
     public function setIdUser(int $idUser): static
-    {
+    { $idUser=0;
         $this->idUser = $idUser;
 
         return $this;
@@ -143,5 +183,29 @@ class Atelier
                 $this->Role = $Role;
                 return $this;
 
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        $this->users->removeElement($user);
+
+        return $this;
     }
 }
