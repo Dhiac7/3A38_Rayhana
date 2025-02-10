@@ -131,9 +131,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Atelier::class, mappedBy: 'users')]
     private Collection $ateliers;
 
+    /**
+     * @var Collection<int, Vente>
+     */
+    #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'user')]
+    private Collection $ventes;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
+        $this->ventes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -343,5 +350,35 @@ public function getPassword(): ?string
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, Vente>
+     */
+    public function getVentes(): Collection
+    {
+        return $this->ventes;
+    }
+
+    public function addVente(Vente $vente): static
+    {
+        if (!$this->ventes->contains($vente)) {
+            $this->ventes->add($vente);
+            $vente->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVente(Vente $vente): static
+    {
+        if ($this->ventes->removeElement($vente)) {
+            // set the owning side to null (unless already changed)
+            if ($vente->getUser() === $this) {
+                $vente->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
