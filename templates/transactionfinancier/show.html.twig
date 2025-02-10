@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transactionfinancier{% endblock %}
+
+{% block body %}
+    <h1>Transactionfinancier</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ transactionfinancier.id }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ transactionfinancier.montant }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ transactionfinancier.description }}</td>
+            </tr>
+            <tr>
+                <th>Datetransaction</th>
+                <td>{{ transactionfinancier.datetransaction ? transactionfinancier.datetransaction|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ transactionfinancier.type }}</td>
+            </tr>
+            <tr>
+                <th>Nbrheure</th>
+                <td>{{ transactionfinancier.nbrheure }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_transactionfinancier_index') }}">back to list</a>
+
+    <a href="{{ path('app_transactionfinancier_edit', {'id': transactionfinancier.id}) }}">edit</a>
+
+    {{ include('transactionfinancier/_delete_form.html.twig') }}
+{% endblock %}
