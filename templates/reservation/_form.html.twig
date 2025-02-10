@@ -1,35 +1,4 @@
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
- <table>
-    <tr>
-        <td>{{ form_label(form.atelierid, "atelier id") }}</td>
-        <td>{{ form_widget(form.atelierid) }}</td>
-        <td>{{ form_errors(form.atelierid) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.dateReservation, "date Reservation") }}</td>
-        <td>{{ form_widget(form.dateReservation) }}</td>
-        <td>{{ form_errors(form.dateReservation) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.modePaiement, "mode de Paiement") }}</td>
-        <td>{{ form_widget(form.modePaiement) }}</td>
-        <td>{{ form_errors(form.modePaiement) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.statut, "statut") }}</td>
-        <td>{{ form_widget(form.statut) }}</td>
-        <td>{{ form_errors(form.statut) }}</td>
-    </tr>
-    
-   
-</table>
-
-{{ form_widget(form.save) }}
-
-   {{ form_end(form) }}
-
- {% for flash_message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

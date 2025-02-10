@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transactionfinancier index{% endblock %}
+
+{% block body %}
+    <h1>Transactionfinancier index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Montant</th>
+                <th>Description</th>
+                <th>Datetransaction</th>
+                <th>Type</th>
+                <th>Nbrheure</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transactionfinancier in transactionfinanciers %}
+            <tr>
+                <td>{{ transactionfinancier.id }}</td>
+                <td>{{ transactionfinancier.montant }}</td>
+                <td>{{ transactionfinancier.description }}</td>
+                <td>{{ transactionfinancier.datetransaction ? transactionfinancier.datetransaction|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ transactionfinancier.type }}</td>
+                <td>{{ transactionfinancier.nbrheure }}</td>
+                <td>
+                    <a href="{{ path('app_transactionfinancier_show', {'id': transactionfinancier.id}) }}">show</a>
+                    <a href="{{ path('app_transactionfinancier_edit', {'id': transactionfinancier.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

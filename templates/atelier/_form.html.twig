@@ -1,40 +1,31 @@
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
- <table>
-    <tr>
-        <td>{{ form_label(form.nom, "Nom") }}</td>
-        <td>{{ form_widget(form.nom) }}</td>
-        <td>{{ form_errors(form.nom) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.description, "Description") }}</td>
-        <td>{{ form_widget(form.description) }}</td>
-        <td>{{ form_errors(form.description) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.date_atelier, "Date atelier") }}</td>
-        <td>{{ form_widget(form.date_atelier) }}</td>
-        <td>{{ form_errors(form.date_atelier) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.capacite_max, "Capacité max") }}</td>
-        <td>{{ form_widget(form.capacite_max) }}</td>
-        <td>{{ form_errors(form.capacite_max) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.prix, "Prix") }}</td>
-        <td>{{ form_widget(form.prix) }}</td>
-        <td>{{ form_errors(form.prix) }}</td>
-    </tr>
-    <tr>
-        <td>{{ form_label(form.statut, "Statut") }}</td>
-        <td>{{ form_widget(form.statut) }}</td>
-        <td>{{ form_errors(form.statut) }}</td>
-    </tr>
-</table>
-    {{ form_end(form) }}
+{{ form_start(form,{'attr': {'novalidate': 'novalidate'}}) }}
+<table>
+<tr>
+    <td>{{form_label(form.nom,"nom")}}</td>
+    <td>{{form_widget(form.nom)}}</td>
+    <td>{{form_errors(form.nom)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.description,"description")}}</td>
+    <td>{{form_widget(form.description)}}</td>
+    <td>{{form_errors(form.description)}}</td>
+</tr>
 
- {% for flash_message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ flash_message }}
-        </div>
-    {% endfor %}
+<tr>
+    <td>{{form_label(form.dateAtelier,"dateAtelier")}}</td>
+    <td>{{form_widget(form.dateAtelier)}}</td>
+    <td>{{form_errors(form.dateAtelier)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.capaciteMax,"capaciteMax")}}</td>
+    <td>{{form_widget(form.capaciteMax)}}</td>
+    <td>{{form_errors(form.capaciteMax)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.prix,"prix")}}</td>
+    <td>{{form_widget(form.prix)}}</td>
+    <td>{{form_errors(form.prix)}}</td>
+</tr>
+</table>
+    {{form_widget(form.save)}}
+{{form_end(form)}}

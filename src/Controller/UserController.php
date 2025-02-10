@@ -47,18 +47,9 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         if (!$user || !password_verify($password, $user->getPassword())) {
             $error = 'Invalid email or password';
         } else {
-            $session->set('user', $user); 
+            $session->set('user', $user);
 
-            $role = $user->getRole();
-
-            return match ($role) {
-                'client' => $this->redirectToRoute('client_interface'),
-                'fermier' => $this->redirectToRoute('fermier_interface'),
-                'agriculteur' => $this->redirectToRoute('agriculteur_interface'),
-                'inspecteur' => $this->redirectToRoute('inspecteur_interface'),
-                'livreur' => $this->redirectToRoute('livreur_interface'),
-                default => $this->redirectToRoute('app_user_index'),
-            };
+            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
         }
     }
 

@@ -5,14 +5,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert ;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Query\Limit;
-use Doctrine\DBAL\Types\Types;
+use  Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Email deja utilisé.')]
+#[UniqueEntity(fields: ['tel'], message: 'Numéro deja utilisé.')]
+#[UniqueEntity(fields: ['cin'], message: 'Cin deja utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -56,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Url(message: "L'URL de la photo n'est pas valide.")]
     private ?string $photo = null;
 
+    // Define roles as constants
+    public const ROLE_CLIENT = 'client';
+    public const ROLE_FERMIER = 'fermier';
+    public const ROLE_AGRICULTEUR = 'agriculteur';
+    public const ROLE_INSPECTEUR = 'inspecteur';
+    public const ROLE_LIVREUR = 'livreur';
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank(message: "Le rôle est obligatoire.")]
     #[Assert\Choice(
@@ -122,9 +131,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Atelier::class, mappedBy: 'users')]
     private Collection $ateliers;
 
+    /**
+     * @var Collection<int, Vente>
+     */
+    #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'user')]
+    private Collection $ventes;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
+        $this->ventes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -334,5 +350,35 @@ public function getPassword(): ?string
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return Collection<int, Vente>
+     */
+    public function getVentes(): Collection
+    {
+        return $this->ventes;
+    }
+
+    public function addVente(Vente $vente): static
+    {
+        if (!$this->ventes->contains($vente)) {
+            $this->ventes->add($vente);
+            $vente->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVente(Vente $vente): static
+    {
+        if ($this->ventes->removeElement($vente)) {
+            // set the owning side to null (unless already changed)
+            if ($vente->getUser() === $this) {
+                $vente->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

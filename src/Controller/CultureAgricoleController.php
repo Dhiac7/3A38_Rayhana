@@ -10,15 +10,32 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/culture/agricole')]
 final class CultureAgricoleController extends AbstractController
 {
     #[Route(name: 'app_culture_agricole_index', methods: ['GET'])]
-    public function index(CultureAgricoleRepository $cultureAgricoleRepository): Response
+    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository): Response
     {
+        $limit = 2; // Nombre d'éléments par page
+        $page = $request->query->getInt('page', 1); // Page actuelle (par défaut la page 1)
+        $offset = ($page - 1) * $limit; // Calculer l'offset
+
+        $totalCultures = $cultureAgricoleRepository->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    
+
+        // Calculer le nombre total de pages
+        $totalPages = ceil($totalCultures / $limit);
+
         return $this->render('culture_agricole/index.html.twig', [
-            'culture_agricoles' => $cultureAgricoleRepository->findAll(),
+            'cultures' => $cultureAgricoleRepository->findAll(),
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
         ]);
     }
 

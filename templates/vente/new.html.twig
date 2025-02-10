@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Vente{% endblock %}
+
+
+
+{% block body %}
+  <!-- Start Contact Us 
+    ============================================= -->
+    <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
+        <div class="sahpe-right-bottom">
+            <img src="assets/img/shape/16.png" alt="Image Not Found">
+        </div>
+        <div class="container">
+            <div class="row align-center">
+                
+                <div class="col-tact-stye-one col-xl-6 col-lg-7">
+    <div class="contact-form-style-one mb-md-50">
+        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
+        <h5 class="sub-title">Joignez Rayhana?</h5>
+                        <h2 class="heading">Vente</h2>
+
+                        {# Start Symfony Form #}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
+                            {% for error in form.vars.errors %}
+                                <div class="alert alert-danger">{{ error.message }}</div>
+                            {% endfor %}
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.prix)}}
+                                        {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'prix'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+    {{ form_label(form.methodepayement) }}
+    {{ form_widget(form.methodepayement, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.methodepayement) }}
+</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.date) }}
+                                        {{ form_widget(form.date, {'attr': {'class': 'form-control', 'placeholder': 'date'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="row">
+                        
+                        
+                          
+                        
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+
+                        {{ form_end(form) }}
+                        {# End Symfony Form #}
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+{% endblock %}

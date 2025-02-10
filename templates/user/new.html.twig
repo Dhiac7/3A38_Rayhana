@@ -31,6 +31,7 @@
 {% endblock %}
 
 {% block body %}
+<center>
   <!-- Start Contact Us 
     ============================================= -->
     <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
@@ -39,7 +40,7 @@
         </div>
         <div class="container">
             <div class="row align-center">
-                
+               <div class="bodycenter"> 
                 <div class="col-tact-stye-one col-xl-6 col-lg-7">
     <div class="contact-form-style-one mb-md-50">
         <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
@@ -51,68 +52,68 @@
                             {% for error in form.vars.errors %}
                                 <div class="alert alert-danger">{{ error.message }}</div>
                             {% endfor %}
-
+                            
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
+                                        {{ form_errors(form.nom)}}
                                         {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
-                                        {{ form_errors(form.nom) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
                                         {{ form_errors(form.prenom) }}
+                                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'placeholder': 'CIN'}}) }}
                                         {{ form_errors(form.cin) }}
+                                        {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'placeholder': 'CIN'}}) }}
                                     </div>
                                 </div>
                             </div>
                            <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group">
-                                {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Enter photo URL'}}) }}
                                 {{ form_errors(form.photo) }}
+                                {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Enter photo URL'}}) }}
                             </div>
                         </div>
                         </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.role, {'attr': {'class': 'form-control', 'placeholder': 'Rôle'}}) }}
                                         {{ form_errors(form.role) }}
+                                        {{ form_widget(form.role, {'attr': {'class': 'form-control', 'placeholder': 'Rôle'}}) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
                                         {{ form_errors(form.mdp) }}
+                                        {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
                                         {{ form_errors(form.email) }}
+                                        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_widget(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
                                         {{ form_errors(form.tel) }}
+                                        {{ form_widget(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
                                     </div>
                                 </div>
                             </div>
@@ -127,9 +128,11 @@
                         {# End Symfony Form #}
                     </div>
                 </div>
+            </div>
 
                 
-            </div>
+         </div>
         </div>
     </div>
+    </center>
 {% endblock %}
