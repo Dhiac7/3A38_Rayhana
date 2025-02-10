@@ -1,0 +1,64 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Nouvelle Parcelle{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h5 class="text-lg text-green-600 font-semibold">Nouvelle Parcelle</h5>
+        <h2 class="text-2xl font-bold mb-4">Créer une nouvelle parcelle</h2>
+
+        <!-- Formulaire Symfony avec Tailwind CSS -->
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+            <!-- Nom de la parcelle -->
+            <div>
+                {{ form_label(form.nom, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.nom, { 'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'} }) }}
+                {{ form_errors(form.nom, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+            </div>
+
+            <!-- Latitude & Longitude -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    {{ form_label(form.latitude, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.latitude, { 'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'} }) }}
+                    {{ form_errors(form.latitude, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                </div>
+                <div>
+                    {{ form_label(form.longitude, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(form.longitude, { 'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'} }) }}
+                    {{ form_errors(form.longitude, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+                </div>
+            </div>
+
+            <!-- Superficie -->
+            <div>
+                {{ form_label(form.superficie, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.superficie, { 'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'} }) }}
+                {{ form_errors(form.superficie, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+            </div>
+
+            <!-- Disponibilité de l'irrigation -->
+            <div>
+                {{ form_label(form.irrigationDisponible, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.irrigationDisponible, { 'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500'} }) }}
+                {{ form_errors(form.irrigationDisponible, {'attr': {'class': 'text-red-500 text-sm'}}) }}
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="flex justify-center mt-4">
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700 focus:outline-none">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+
+        {{ form_end(form) }}
+
+        <!-- Lien de retour -->
+        <div class="flex justify-center mt-4">
+            <a href="{{ path('app_parcelle_index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-gray-600 focus:outline-none">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

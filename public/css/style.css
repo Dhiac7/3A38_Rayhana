@@ -162,6 +162,13 @@ tbody, td, tfoot, th, thead, tr {
 	height: 100%;
 }
 
+.bodycenter {
+	margin-left: 50%;
+	margin-right: 50%;
+
+}
+
+
 img {
 	border: none;
 	outline: none;
