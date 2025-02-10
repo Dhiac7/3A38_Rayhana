@@ -38,7 +38,8 @@ final class AtelierController extends AbstractController
         $atelier = new Atelier();
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
-    
+        dump($form->getData()->getDateAtelier());
+
         if ($form->isSubmitted() && $form->isValid()) {
             // Vérifie si un atelier existe déjà à la même date
             $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
@@ -79,6 +80,7 @@ final class AtelierController extends AbstractController
     {
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
+        dump($form->getData()->getDateAtelier());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
