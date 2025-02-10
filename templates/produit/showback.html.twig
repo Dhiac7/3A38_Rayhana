@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Produit{% endblock %}
 
@@ -63,7 +63,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+    <a href="{{ path('app_produitback_index') }}">back to list</a>
 
+    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
 
+    {{ include('produit/_delete_form.html.twig') }}
 {% endblock %}

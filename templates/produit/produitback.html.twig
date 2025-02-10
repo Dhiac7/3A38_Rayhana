@@ -1,9 +1,9 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Produit{% endblock %}
 
 {% block body %}
-    <h1>Produit </h1>
+    <h1>Produit index</h1>
 
     <table class="table">
         <thead>
@@ -13,6 +13,7 @@
                 <th>Prix_vente</th>
                 <th>EnPromotion</th>
                 <th>Pourcentage_promo</th>
+              
                 <th>Date_debut_promo</th>
                 <th>Date_fin_promo</th>
                 <th>Statut</th>
@@ -42,7 +43,8 @@
                
                 <td>{{ produit.raisonRetour }}</td>
                 <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}">show</a>
+                    <a href="{{ path('app_produitback_show', {'id': produit.id}) }}">show</a>
+                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -53,4 +55,5 @@
         </tbody>
     </table>
 
+    <a href="{{ path('app_produit_new') }}">Create new</a>
 {% endblock %}
