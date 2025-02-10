@@ -28,6 +28,8 @@ final class DechetController extends AbstractController
         return $this->render('dechet/index.html.twig', [
             'pagination' => $pagination,
         ]);
+
+        
         /*return $this->render('dechet/index.html.twig', [
             'ateliers' => $atelierRepository->findAll(),
         ]);*/
