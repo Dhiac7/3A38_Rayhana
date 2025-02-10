@@ -34,6 +34,9 @@ private ?\DateTimeInterface $date = null;
 
     private ?string $methodepayement = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ventes')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +74,18 @@ private ?\DateTimeInterface $date = null;
     public function setMethodepayement(string $methodepayement): static
     {
         $this->methodepayement = $methodepayement;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
