@@ -1,74 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau dechet  {% endblock %}
+{% block title %}Nouveau dechet {% endblock %}
 
 {% block body %}
-    <div class="col-tact-stye-one col-xl-7 col-lg-7">
-        <div class="contact-form-style-one mb-md-50">
-            <h5 class="sub-title text-success">Nouveau dechet</h5>
-            <h2 class="heading">Créer un nouveau dechet</h2>
+  <!-- Start Contact Us 
+    ============================================= -->
+    <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
+        <div class="sahpe-right-bottom">
+            <img src="assets/img/shape/16.png" alt="Image Not Found">
+        </div>
+        <center>
+        <div class="container">
+            <div class="row align-center">
+            <div class="bodycenter"> 
 
-            <!-- Formulaire Symfony avec Bootstrap Validation -->
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                <div class="col-tact-stye-one col-xl-6 col-lg-7">
+                <div class="contact-form-style-one mb-md-50">
+                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
+                 <h5 class="sub-title">Joignez Rayhana?</h5>
+                        <h2 class="heading">Ajouter dechet</h2>
 
-                <!-- type de  dechet -->
+                        {# Start Symfony Form #}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
+                            {% for error in form.vars.errors %}
+                                <div class="alert alert-danger">{{ error.message }}</div>
+                            {% endfor %}
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
+                                        {{ form_errors(form.quantite)}}
+                                        {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'placeholder': 'quantite'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
+                                        {{ form_errors(form.dateProduction) }}
+                                        {{ form_widget(form.dateProduction, {'attr': {'class': 'form-control', 'placeholder': 'dateProduction'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
+                                        {{ form_errors(form.statut) }}
+                                        {{ form_widget(form.statut, {'attr': {'class': 'form-select', 'placeholder': 'statut'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
 
-<div div class="form-group">
-    {{ form_label(form.type) }}
-    {{ form_widget(form.type, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
-    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le type.</div>
-    {{ form_errors(form.type) }}
-</div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            {{ form_label(form.quantite) }}
-                            {{ form_widget(form.quantite, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-                            <div class="invalid-feedback">quantite invalide</div>
-                            {{ form_errors(form.quantite) }}
+                                {{ form_errors(form.date_expiration) }}
+                                {{ form_widget(form.date_expiration, {'attr': {'class': 'form-control', 'placeholder': 'date_expiration'}}) }}
+                            </div>
                         </div>
-                    </div>
+                        </div>
+                        
+                                 <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
-<div class="col-lg-6">
-        <div class="form-group">
-            {{ form_label(form.dateProduction) }}
-            {{ form_widget(form.dateProduction, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-            <div class="invalid-feedback">La date de Production est obligatoire.</div>
-            {{ form_errors(form.dateProduction) }}
-        </div>
-    </div>
-</div> 
-                
-<div  class="form-group">
-    {{ form_label(form.statut) }}
-    {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
-    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>
-    {{ form_errors(form.statut) }}
-</div>
-
-
-<div class="col-lg-6">
-        <div class="form-group">
-            {{ form_label(form.date_expiration) }}
-            {{ form_widget(form.date_expiration, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-            <div class="invalid-feedback">La date d'expiration est obligatoire.</div>
-            {{ form_errors(form.date_expiration) }}
-        </div>
-    </div>
-</div>
-
-            <!-- Bouton de soumission -->
-                <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Ajouter le dechet
-                    </button>
-                </div>
+                                        {{ form_errors(form.type) }}
+                                        {{ form_widget(form.type, {'attr': {'class': 'form-select', 'placeholder': 'type'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+              
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
 
             {{ form_end(form) }}
-
+</div>
             <!-- Lien de retour -->
             <div class="text-center mt-3">
                 <a href="{{ path('app_dechet_index') }}" class="btn btn-secondary">
@@ -77,7 +92,9 @@
             </div>
         </div>
     </div>
+            </center>
 
+</div>
     <!-- Script Bootstrap pour la validation -->
     <script>
         (function () {

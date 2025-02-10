@@ -13,19 +13,10 @@ class ReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('atelierid')
-            ->add('idUser')
+           // ->add('atelierid')
+            //->add('idUser')
             ->add('dateReservation', null, [
                 'widget' => 'single_text',
-            ])
-            ->add('modePaiement', ChoiceType::class, [   
-                'choices' => [
-                    'enligne' => 'enligne',
-                    'carte' => 'carte',
-                    'espece' => 'espece',
-                ],
-                'placeholder' => 'Sélectionnez un mode de Paiement',
-                'required' => true,
             ])
             ->add('statut', ChoiceType::class, [   
                 'choices' => [
@@ -36,8 +27,18 @@ class ReservationType extends AbstractType
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
             ])
-            ->add('nbrPlace')
-            ->add('Role', ChoiceType::class, [
+            ->add('modePaiement', ChoiceType::class, [   
+                'choices' => [
+                    'enligne' => 'enligne',
+                    'carte' => 'carte',
+                    'espece' => 'espece',
+                ],
+                'placeholder' => 'Sélectionnez un mode de Paiement',
+                'required' => true,
+            ])
+           
+           // ->add('nbrPlace')
+           /* ->add('Role', ChoiceType::class, [
                 'choices' => [
                     'Agriculteur' => 'agriculteur',
                     'Client' => 'client',
@@ -45,8 +46,8 @@ class ReservationType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez un rôle',
                 'required' => true,
-            ]);
-           // ->add('save', SubmitType::class, ['label' => 'Enregistrer']);
+            ])*/
+            ->add('save', SubmitType::class, ['label' => 'Confirmer']);
 
     }
 

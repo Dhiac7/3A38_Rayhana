@@ -31,7 +31,7 @@ class AtelierType extends AbstractType
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
             ])
-            //->add('save', SubmitType::class, ['label' => 'Ajouter un atelier']);
+            ->add('save', SubmitType::class, ['label' => 'Confirmer']);
 
            /* ->add('Role', ChoiceType::class, [
                 'choices' => [
