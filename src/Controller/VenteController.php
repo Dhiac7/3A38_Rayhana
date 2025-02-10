@@ -17,7 +17,7 @@ final class VenteController extends AbstractController{
     public function index(VenteRepository $venteRepository): Response
     {
         return $this->render('vente/index.html.twig', [
-            'ventes' => $venteRepository->findAll(),
+            'vente' => $venteRepository->findAll(),
         ]);
     }
 

@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for vente in ventes %}
+        {% for vente in vente %}
             <tr>
                 <td>{{ vente.id }}</td>
                 <td>{{ vente.date ? vente.date|date('Y-m-d H:i:s') : '' }}</td>
