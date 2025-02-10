@@ -8,6 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -15,8 +17,15 @@ class ReservationType extends AbstractType
         $builder
            // ->add('atelierid')
             //->add('idUser')
-            ->add('dateReservation', null, [
-                'widget' => 'single_text',
+
+            ->add('dateReservation', DateTimeType::class, [
+                'widget' => 'single_text', // Utilisation d'un champ HTML5 pour une meilleure compatibilité
+                'html5' => true,          // Active le support des navigateurs modernes
+                'required' => true,       // Rend le champ obligatoire
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Sélectionnez une date'
+                ],
             ])
             ->add('statut', ChoiceType::class, [   
                 'choices' => [

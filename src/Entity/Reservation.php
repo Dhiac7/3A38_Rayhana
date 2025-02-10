@@ -20,8 +20,11 @@ class Reservation
     #[ORM\Column]
     private ?int $idUser = null;
    
-    #[Assert\NotBlank(message: "La date de reservation ne peut pas être vide.")]//controle de saisie 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être au bon format.")]
+    
+    
+        #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateReservation = null;
 
     #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
