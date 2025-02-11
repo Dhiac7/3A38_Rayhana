@@ -22,7 +22,7 @@ final class AtelierController extends AbstractController
         $pagination = $paginator->paginate(
             $query, // Donneili bch namlou pagination
             $request->query->getInt('page', 1), // Num page 
-            4 // nbr element par page 
+            6 // nbr element par page 
         );
         return $this->render('atelier/index.html.twig', [
             'pagination' => $pagination,

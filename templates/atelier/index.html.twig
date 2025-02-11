@@ -3,65 +3,71 @@
 {% block title %}Atelier index{% endblock %}
 
 {% block body %}
-    <h1>Atelier index</h1>
+   <!-- Start Blog 
+    ============================================= -->
 
-    <table id="atelierTable" class="table table-striped table-bordered">
-    <center>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Date_atelier</th>
-                <th>Capacite_max</th>
-                <th>Prix</th>
-                {#<th>IdUser</th>#}
-                <th>Statut</th>
-               {# <th>Role</th>#}
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for atelier in pagination %}
-            <tr>
-                <td>{{ atelier.id }}</td>
-                <td>{{ atelier.nom }}</td>
-                <td>{{ atelier.description }}</td>
-                <td>{{ atelier.dateAtelier ? atelier.dateAtelier|date('Y-m-d') : '' }}</td>
-                <td>{{ atelier.capaciteMax }}</td>
-                <td>{{ atelier.prix }}</td>
-               {# <td>{{ atelier.idUser }}</td>#}
-                <td>{{ atelier.statut }}</td>
-                 {#<td>{{ atelier.Role }}</td>#}
-                <td>
-                    <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}">Afficher</a>
-                    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}">Modifier</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">aucun enregistrement trouvé</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-        </center>
-    </table>
+    <div class="blog-area blog-grid default-padding">
+        <div class="container">
+            <div class="blog-item-box">
+                <div class="row">
+                    <!-- Single Item -->
+                    {% for atelier in pagination %}
+                    <div class="col-xl-4 col-md-6 single-item">
+                        <div class="blog-style-one">
+                        
+                            <div class="thumb">
+                                <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}" >
+                                    <img src="{{ asset('img/blog/1.jpg') }}" alt="Image Not Found">
+                                </a>
+                            </div>
+                            
+                            <div >
+                                <div class="meta-title">
+                                 <span class="post-date">
+                                 Date de l'atelier : 
+    {{ atelier.dateAtelier ? atelier.dateAtelier|date('d M Y') : 'Date non définie' }}
+</span>
+                                </div>
+                               <h5>
+    {{ atelier.nom }}
+</h5>
+                            </div>
+                            <div class="info">
+                                <div class="meta">
+                                    <ul>
+                                        <li>
+                                            <p>Description : {{ atelier.description }}</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single Item -->
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Blog -->
 
     <div class="d-flex justify-content-center">
-    {{ knp_pagination_render(pagination) }}
-</div>
+        {{ knp_pagination_render(pagination) }}
+    </div>
     <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
-  <script>
-//tri 
+
+    <script>
+        // Tri 
         $(document).ready(function () {
             $('#atelierTable').DataTable({
-                "ordering": true,  // tri 3al colonne
-                "paging": false,    // nactiviw l pagination
-                "searching": true, // nactiviw l recherche
-                "pageLength": 4,   // nbr element par page
-                "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
+                "ordering": true,         // Activer le tri par colonne
+                "paging": false,          // Désactiver la pagination
+                "searching": true,        // Activer la recherche
+                "pageLength": 6,          // Nombre d'éléments par page
+                "lengthChange": false,    // Désactiver le menu de modification du nombre d'éléments par page
                 "language": {
-                     "url": "{{ asset('js/French.json') }}"
+                    "url": "{{ asset('js/French.json') }}"
                 }
             });
         });
