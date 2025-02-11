@@ -1,13 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit reservation{% endblock %}
+{% block title %}Modifier reservation{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+<div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    {#  classes Flexbox (d-flex justify-content-center align-items-center) pour centrer et min-height: 100vh pour occuper toute la hauteur #}
+    <div class="container">
+        <div class="row align-center justify-content-center">
+            {#  justify-content-center pour centrer horizontalement #}
+            
+            <div class="col-lg-6">
+                <div class="contact-form-style-one mb-md-50 text-center">
+                    {# Ligne modifiée : Centrer le texte avec text-center #}
+                    <h1 class="mb-4">Modifier reservation</h1>
+                    {#  mb-4 pour un espacement sous le titre #}
+                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
 
-    {{ include('reservation/_form.html.twig', {'button_label': 'Modifier'}) }}
+                    {{ include('reservation/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a href="{{ path('app_reservation_index') }}">Revenir à la list</a>
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left"></i> Revenir à la liste
+                        </a>
+                    </div>
 
-    {{ include('reservation/_delete_form.html.twig') }}
+                    {{ include('reservation/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

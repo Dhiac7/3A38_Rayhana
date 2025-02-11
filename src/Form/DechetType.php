@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class DechetType extends AbstractType
 {
@@ -26,7 +27,14 @@ class DechetType extends AbstractType
             'placeholder' => 'Sélectionnez un type',
             'required' => true,
         ])
-        ->add('quantite')
+    ->add('quantite', IntegerType::class, [
+        'required' => true,
+        'attr' => [
+            'class' => 'form-control',
+            'placeholder' => 'Entrez la quantité',
+        ],
+    ])
+
 
         //controle de saisie sur la date 
         ->add('dateProduction', DateType::class, [

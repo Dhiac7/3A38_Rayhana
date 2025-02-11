@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class AtelierType extends AbstractType
 {
@@ -16,8 +17,14 @@ class AtelierType extends AbstractType
         $builder
             ->add('nom')
             ->add('description')
-            ->add('date_atelier', null, [
-                'widget' => 'single_text',
+            ->add('date_atelier', DateTimeType::class, [
+                'widget' => 'single_text', // Utilisation d'un champ HTML5 pour une meilleure compatibilité
+                'html5' => true,          // Active le support des navigateurs modernes
+                'required' => true,       // Rend le champ obligatoire
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Sélectionnez une date'
+                ],
             ])
             ->add('capacite_max')
             ->add('prix')
