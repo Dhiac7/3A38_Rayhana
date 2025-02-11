@@ -3,67 +3,145 @@
 {% block title %}Produit{% endblock %}
 
 {% block body %}
-    <h1>Produit</h1>
+    <div class="product-details-container">
+        <h1>Produit</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Quantite</th>
-                <td>{{ produit.quantite }}</td>
-            </tr>
-            <tr>
-                <th>Prix_vente</th>
-                <td>{{ produit.prixVente }}</td>
-            </tr>
-           
-            <tr>
-                <th>EnPromotion</th>
-                <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Pour_promo</th>
-                <td>{{ produit.pourcentagePromo }}</td>
-            </tr>
-         
-            <tr>
-                <th>Date_debut_promo</th>
-                <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_fin_promo</th>
-                <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
+        <table class="product-table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ produit.id }}</td>
+                </tr>
+                <tr>
+                    <th>Nom de l'article</th>
+                    <td>{{ produit.nom }}</td>
+                </tr>
+                <tr>
+                    <th>Quantite</th>
+                    <td>{{ produit.quantite }}</td>
+                </tr>
+                <tr>
+                    <th>Prix de vente</th>
+                    <td>{{ produit.prixVente }}</td>
+                </tr>
+                <tr>
+                    <th>En Promotion</th>
+                    <td>{{ produit.enPromotion ? 'Oui' : 'Non' }}</td>
+                </tr>
+                <tr>
+                    <th>Pourcentage Promotion</th>
+                    <td>{{ produit.pourcentagePromo }}</td>
+                </tr>
+                <tr>
+                    <th>Date début promo</th>
+                    <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Date fin promo</th>
+                    <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Statut</th>
+                    <td>{{ produit.statut }}</td>
+                </tr>
+                <tr>
+                  
+                </tr>
+            </tbody>
+        </table>
 
-             <tr>
-                <th>Statut</th>
-                <td>{{ produit.statut }}</td>
-            </tr>
+        <a href="{{ path('app_produit_index') }}" class="back-to-list">Retour à la liste</a>
+    </div>
+{% endblock %}
 
-             <tr>
-                <th>Quantite_vendues</th>
-                <td>{{ produit.quantiteVendues }}</td>
-            </tr>
-            <tr>
-                <th>Quantite_retourne</th>
-                <td>{{ produit.quantiteRetourne }}</td>
-            </tr>
-            <tr>
-                <th>Date_retour</th>
-                <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
-            </tr>
-           
-            <tr>
-                <th>Raison_retour</th>
-                <td>{{ produit.raisonRetour }}</td>
-            </tr>
-        </tbody>
-    </table>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Verdana', sans-serif;
+            background-color: #f1f5f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+        .product-details-container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
 
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
 
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .product-table th, .product-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+
+        .product-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .product-table td {
+            background-color: #f9f9f9;
+        }
+
+        .back-to-list {
+            display: inline-block;
+            font-size: 16px;
+            text-decoration: none;
+            color: #4CAF50;
+            margin-top: 20px;
+            border: 2px solid #4CAF50;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .back-to-list:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-details-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .product-table th, .product-table td {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .back-to-list {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
 {% endblock %}

@@ -1,11 +1,186 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}New Stock{% endblock %}
+{% block title %}Ajouter Stock{% endblock %}
 
 {% block body %}
-    <h1>Create new Stock</h1>
+    <style>
+        /* General form style */
+        .formulaire-stock {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            margin: 30px auto;
+            margin-left: 280px;
+            margin-right: 30px;
+        }
 
-    {{ include('stock/_form.html.twig') }}
+        /* Titles */
+        .formulaire-stock h1 {
+            font-size: 32px;
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
 
-    <a href="{{ path('app_stock_index') }}">back to list</a>
+        /* Labels */
+        .formulaire-stock label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            color: #2C3E50;
+        }
+
+        /* Input fields */
+        .formulaire-stock input,
+        .formulaire-stock select {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        /* Focus state */
+        .formulaire-stock input:focus,
+        .formulaire-stock select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+            background-color: #fff;
+        }
+
+        /* Submit button */
+        .formulaire-stock button {
+            width: 100%;
+            padding: 16px;
+            background-color: rgb(20, 171, 38);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .formulaire-stock button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 12px 20px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+
+        /* Form group spacing */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        /* Invalid input state */
+        .is-invalid {
+            border-color: #ef4444 !important;
+        }
+
+        /* Select styling */
+        .formulaire-stock select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-position: right 15px center;
+            background-repeat: no-repeat;
+            padding-right: 45px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .formulaire-stock {
+                margin-left: 30px;
+                max-width: calc(100% - 60px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .formulaire-stock {
+                padding: 25px;
+            }
+
+            .formulaire-stock h1 {
+                font-size: 24px;
+            }
+
+            .formulaire-stock input,
+            .formulaire-stock select,
+            .formulaire-stock button {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+
+    <div class="main-content">
+        <div class="formulaire-stock">
+            <h1>Ajouter un nouveau stock</h1>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                {% for field in form %}
+                    {% if field.vars.name != '_token' %}
+                        <div class="form-group">
+                            {{ form_label(field) }}
+                            {{ form_widget(field, {
+                                'attr': {
+                                    'class': field.vars.errors is defined and field.vars.errors|length > 0 ? 'is-invalid' : ''
+                                }
+                            }) }}
+                            {% if field.vars.errors is defined and field.vars.errors|length > 0 %}
+                                <div class="alert alert-danger">
+                                    {% for error in field.vars.errors %}
+                                        {{ error.message }}
+                                        {% if not loop.last %}<br>{% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input, select');
+
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const formGroup = this.closest('.form-group');
+                    const alertEl = formGroup.querySelector('.alert-danger');
+                    if (alertEl) {
+                        alertEl.style.display = 'none';
+                    }
+                    this.classList.remove('is-invalid');
+                });
+            });
+        });
+    </script>
 {% endblock %}

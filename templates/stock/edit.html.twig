@@ -3,11 +3,83 @@
 {% block title %}Edit Stock{% endblock %}
 
 {% block body %}
-    <h1>Edit Stock</h1>
+    <style>
+        /* Réutilisation du style du formulaire */
+        .formulaire-stock {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            margin: 30px auto;
+            margin-left: 280px;
+            margin-right: 30px;
+        }
 
-    {{ include('stock/_form.html.twig', {'button_label': 'Update'}) }}
+        .formulaire-stock h1 {
+            font-size: 32px;
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            gap: 15px; /* Espacement uniforme entre les champs */
+        }
 
-    <a href="{{ path('app_stock_index') }}">back to list</a>
+        .formulaire-stock table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    {{ include('stock/_delete_form.html.twig') }}
+        .formulaire-stock th, .formulaire-stock td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid transparent;
+        }
+
+        .formulaire-stock th {
+            background-color: #f4f4f4;
+            font-weight: 600;
+        }
+
+        .formulaire-stock button {
+            width: 100%;
+            padding: 16px;
+            background-color: rgb(20, 171, 38);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .formulaire-stock button:hover {
+            background-color: #2980b9;
+        }
+
+        .formulaire-stock a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .formulaire-stock a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="formulaire-stock">
+        <h1>Edit Stock</h1>
+
+        {{ include('stock/_form.html.twig', {'button_label': 'Update'}) }}
+
+        <a href="{{ path('app_stock_index') }}">Retour à la liste</a>
+
+        {{ include('stock/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

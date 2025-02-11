@@ -3,54 +3,40 @@
 {% block title %}Produit{% endblock %}
 
 {% block body %}
-    <h1>Produit </h1>
+    <h1 class="text-center my-5">Liste des Produits</h1> <!-- Augmenter la marge du titre avec my-5 -->
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Quantite</th>
-                <th>Prix_vente</th>
-                <th>EnPromotion</th>
-                <th>Pourcentage_promo</th>
-                <th>Date_debut_promo</th>
-                <th>Date_fin_promo</th>
-                <th>Statut</th>
-                 <th>Quantite_vendues</th>
-                <th>Quantite_retourne</th>
-                <th>Date_retour</th>
-                <th>Raison_retour</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for produit in produits %}
-            <tr>
-                <td>{{ produit.Nom }}</td>
-                <td>{{ produit.quantite }}</td>
-                <td>{{ produit.prixVente }}</td>
-              
-                <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
-                <td>{{ produit.pourcentagePromo }}</td>
-               
-                <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
-                 <td>{{ produit.statut }}</td>
-                   <td>{{ produit.quantiteVendues }}</td>
-                <td>{{ produit.quantiteRetourne }}</td>
-                <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
-               
-                <td>{{ produit.raisonRetour }}</td>
-                <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}">show</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="13">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+    <div class="container mt-5"> <!-- Ajouter une marge au conteneur des produits -->
+        <div class="row">
+            {% for produit in produits %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ asset('img/melon.jpg') }}" alt="{{ produit.nom }}" class="card-img-top" style="height: 300px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ produit.nom }}</h5>
+                            <p class="text-success h5">{{ produit.prixVente }} DT</p> <!-- Affichage du prix en dinar -->
+                            <p class="text-muted">Quantité: {{ produit.quantite }}</p>
+                            <p class="text-muted">En Promotion: {{ produit.enPromotion ? 'Oui' : 'Non' }}</p>
+                            <p class="text-muted">Pourcentage Promo: {{ produit.pourcentagePromo }}%</p>
+                            <p class="text-muted">Date Fin Promo: {{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d') : 'N/A' }}</p>
+                            <p class="text-muted">Statut: {{ produit.statut }}</p>
+                            
+                            <!-- Boutons Quick View et Add to Cart -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-primary me-2">
+                                    <i class="fas fa-eye"></i> Voir Détails
+                                </a>
+                                
+                                <a href="#" class="btn btn-success"><i class="fas fa-shopping-bag"></i> Add to Cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center">
+                    <p>Aucun produit trouvé</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
+
