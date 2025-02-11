@@ -29,6 +29,8 @@
                 <td>
                     <a href="{{ path('app_dechet_show', {'id': dechet.id}) }}">Afficher</a>
                     <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}">Modifier</a>
+                    <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}">Supprimer</a>
+
                 </td>
             </tr>
         {% else %}
