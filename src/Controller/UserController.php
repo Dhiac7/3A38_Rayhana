@@ -58,7 +58,44 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     ]);
 }
 
-    
+ 
+#[Route('/back/login', name: 'app_user_backlogin', methods: ['GET', 'POST'])]
+public function backOfficeLogin(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    // Check if the user is already logged in
+    if ($session->get('user')) {
+        return $this->redirectToRoute('app_user_index');
+    }
+
+    $error = null;
+
+    // Handle POST request (form submission)
+    if ($request->isMethod('POST')) {
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
+
+        // Find the user by email
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        // Validate user, password, and role
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            $error = 'Invalid email or password';
+        } elseif ($user->getRole() !== User::ROLE_AGRICULTEUR) {
+            $error = 'Access denied. Only agriculteurs can log in to the back office.';
+        } else {
+            // Store the user in the session
+            $session->set('user', $user);
+
+            // Redirect to the back-office dashboard
+            return $this->redirectToRoute('app_user_index');
+        }
+    }
+
+    // Render the back-office login form
+    return $this->render('user/backlogin.html.twig', [
+        'error' => $error,
+    ]);
+}
 
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response

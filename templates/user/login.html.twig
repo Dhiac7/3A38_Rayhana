@@ -37,15 +37,18 @@
         <div class="sahpe-right-bottom">
             <img src="assets/img/shape/16.png" alt="Image Not Found">
         </div>
+
         <div class="container">
+
             <div class="row align-center">
-                
+   
                 <div class="col-tact-stye-one col-xl-6 col-lg-7">
     <div class="contact-form-style-one mb-md-50">
         <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
+        <center>
         <h5 class="sub-title">Rayhana</h5>
-        <h2 class="heading">Accédez à votre compte</h2>
-
+        <h2 class="heading">Accédez à <br>votre compte</h2>
+    </center>
         {% if error %}
             <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
         {% endif %}
@@ -89,40 +92,41 @@
                 <div id="message" class="alert-msg"></div>
             </div>
         </form>
+        
     </div>
 </div>
 
                 <div class="col-tact-stye-one col-xl-5 col-lg-5 pl-80 pl-md-15 pl-xs-15">
                     <div class="contact-style-one-info">
                         <h2>
-                            Contact 
+                            Nos 
                             <span>
-                                Information
+                                coordonnées
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" preserveAspectRatio="none"><path d="M14.4,111.6c0,0,202.9-33.7,471.2,0c0,0-194-8.9-397.3,24.7c0,0,141.9-5.9,309.2,0" style="animation-play-state: running;"></path></svg>
                             </span>
                         </h2>
                         <p>
-                            Plan upon yet way get cold spot its week. Almost do am or limits hearts. Resolve parties but why she shewing.
-                        </p>
+                            L’innovation au service de l’agriculture durable commence ici. Contactez-nous pour en savoir plus !
+                     </p>
                         <ul>
                             <li>
                                 <div class="content">
-                                    <h5 class="title">Hotline</h5>
-                                    <a href="">+4733378901</a>
+                                    <h5 class="title">Ligne d'assistance</h5>
+                                    <a href="">+216 50123645</a>
                                 </div>
                             </li>
                             <li>
                                 <div class="info">
-                                    <h5 class="title">Our Location</h5>
+                                    <h5 class="title">Localisation</h5>
                                     <p>
-                                        55 Main Street, The Grand Avenue 2nd Block, <br> New York City
+                                        Esprit , bloc M , el ghazela
                                     </p>
                                 </div>
                             </li>
                             <li>
                                 <div class="info">
-                                    <h5 class="title">Official Email</h5>
-                                    <a href="mailto:info@agrul.com.com">info@agrul.com</a>
+                                    <h5 class="title">Email Officiel</h5>
+                                    <a href="Rayhana.agrico@gmail.com">Rayhana.agrico@gmail.com</a>
                                 </div>
                             </li>
                         </ul>
@@ -133,4 +137,6 @@
         </div>
     </div>
     <!-- End Contact -->
+{% endblock %}
+{% block footer %}
 {% endblock %}
