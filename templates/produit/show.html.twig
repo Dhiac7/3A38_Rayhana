@@ -3,145 +3,272 @@
 {% block title %}Produit{% endblock %}
 
 {% block body %}
-    <div class="product-details-container">
-        <h1>Produit</h1>
+     <!-- Start Shop 
+    ============================================= -->
+    <div class="validtheme-shop-single-area default-padding">
+        <div class="container">
+            <div class="product-details">
+                <div class="row">
 
-        <table class="product-table">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ produit.id }}</td>
-                </tr>
-                <tr>
-                    <th>Nom de l'article</th>
-                    <td>{{ produit.nom }}</td>
-                </tr>
-                <tr>
-                    <th>Quantite</th>
-                    <td>{{ produit.quantite }}</td>
-                </tr>
-                <tr>
-                    <th>Prix de vente</th>
-                    <td>{{ produit.prixVente }}</td>
-                </tr>
-                <tr>
-                    <th>En Promotion</th>
-                    <td>{{ produit.enPromotion ? 'Oui' : 'Non' }}</td>
-                </tr>
-                <tr>
-                    <th>Pourcentage Promotion</th>
-                    <td>{{ produit.pourcentagePromo }}</td>
-                </tr>
-                <tr>
-                    <th>Date début promo</th>
-                    <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-                <tr>
-                    <th>Date fin promo</th>
-                    <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-                <tr>
-                    <th>Statut</th>
-                    <td>{{ produit.statut }}</td>
-                </tr>
-                <tr>
-                  
-                </tr>
-            </tbody>
-        </table>
+                    <div class="col-lg-6">
+                        <div class="product-thumb">
+                            <div id="timeline-carousel" class="carousel slide" data-bs-ride="carousel">
 
-        <a href="{{ path('app_produit_index') }}" class="back-to-list">Retour à la liste</a>
+                                <div class="carousel-inner item-box">
+                                    <div class="carousel-item active product-item">
+                                        <a  class="item popup-gallery">
+                                            <img src="{{ asset('img/melon.jpg')}}" alt="Thumb">
+                                        </a>
+                                        <span class="onsale theme">-16%</span>
+                                    </div>
+                                    
+                                </div>
+
+                                 
+
+                                
+                                <!-- End Carousel Content -->
+                               
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="single-product-contents">
+                            <div class="summary-top-box">
+                                <div class="product-tags">
+                                    <a href="#">Crop</a>
+                                    <a href="#">Organic</a>
+                                </div>
+                                <div class="review-count">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span>(8 Review)</span>
+                                </div>
+                            </div>
+                            <h2 class="product-title">
+                                {{produit.nom}}
+                            </h2>
+                            <div class="price">
+    <span><del></del></span>
+    <span>{{ produit.prixVente }}</span>
+</div>
+                            <div class="product-stock validthemes-in-stock">
+                                <span>In Stock</span>
+                            </div>
+                            <p>
+                                The Aspire 5 is a compact laptop in a thin case with a metal cover, a high-quality Full HD IPS display and a rich set of interfaces. Thanks to its powerful components, the laptop can handle resource-intensive tasks perfectly and is also suitable for most games. non-characteristic words etc. Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder
+                            </p>
+                            <div class="product-purchase-list">
+                                <input type="number" id="quantity" step="1" name="quantity" min="0" placeholder="0">
+                                <a href="#" class="btn secondary btn-theme btn-sm animation">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Add to cart
+                                </a>
+                                <div class="shop-action">
+                                    <ul>
+                                        <li class="wishlist">
+                                            <a href="#"><span>Add to wishlist</span></a>
+                                        </li>
+                                        <li class="compare">
+                                            <a href="#"><span>Compare</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="product-estimate-delivary">
+                                <i class="fas fa-box-open"></i>
+                                <strong> 2-day Delivery</strong>
+                                <span>Speedy and reliable parcel delivery!</span>
+                            </div>
+                            <div class="product-meta">
+                                <span class="sku">
+                                    <strong>SKU:</strong> BE45VGRT
+                                </span>
+                                <span class="posted-in">
+                                    <strong>Category:</strong>
+                                    <a href="#">Computer</a> ,
+                                    <a href="#">Speaker</a>, 
+                                    <a href="#">Headphone</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Bottom Info  -->
+            <div class="single-product-bottom-info">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Tab Nav -->
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="description-tab-control" data-bs-toggle="tab" data-bs-target="#description-tab" type="button" role="tab" aria-controls="description-tab" aria-selected="true">
+                                Description
+                            </button>
+
+                            <button class="nav-link" id="information-tab-control" data-bs-toggle="tab" data-bs-target="#information-tab" type="button" role="tab" aria-controls="information-tab" aria-selected="false">
+                                Additional Information
+                            </button>
+
+                            <button class="nav-link" id="review-tab-control" data-bs-toggle="tab" data-bs-target="#review-tab" type="button" role="tab" aria-controls="review-tab" aria-selected="false">
+                                Review
+                            </button>
+
+                        </div>
+                        <!-- End Tab Nav -->
+                        <!-- Start Tab Content -->
+                        <div class="tab-content tab-content-info" id="myTabContent">
+
+                            <!-- Tab Single -->
+                            <div class="tab-pane fade show active" id="description-tab" role="tabpanel" aria-labelledby="description-tab-control">
+                                <p>
+                                    There is immense scope for organic production of vegetable crops in India since the agricultural sector has enormous organic resources like crop residues, livestock and other bio-products from agro industries. Organic farming is growing at a rapid pace among Indian farmers and entrepreneurs, particularly in rainfed and hilly areas where fertilizer consumption is less than 25 kg/ha/year [13].
+                                </p>
+                                <ul> 
+                                    <li>Status of organic vegetable production</li> 
+                                    <li>Feasibility of organic practices</li> 
+                                    <li>Sustainability of organic farming</li> 
+                                    <li>Organic certification</li> 
+                                    <li>Prospects and constraints of organic vegetable production</li> 
+                                </ul>
+                            </div>
+                            <!-- End Single -->
+
+                            <!-- Tab Single -->
+                            <div class="tab-pane fade" id="information-tab" role="tabpanel" aria-labelledby="information-tab-control">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                          <tr>
+                                            <td>Weight</td>
+                                            <td>240 Ton</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Dimensions</td>
+                                            <td>20 × 30 × 40 cm</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Colors</td>
+                                            <td>Black, Blue, Green</td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- End Tab Single -->
+
+                            <!-- Tab Single -->
+                            <div class="tab-pane fade" id="review-tab" role="tabpanel" aria-labelledby="review-tab-control">
+                                <h4>1 review for “Fresh Red Seedless”</h4>
+                                <div class="review-items">
+                                    <div class="item">
+                                        <div class="thumb">
+                                            <img src="assets/img/800x800.png" alt="Thumb">
+                                        </div>
+                                        <div class="info">
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <div class="review-date">April 8, 2021</div>
+                                            <div class="review-authro"><h5>Aleesha Brown
+                                            </h5></div>
+                                            <p>
+                                                Highly recommended. Will purchase more in future.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="thumb">
+                                            <img src="assets/img/800x800.png" alt="Thumb">
+                                        </div>
+                                        <div class="info">
+                                            <div class="rating">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <div class="review-date">April 8, 2021</div>
+                                            <div class="review-authro"><h5>Sarah Albert</h5></div>
+                                            <p>
+                                                Great product quality!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-form">
+                                    <h4>Add a review</h4>
+                                    <div class="rating-select">
+                                        <div class="stars">
+                                            <span>
+                                                <a class="star-1" href="#"><i class="fas fa-star"></i></a>
+                                                <a class="star-2" href="#"><i class="fas fa-star"></i></a>
+                                                <a class="star-3" href="#"><i class="fas fa-star"></i></a>
+                                                <a class="star-4" href="#"><i class="fas fa-star"></i></a>
+                                                <a class="star-5" href="#"><i class="fas fa-star"></i></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <form action="#" class="contact-form">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group comments">
+                                                    <textarea class="form-control" id="comments" name="comments" placeholder="Tell Us About Project *"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <input class="form-control" id="name" name="name" placeholder="Name" type="text">
+                                                    <span class="alert-error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <input class="form-control" id="email" name="email" placeholder="Email*" type="email">
+                                                    <span class="alert-error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <button type="submit" name="submit" id="submit">
+                                                    Post Review
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Alert Message -->
+                                        <div class="col-md-12 alert-notification">
+                                            <div id="message" class="alert-msg"></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- End Tab Single -->
+
+                        </div>
+                        <!-- End Tab Content -->
+                    </div>
+                </div>
+            </div>
+            <!-- End Product Bottom Info  -->
+
+           
+        </div>
     </div>
-{% endblock %}
+    <!-- End Shop -->
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* Global Styles */
-        body {
-            font-family: 'Verdana', sans-serif;
-            background-color: #f1f5f8;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        .product-details-container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 32px;
-            color: #4CAF50;
-            margin-bottom: 30px;
-        }
-
-        .product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .product-table th, .product-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            font-size: 16px;
-        }
-
-        .product-table th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .product-table td {
-            background-color: #f9f9f9;
-        }
-
-        .back-to-list {
-            display: inline-block;
-            font-size: 16px;
-            text-decoration: none;
-            color: #4CAF50;
-            margin-top: 20px;
-            border: 2px solid #4CAF50;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .back-to-list:hover {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .product-details-container {
-                width: 90%;
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .product-table th, .product-table td {
-                font-size: 14px;
-                padding: 10px;
-            }
-
-            .back-to-list {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-        }
-    </style>
 {% endblock %}
