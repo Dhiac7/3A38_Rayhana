@@ -13,20 +13,32 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
     #[Route(name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository, SessionInterface $session): Response
+    public function index(Request $request,UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
     {
-        if (!$session->get('user')) {
+    /*   if (!$session->get('user')) {
             return $this->redirectToRoute('app_user_login');
-        }
-
+        }*/
+        $query = $userRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query, 
+            $request->query->getInt('page', 1), 
+            4  
+        );
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'pagination' => $pagination,
         ]);
+
+        
+
+       /*return $this->render('user/index.html.twig', [
+            'users' => $userRepository->findAll(),
+        ]);*/
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
@@ -58,44 +70,36 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     ]);
 }
 
- 
+/* 
 #[Route('/back/login', name: 'app_user_backlogin', methods: ['GET', 'POST'])]
 public function backOfficeLogin(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
-    // Check if the user is already logged in
     if ($session->get('user')) {
         return $this->redirectToRoute('app_user_index');
     }
 
     $error = null;
 
-    // Handle POST request (form submission)
     if ($request->isMethod('POST')) {
         $email = $request->request->get('email');
         $password = $request->request->get('password');
 
-        // Find the user by email
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-        // Validate user, password, and role
         if (!$user || !password_verify($password, $user->getPassword())) {
             $error = 'Invalid email or password';
         } elseif ($user->getRole() !== User::ROLE_AGRICULTEUR) {
             $error = 'Access denied. Only agriculteurs can log in to the back office.';
         } else {
-            // Store the user in the session
             $session->set('user', $user);
 
-            // Redirect to the back-office dashboard
             return $this->redirectToRoute('app_user_index');
         }
     }
-
-    // Render the back-office login form
     return $this->render('user/backlogin.html.twig', [
         'error' => $error,
     ]);
-}
+}*/
 
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response
