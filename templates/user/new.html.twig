@@ -34,17 +34,18 @@
 <center>
   <!-- Start Contact Us 
     ============================================= -->
-    <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
+       <div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
         <div class="sahpe-right-bottom">
             <img src="assets/img/shape/16.png" alt="Image Not Found">
         </div>
         <div class="container">
-            <div class="row align-center">
-               <div class="bodycenter"> 
+            <div class="row align-center justify-content-center">
+            <div class="bodycenter"> 
+
                 <div class="col-tact-stye-one col-xl-6 col-lg-7">
-    <div class="contact-form-style-one mb-md-50">
-        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
-        <h5 class="sub-title">Joignez Rayhana?</h5>
+                <div class="contact-form-style-one mb-md-50 text-center">
+                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
+                 <h5 class="sub-title">Joignez Rayhana?</h5>
                         <h2 class="heading">Créer votre compte</h2>
 
                         {# Start Symfony Form #}
@@ -135,4 +136,6 @@
         </div>
     </div>
     </center>
+{% endblock %}
+{% block footer %}
 {% endblock %}
