@@ -16,6 +16,16 @@ class ParcelleRepository extends ServiceEntityRepository
         parent::__construct($registry, Parcelle::class);
     }
 
+    public function searchByName(string $query): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.nom LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('p.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Parcelle[] Returns an array of Parcelle objects
     //     */

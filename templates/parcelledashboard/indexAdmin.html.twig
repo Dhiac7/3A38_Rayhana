@@ -1,0 +1,140 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Parcelle index{% endblock %}
+
+{% block body %}
+<section class="mb-6 2xl:mb-0 2xl:flex-1">
+    <div class="container">
+        <h2 class="text-2xl font-bold text-bgray-900 dark:text-white mb-6">Liste des Cultures Parcelles</h2>
+
+        <!-- Search Form (with AJAX submission) -->
+        <turbo-frame id="search-results">
+            <div class="mb-4">
+                <input type="text" id="search" class="w-full p-2 border rounded-lg mb-4" placeholder="Rechercher une parcelle..." value="{{ app.request.query.get('q') }}">
+                <button id="search-btn" class="bg-primary text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80" onclick="searchParcelles()">Rechercher</button>
+            </div>
+
+            <div id="parcelles-container" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                {% for parcelle in parcelles %}
+                    <div class="parcelle-item rounded-lg bg-white p-5 dark:bg-darkblack-600 shadow-lg">
+                        <a href="{{ path('app_parcelle_show2', {'id': parcelle.id}) }}">
+                            <div id="map-{{ parcelle.id }}" class="mini-map rounded-lg overflow-hidden" data-lat="{{ parcelle.latitude }}" data-lng="{{ parcelle.longitude }}"></div>
+                        </a>
+                        <div class="mt-4 flex items-center space-x-3">
+                            <img src="{{ asset('assets/images/icons/farm.svg') }}" alt="icon" class="w-8 h-8">
+                            <p class="text-lg font-semibold text-bgray-900 dark:text-white">
+                                {{ parcelle.nom }} - Irrigation: {{ parcelle.irrigationDisponible ? 'Oui' : 'Non' }}
+                            </p>
+                        </div>
+                        <h4 class="text-bgray-700 dark:text-bgray-50">
+                            {{ parcelle.superficie }} ha - {{ parcelle.latitude }}° {{ parcelle.longitude }}°
+                        </h4>
+                    </div>
+                {% else %}
+                    <p class="text-center text-bgray-700 dark:text-bgray-50">Aucune parcelle trouvée.</p>
+                {% endfor %}
+            </div>
+        </turbo-frame>
+    </div>
+</section>
+
+<!-- Intégration des scripts Mapbox -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+
+<style>
+    .mini-map {
+        width: 100%;
+        height: 250px;
+        border-radius: 10px;
+    }
+</style>
+
+<script>
+    mapboxgl.accessToken = "{{ MAPBOX_API_KEY }}";
+    {% for parcelle in parcelles %}
+        var map{{ parcelle.id }} = new mapboxgl.Map({
+            container: 'map-{{ parcelle.id }}',
+            style: 'mapbox://styles/mapbox/satellite-streets-v11',
+            center: [{{ parcelle.longitude }}, {{ parcelle.latitude }}],
+            zoom: 16,
+            interactive: false
+        });
+        new mapboxgl.Marker().setLngLat([{{ parcelle.longitude }}, {{ parcelle.latitude }}]).addTo(map{{ parcelle.id }});
+    {% endfor %}
+        // Function for the search button
+    function searchParcelles() {
+    var query = document.getElementById('search').value;
+
+    // Perform AJAX request
+    fetch('{{ path('app_parcelle_index2') }}?q=' + encodeURIComponent(query), {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Server response was not OK');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Log the response for debugging
+        console.log(data);
+
+        const parcellesContainer = document.getElementById('parcelles-container');
+        parcellesContainer.innerHTML = ''; // Clear the existing content
+
+        if (data.length === 0) {
+            parcellesContainer.innerHTML = '<p class="text-center text-bgray-700 dark:text-bgray-50">Aucune parcelle trouvée.</p>';
+        } else {
+            data.forEach(parcelle => {
+                const parcelleHTML = `
+                    <div class="parcelle-item rounded-lg bg-white p-5 dark:bg-darkblack-600 shadow-lg">
+                        <a href="/parcelle/${parcelle.id}">
+                            <div id="map-${parcelle.id}" class="mini-map rounded-lg overflow-hidden" data-lat="${parcelle.latitude}" data-lng="${parcelle.longitude}"></div>
+                        </a>
+                        <div class="mt-4 flex items-center space-x-3">
+                            <img src="{{ asset('assets/images/icons/farm.svg') }}" alt="icon" class="w-8 h-8">
+                            <p class="text-lg font-semibold text-bgray-900 dark:text-white">
+                                ${parcelle.nom} - Irrigation: ${parcelle.irrigationDisponible ? 'Oui' : 'Non'}
+                            </p>
+                        </div>
+                        <h4 class="text-bgray-700 dark:text-bgray-50">
+                            ${parcelle.superficie} ha - ${parcelle.latitude}° ${parcelle.longitude}°
+                        </h4>
+                    </div>
+                `;
+                parcellesContainer.innerHTML += parcelleHTML;
+            });
+        }
+
+        // Reinitialize the maps after content update
+        data.forEach(parcelle => {
+            const map = new mapboxgl.Map({
+                container: 'map-' + parcelle.id,
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                center: [parcelle.longitude, parcelle.latitude],
+                zoom: 16,
+                interactive: false
+            });
+            new mapboxgl.Marker().setLngLat([parcelle.longitude, parcelle.latitude]).addTo(map);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while searching for parcelles.');
+    });
+}
+
+</script>
+
+<!-- Link to Create New Parcelle -->
+<div class="text-center mt-6">
+    <a href="{{ path('app_parcelle_new2') }}" class="btn bg-primary text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80">
+        <i class="fa fa-plus"></i> Créer une nouvelle parcelle
+    </a>
+</div>
+
+{% endblock %}
