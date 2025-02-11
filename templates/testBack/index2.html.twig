@@ -1,0 +1,65 @@
+
+{% block title %}Purple Admin{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backmaterialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backthemify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backvendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backfont-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backbootstrap-datepicker/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/assets/scss backcssback/style2.css') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/imagesback/favicon.png') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="container-scroller">
+    {% include 'atelier/_navbar.html.twig' %}
+    <div class="container-fluid page-body-wrapper">
+        {% include 'atelier/_sidebar.html.twig' %}
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h3 class="page-title">
+                        <span class="page-title-icon bg-gradient-primary text-white me-2">
+                            <i class="mdi mdi-home"></i>
+                        </span> Dashboard
+                    </h3>
+                    <nav aria-label="breadcrumb">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                {# Contenu dynamique #}
+                <div class="row">
+                    <div class="col-md-4 stretch-card grid-margin">
+                        <div class="card bg-gradient-danger card-img-holder text-white">
+                            <div class="card-body">
+                                <img src="{{ asset('public/assets/images/shoe.jpeg') }}" class="card-img-absolute" alt="circle-image" />
+                                <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-end"></i></h4>
+                                <h2 class="mb-5">$ 15,0000</h2>
+                                <h6 class="card-text">Increased by 60%</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'atelier/_footer.html.twig' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('public/assets/jsback/vendor.bundle.base2.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/chart.js/chart.umd.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/off-canvas.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/misc.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/settings.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/todolist.js') }}"></script>
+    <script src="{{ asset('public/assets/jsback/dashboard.js') }}"></script>
+{% endblock %}
