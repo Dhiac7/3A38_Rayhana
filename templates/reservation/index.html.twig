@@ -8,28 +8,28 @@
     <table id="atelierTable" class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Id</th>
+               {# <th>Id</th>
                 <th>Atelierid</th>
-                <th>IdUser</th>
+                <th>IdUser</th> #}
                 <th>DateReservation</th>
                 <th>ModePaiement</th>
                 <th>Statut</th>
-                <th>NbrPlace</th>
-                <th>Role</th>
+                {# <th>NbrPlace</th>
+                <th>Role</th> #}
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for reservation in pagination %}
             <tr>
-                <td>{{ reservation.id }}</td>
+              {#   <td>{{ reservation.id }}</td>
                 <td>{{ reservation.atelierid }}</td>
-                <td>{{ reservation.idUser }}</td>
+                <td>{{ reservation.idUser }}</td> #}
                 <td>{{ reservation.dateReservation ? reservation.dateReservation|date('Y-m-d') : '' }}</td>
                 <td>{{ reservation.modePaiement }}</td>
                 <td>{{ reservation.statut }}</td>
-                <td>{{ reservation.nbrPlace }}</td>
-                <td>{{ reservation.Role }}</td>
+                {# <td>{{ reservation.nbrPlace }}</td>
+                <td>{{ reservation.Role }}</td>#}
                 <td>
                     <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}">Afficher</a>
                     <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}">Modifier</a>
@@ -46,7 +46,7 @@
     <div class="d-flex justify-content-center">
     {{ knp_pagination_render(pagination) }}
 </div>   
-//.....
+
  <a href="{{ path('app_reservation_new') }}">Ajouter une reservation</a>
      <script>
 //tri 

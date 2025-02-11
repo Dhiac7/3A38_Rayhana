@@ -1,41 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier un atelier{% endblock %}
+{% block title %}Modifier reservation{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Modifier un atelier</h1>
+<div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    {#  classes Flexbox (d-flex justify-content-center align-items-center) pour centrer et min-height: 100vh pour occuper toute la hauteur #}
+    <div class="container">
+        <div class="row align-center justify-content-center">
+            {#  justify-content-center pour centrer horizontalement #}
+            
+            <div class="col-lg-6">
+                <div class="contact-form-style-one mb-md-50 text-center">
+                    {# Ligne modifiée : Centrer le texte avec text-center #}
+                    <h1 class="mb-4">Modifier reservation</h1>
+                    {#  mb-4 pour un espacement sous le titre #}
+                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
 
-        <div class="card shadow p-4">
-            {{ form_start(form) }}
+                    {{ include('reservation/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-  <div class="mb-3">
-                {{ form_label(form.dateReservation) }}
-                {{ form_widget(form.dateReservation, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
-                {{ form_errors(form.dateReservation) }}
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left"></i> Revenir à la liste
+                        </a>
+                    </div>
+
+                    {{ include('reservation/_delete_form.html.twig') }}
+                </div>
             </div>
-
- <div class="mb-3">
-                {{ form_label(form.modePaiement) }}
-                {{ form_widget(form.modePaiement, { 'class': 'form-select', 'required': 'required' }) }}
-                {{ form_errors(form.modePaiement) }}
-            </div>
-
-<div class="mb-3">
-                {{ form_label(form.statut) }}
-                {{ form_widget(form.statut, { 'class': 'form-select', 'required': 'required' }) }}
-                {{ form_errors(form.statut) }}
-            </div>
-  
-
-            <button class="btn btn-success">Mettre à jour</button>
-            <a href="{{ path('app_reservation_index') }}" class="btn btn-secondary">Annuler</a>
-
-            {{ form_end(form) }}
-        </div>
-
-        <div class="mt-3">
-            {{ include('reservation/_delete_form.html.twig') }}
         </div>
     </div>
+</div>
 {% endblock %}

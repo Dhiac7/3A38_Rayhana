@@ -22,7 +22,7 @@ final class AtelierController extends AbstractController
         $pagination = $paginator->paginate(
             $query, // Donneili bch namlou pagination
             $request->query->getInt('page', 1), // Num page 
-            4 // nbr element par page 
+            6 // nbr element par page 
         );
         return $this->render('atelier/index.html.twig', [
             'pagination' => $pagination,
@@ -38,24 +38,27 @@ final class AtelierController extends AbstractController
         $atelier = new Atelier();
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
+        dump($form->getData()->getDateAtelier());
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
             // Vérifie si un atelier existe déjà à la même date
-            $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
+           $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
                 'date_atelier' => $atelier->getDateAtelier()
             ]);
     
             if ($existingAtelier) {
-                // Si un atelier existe déjà à cette date, afficher un message d'erreur
-                $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d H:i:s') . " Avec le nom  : " . $existingAtelier->getNom());
-                return $this->redirectToRoute('app_atelier_new'); // Redirige vers la page de création pour afficher l'erreur
+                $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d') . " avec le nom : " . $existingAtelier->getNom());
+                return $this->redirectToRoute('app_atelier_new');
             }
-    
+            
+            else {
             // Si pas de conflit de date, persister l'atelier
             $em->persist($atelier);
             $em->flush();
             $this->addFlash('success', "L'atelier a été ajouté avec succès.");
             return $this->redirectToRoute('app_atelier_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
     
         return $this->render('atelier/new.html.twig', [
@@ -79,6 +82,7 @@ final class AtelierController extends AbstractController
     {
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
+        dump($form->getData()->getDateAtelier());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
