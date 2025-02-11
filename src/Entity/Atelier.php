@@ -34,8 +34,6 @@ class Atelier
 
     #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]
 #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être au bon format.")]
-
-
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_atelier = null;
 
