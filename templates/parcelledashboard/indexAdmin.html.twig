@@ -67,7 +67,7 @@
     var query = document.getElementById('search').value;
 
     // Perform AJAX request
-    fetch('{{ path('app_parcelle_dashboard_index') }}?q=' + encodeURIComponent(query), {
+    fetch('{{ path('app_parcelle_index2') }}?q=' + encodeURIComponent(query), {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
