@@ -3,8 +3,7 @@
 {% block title %}Atelier index{% endblock %}
 
 {% block body %}
-   <!-- Start Blog 
-    ============================================= -->
+   <!-- Start Blog ============================================= -->
 
     <div class="blog-area blog-grid default-padding">
         <div class="container">
@@ -29,8 +28,9 @@
 </span>
                                 </div>
                                <h5>
-    {{ atelier.nom }}
+     Le prix :   {{ atelier.prix }}
 </h5>
+
                             </div>
                             <div class="info">
                                 <div class="meta">
@@ -40,7 +40,8 @@
                                         </li>
                                     </ul>
                                 </div>
-                              
+                                                  <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}"  class="btn">Modifier</a>
+
                             </div>
                         </div>
                     </div>

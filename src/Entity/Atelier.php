@@ -24,9 +24,9 @@ class Atelier
         maxMessage: "Le nom de l'atelier ne peut pas dépasser 30 caractères."
     )]
     #[Assert\Regex(
-        pattern: "/^[a-zA-ZÀ-ÿ\s]+$/",
-        message: "Le nom de l'atelier doit contenir uniquement des lettres alphabétiques."
-    )]//controle de saisie 
+    pattern: "/^[a-zA-Z0-9À-ÿ\s]+$/",
+    message: "Le nom de l'atelier doit contenir uniquement des lettres alphabétiques et des chiffres."
+)]//controle de saisie 
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
@@ -34,6 +34,10 @@ class Atelier
 
     #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]
 #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être au bon format.")]
+#[Assert\GreaterThanOrEqual(
+    value: "today",
+    message: "La date de l'atelier doit être supérieure ou égale à la date d'aujourd'hui."
+)]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_atelier = null;
 
