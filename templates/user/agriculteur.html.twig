@@ -64,7 +64,7 @@
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                             <i class="fa fa-bars"></i>
                         </button>
-                        <a class="navbar-brand" href="{{ path('client_interface') }}">
+                        <a class="navbar-brand" href="{{ path('agriculteur_interface') }}">
                             <img src="{{asset('img/logo-mix.png')}}" class="logo" alt="Logo">
                         </a>
                     </div>
@@ -202,7 +202,7 @@
 {% block body %}
   <!-- Start Breadcrumb 
     ============================================= -->
-    <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url(assets/img/2440x1578.png);">
+    <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url('{{ asset('img/banner/1.png') }}');">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">

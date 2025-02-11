@@ -24,22 +24,21 @@ class Dechet
     private ?string $type = null;
 
     #[ORM\Column]
-    #[Assert\Range(
-        min: 1,  
-        notInRangeMessage: "La capacité doit être  differente de 0"
-    )]
-    private ?float $quantite = null;
+    #[Assert\NotBlank(message: "La quantité ne peut pas être vide.")]
+    #[Assert\Type(type: 'integer', message: "La quantité doit être un nombre entier.")]
+    private ?int $quantite = null;
 
 //date controle 
     #[Assert\NotBlank(message: "La date de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être au bon format.")]
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: "La date de production ne peut pas être vide.")]
 //#[Assert\Date(message: "La date de production doit être une date valide.")]
 
     private ?\DateTimeInterface $dateProduction = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le statut ne peut pas être vide.")]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

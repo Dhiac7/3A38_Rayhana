@@ -3,89 +3,106 @@
 {% block title %}Nouveau atelier {% endblock %}
 
 {% block body %}
-    <div class="col-tact-stye-one col-xl-7 col-lg-7">
-        <div class="contact-form-style-one mb-md-50">
-            <h5 class="sub-title text-success">Nouveau atelier</h5>
-            <h2 class="heading">Créer un nouveau atelier</h2>
-           {% for label, messages in app.flashes %}
-    <div class="alert alert-{{ label }}">
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    </div>
-{% endfor %}
+  <!-- Start Contact Us 
+          <center>
+    ============================================= -->
+    <div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="sahpe-right-bottom">
 
-            <!-- Formulaire Symfony avec Bootstrap Validation -->
-            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            <img src="assets/img/shape/16.png" alt="Image Not Found">
+        </div>
 
-                <!-- Nom de la atelier -->
-                <div class="form-group">
-                    {{ form_label(form.nom) }}
-                    {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-                    <div class="invalid-feedback">Veuillez entrer un nom valide (uniquement des lettres alphabétiques)</div>
-                    {{ form_errors(form.nom) }}
-                </div>
+      <div class="container">
+            <div class="row align-center justify-content-center">
+            <div class="bodycenter"> 
 
-                <!-- description -->
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="form-group">
-                            {{ form_label(form.description) }}
-                            {{ form_widget(form.description, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-                            <div class="invalid-feedback">description invalide (-90 à 90).</div>
-                            {{ form_errors(form.description) }}
+                <div class="col-tact-stye-one col-xl-6 col-lg-7 text-center">
+                <div class="contact-form-style-one mb-md-50 text-center">
+                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
+                 <h5 class="sub-title">Joignez Rayhana?</h5>
+                        <h2 class="heading">Ajouter Atelier</h2>
+
+                        {# Start Symfony Form #}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
+                            {% for error in form.vars.errors %}
+                                <div class="alert alert-danger">{{ error.message }}-</div>
+                            {% endfor %}
+                            {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                            
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+
+                                        {{ form_errors(form.nom)}}
+                                        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+
+                                        {{ form_errors(form.description) }}
+                                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'description'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+
+                                        {{ form_errors(form.date_atelier) }}
+                                        {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control', 'placeholder': 'date_atelier'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+
+                                {{ form_errors(form.capacite_max) }}
+                                {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'capacite_max'}}) }}
+                            </div>
                         </div>
-                    </div>
-                   <div class="row">
-    <div class="col-lg-6">
-        <div class="form-group">
-            {{ form_label(form.date_atelier) }}
-            {{ form_widget(form.date_atelier, { 'attr': {'class': 'form-control', 'required': 'required'} }) }}
-            <div class="invalid-feedback">La date de l'atelier est obligatoire.</div>
-            {{ form_errors(form.date_atelier) }}
-        </div>
-    </div>
-</div>
-               <div class="row">
-    <div class="col-lg-6">
-        <div class="form-group">
-            {{ form_label(form.capacite_max) }}
-            {{ form_widget(form.capacite_max, { 'attr': {'class': 'form-control', 'required': 'required', 'min': '1'} }) }}
-            <div class="invalid-feedback">La capacité maximale doit être supérieure à 0.</div>
-            {{ form_errors(form.capacite_max) }}
-        </div>
-    </div>
-</div>
+                        </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
+                                        {{ form_errors(form.prix) }}
+                                        {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'prix'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                                 <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
 
-              <div class="row">
-    <div class="col-lg-6">
-        <div class="form-group">
-            {{ form_label(form.prix) }}
-            {{ form_widget(form.prix, { 'attr': {'class': 'form-control', 'required': 'required', 'min': '1', 'step': '0.01'} }) }}
-            <div class="invalid-feedback">Le prix doit être un nombre positif supérieur à 0.</div>
-            {{ form_errors(form.prix) }}
-        </div>
-    </div>
-</div>
-<div  class="form-group">
-    {{ form_label(form.statut) }}
-    {{ form_widget(form.statut, { 'attr': {'class': 'form-select', 'required': 'required'} }) }}
-    <div class="invalid-feedback">Veuillez sélectionner une option valide pour le statut.</div>
-    {{ form_errors(form.statut) }}
-</div>
+                                        {{ form_errors(form.statut) }}
+                                        {{ form_widget(form.statut, {'attr': {'class': 'form-select', 'placeholder': 'statut'}}) }}
+                                    <br>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary w-100'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                                </center>
 
+                        {{ form_end(form) }}
 
-
-
-                <!-- Bouton de soumission -->
-                <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-save"></i> Ajouter l'atelier
-                    </button>
-                </div>
-
-            {{ form_end(form) }}
 
             <!-- Lien de retour -->
             <div class="text-center mt-3">
@@ -95,6 +112,10 @@
             </div>
         </div>
     </div>
+
+
+</div>
+
 
     <!-- Script Bootstrap pour la validation -->
     <script>
