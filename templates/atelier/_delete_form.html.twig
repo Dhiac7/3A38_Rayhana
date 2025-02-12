@@ -1,4 +1,15 @@
-<form method="post" action="{{ path('app_atelier_delete', {'id': atelier.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet élément?');">
+{# <form method="post" action="{{ path('app_atelier_delete', {'id': atelier.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet élément?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ atelier.id) }}">
      <button class="btn">Supprimer</button>
-</form>
+</form> #}
+  
+
+
+  {% if atelier.id %}
+    <form method="post" action="{{ path('app_atelier_delete', {'id': atelier.id}) }}" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer cet élément?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ atelier.id) }}">
+        <button class="btn">Supprimer</button>
+    </form>
+{% else %}
+    <p>Id de l'atelier non valide.</p>
+{% endif %}
