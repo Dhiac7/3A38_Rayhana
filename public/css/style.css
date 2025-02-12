@@ -121,12 +121,16 @@ Sidebar heading:  22px 'Outfit', sans-serif
 =================================================================== */
 .text-danger {
     color: red;
+	
 } 
 * {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+li {
+    color: red;
 }
 
 body,
@@ -153,11 +157,11 @@ mark, nav, section, time, audio, video {
 	border: 0;
 	outline: 0;
 }
-ul, li {
+ul, li , i {
     margin: 0;
     padding: 0;
     list-style: none;
-    color: red;
+    color: rgb(200, 200, 200);
 }
 tbody, td, tfoot, th, thead, tr {
 	border-color: inherit;
@@ -3111,6 +3115,7 @@ a.btn-round-animation.dark {
 	z-index: 9;
 	width: 100%;
 }
+
 
 .nice-select .list:hover .option:not(:hover) {
 	background-color: transparent !important;
@@ -6094,6 +6099,7 @@ ul.list-item li::after {
 	margin-bottom: 25px;
 }
 
+
 .team-single-area .right-info ul {
 	margin-top: 25px;
 	border-top: 1px solid #e7e7e7;
@@ -6115,6 +6121,7 @@ ul.list-item li::after {
 
 .team-single-area .right-info ul li a:hover {
 	color: var(--color-primary);
+	
 }
 
 .team-single-area .right-info .social {
@@ -9222,7 +9229,7 @@ footer {
 }
 
 .form-control:focus {
-    border-color: #007bff;
+    border-color: #05af41;
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
 }
 
@@ -9254,6 +9261,7 @@ footer {
 .btn-secondary:hover {
     background-color: #ddd;
 }
+
 
 /* Style du switch toggle */
 .toggle-switch {
