@@ -23128,7 +23128,7 @@ code {
 }
 .card .card-body {
   padding: 2.5rem 2.5rem;
-  background-color: rgba(144, 238, 144, 0.1); /* Vert très clair */
+  background-color: rgba(144, 238, 144, 0.3); /* Vert très clair */
   color: #052924;
   size: 200;
 }
@@ -25649,7 +25649,7 @@ dl li {
 /* Sidebar */
 .sidebar {
   min-height: calc(100vh - 70px);
-  background: #ffffff;
+  background-color: rgba(144, 238, 144, 0.3);
   font-family: "ubuntu-regular", sans-serif;
   padding: 0;
   width: 260px;
@@ -25699,7 +25699,7 @@ dl li {
   font-size: 1.125rem;
   line-height: 1;
   margin-left: auto;
-  color: rgba(187, 168, 191, 0.9607843137);
+  color:#006f3a;
 }
 .rtl .sidebar .nav .nav-item .nav-link i.menu-icon {
   margin-left: 0;
@@ -25713,7 +25713,7 @@ dl li {
   line-height: 1;
   font-size: 1.125rem;
   margin-left: auto;
-  color: #9e9da0;
+  color:#006f3a
 }
 .rtl .sidebar .nav .nav-item .nav-link i.menu-arrow {
   margin-left: 0;
@@ -26294,7 +26294,9 @@ dl li {
 }
 
 .content-wrapper {
-  background: #f2edf3;
+  background:linear-gradient(to right, #d4f8c4, #a3e8b2);
+
+
   padding: 2.75rem 2.25rem;
   width: 100%;
   -webkit-flex-grow: 1;

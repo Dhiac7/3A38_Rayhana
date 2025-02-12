@@ -9226,11 +9226,13 @@ footer {
     padding: 10px;
     border-radius: 8px;
     transition: all 0.3s ease-in-out;
+	color: darkolivegreen;
 }
 
 .form-control:focus {
-    border-color: #05af41;
+    border-color: #0de75aaa;
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+	color: #0d6e21;
 }
 
 /* Styles pour les erreurs */
@@ -9242,7 +9244,7 @@ footer {
 
 /* Style du bouton principal */
 .btn-primary {
-    background-color: #ffcc4d;
+    background-color: #92f78e;
     border: none;
     font-weight: bold;
     transition: 0.3s;
