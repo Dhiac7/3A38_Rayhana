@@ -23128,7 +23128,7 @@ code {
 }
 .card .card-body {
   padding: 2.5rem 2.5rem;
-  background-color: white
+  background-color: rgba(144, 238, 144, 0.3); /* Vert très clair */
   color: #052924;
   size: 200;
 }
