@@ -228,7 +228,11 @@
                 <div class="row align-center">
                     <div class="col-lg-5 left-info mb-md-50 mb-xs-40">
                         <div class="thumb">
-                            <img src="{{ user.photo }}" alt="error">
+                        {% if user.photo %}
+                            <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur">
+                        {% else %}
+                            <p>Aucune photo disponible.</p>
+                        {% endif %}
                         </div>
                     </div>
                     <div class="col-lg-7 right-info pl-80 pl-md-15 pl-xs-15">

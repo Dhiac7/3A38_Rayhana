@@ -8,9 +8,9 @@ use App\Repository\UserRepository;
 use  Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Email deja utilisé.')]
@@ -31,8 +31,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères."
     )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s'-]+$/",
+        message: "Le nom ne peut contenir que des lettres, espaces, apostrophes ou tirets."
+    )]
     private ?string $nom = null;
-
+    
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
     #[Assert\Length(
@@ -41,7 +45,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         minMessage: "Le prénom doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le prénom ne peut pas dépasser {{ limit }} caractères."
     )]
+    #[Assert\Regex(
+        pattern: "/^[a-zA-ZÀ-ÿ\s'-]+$/",
+        message: "Le prénom ne peut contenir que des lettres, espaces, apostrophes ou tirets."
+    )]
     private ?string $prenom = null;
+    
 
     #[ORM\Column(length: 8)]
     #[Assert\NotBlank(message: "Le CIN est obligatoire.")]
@@ -56,8 +65,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $cin = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "L'URL de la photo n'est pas valide.")]
     private ?string $photo = null;
+
+  
 
     // Define roles as constants
     public const ROLE_CLIENT = 'client';
@@ -81,8 +91,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
         maxMessage: "Le mot de passe ne peut pas dépasser {{ limit }} caractères."
     )]
+    #[Assert\Regex(
+        pattern: "/^(?=.*[a-zA-Z])(?=.*\d).+$/",
+        message: "Le mot de passe doit contenir au moins une lettre et un chiffre."
+    )]
     private ?string $mdp = null;
-
+    
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L'email est obligatoire.")]
     #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide.")]
@@ -184,6 +198,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+   
     public function getPhoto(): ?string
     {
         return $this->photo;    }

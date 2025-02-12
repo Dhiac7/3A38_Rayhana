@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Controller\InterfaceController;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -10,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -125,6 +124,20 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
+
+        if ($photoFile instanceof UploadedFile) {
+            dump($photoFile); 
+            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+            $photoFile->move($uploadsDirectory, $newFilename);
+
+            $user->setPhoto($newFilename);
+            } else {
+                dump('No file uploaded'); 
+            }
+
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
 
