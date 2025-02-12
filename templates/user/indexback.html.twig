@@ -1,0 +1,39 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Striped Table</h4>
+      <p class="card-description"> Add class <code>.table-striped</code> </p>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th> User </th>
+            <th> Nom </th>
+            <th> Email </th>
+            <th> Cin </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in pagination %}
+          <tr>
+            <td class="py-1">
+              <img src="{{ user.photo }}" alt="error">
+            </td>
+            <td> {{user.nom}} {{user.prenom}} </td>
+            <td> {{user.email}} </td>
+            <td> {{user.cin}} </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table> <br>
+       <div class="d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
