@@ -22,9 +22,8 @@
                         {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
                         {% for error in form.vars.errors %}
-                            <div class="alert alert-danger">{{ error.message }}</div>
+                         <div class="text-danger">{{ error.message }}</div>
                         {% endfor %}
-
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
                                 <div class="alert alert-{{ label }}">{{ message }}</div>

@@ -4,43 +4,36 @@
 <tr>
     <td>{{form_label(form.nom,"nom")}}</td>
     <td>{{form_widget(form.nom)}}</td>
-    <td>{{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
-</td>
+    <td>{{form_errors(form.nom)}}</td>
 </tr>
 <tr>
     <td>{{form_label(form.description,"description")}}</td>
     <td>{{form_widget(form.description)}}</td>
-    <td>{{ form_errors(form.description, {'attr': {'class': 'text-danger'}}) }}
-</td>
+    <td>{{form_errors(form.description)}}</td>
 </tr>
 
 <tr>
     <td>{{form_label(form.date_atelier,"dateAtelier")}}</td>
     <td>{{form_widget(form.date_atelier)}}</td>
-    <td>{{ form_errors(form.date_atelier, {'attr': {'class': 'text-danger'}}) }}
-</td>
+    <td>{{form_errors(form.date_atelier)}}</td>
 </tr>
 <tr>
     <td>{{form_label(form.capacite_max,"capacite_max")}}</td>
     <td>{{form_widget(form.capacite_max)}}</td>
-    <td>{{ form_errors(form.capacite_max, {'attr': {'class': 'text-danger'}}) }}
-</td>
+    <td>{{form_errors(form.capacite_max)}}</td>
 </tr>
 <tr>
     <td>{{form_label(form.prix,"prix")}}</td>
     <td>{{form_widget(form.prix)}}</td>
-    <td>{{ form_errors(form.prix, {'attr': {'class': 'text-danger'}}) }}
-</td>
+    <td>{{form_errors(form.prix)}}</td>
 </tr>
 <tr>
     <td>{{form_label(form.statut,"statut")}}</td>
     <td>{{form_widget(form.statut)}}</td>
-    <td>{{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
-</td>
-
+    <td>{{form_errors(form.statut)}}</td>
 </tr>
 </table>
 </center>
 <br>
-    {{form_widget(form.save) class="btn btn-gradient-primary me-2 w-100">}}
+    {{form_widget(form.save)}}
 {{form_end(form)}}
