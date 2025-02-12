@@ -34,12 +34,22 @@ final class UserController extends AbstractController
             'pagination' => $pagination,
         ]);
 
-        
-
-       /*return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);*/
     }
+
+    #[Route('/listback', name: 'app_user_indexback', methods: ['GET'])]
+    public function indexback(Request $request, UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
+    {  $query = $userRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query, 
+            $request->query->getInt('page', 1), 
+            4  
+        );
+        return $this->render('user/indexback.html.twig', [
+            'pagination' => $pagination,
+        ]);
+    }
+    
+    
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
 public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
@@ -71,7 +81,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 }
 
 
-    #[Route('/loginback', name: 'app_user_login', methods: ['GET', 'POST'])]
+    #[Route('/loginback', name: 'app_user_loginback', methods: ['GET', 'POST'])]
     public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         if ($session->get('user')) {
@@ -99,7 +109,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             'error' => $error,
         ]);
     }
-    
+
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response
     {
@@ -125,6 +135,29 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         }
 
         return $this->render('user/new.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/newback', name: 'app_user_newback', methods: ['GET', 'POST'])]
+    public function newback(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/newback.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
