@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 #[Route('/testBack')]
-final class testBackController extends AbstractController
+final class testbackController extends AbstractController
 {
     #[Route(name: 'app_testBack_index2', methods: ['GET'])]
    // public function index2(AtelierRepository $atelierRepository): Response
