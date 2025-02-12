@@ -8,7 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class UserType extends AbstractType
 {
@@ -18,10 +20,17 @@ class UserType extends AbstractType
         ->add('nom')
         ->add('prenom')
         ->add('cin')
-        ->add('photo', UrlType::class, [
-            'label' => 'Photo URL',
-            'required' => false, 
-            //'attr' => ['placeholder' => 'https://www.w3schools.com/html/pic_trulli.jpg']
+        ->add('photo', FileType::class, [
+            'label' => 'Téléchargez une photo',
+            'required' => false,
+            'mapped' => false, 
+            'constraints' => [
+                new File([
+                    'maxSize' => '2M',
+                    'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
+                    'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, WEBP).',
+                ])
+            ],
         ])
         ->add('role', ChoiceType::class, [
             'choices' => [
@@ -34,7 +43,7 @@ class UserType extends AbstractType
             'placeholder' => 'entrez votre role',
             'required' => true,
         ])
-        ->add('mdp')
+        ->add('mdp', PasswordType::class) 
         ->add('email')
         ->add('tel')
         ->add('save', SubmitType::class, ['label' => 'Confirmer']);
@@ -47,3 +56,4 @@ class UserType extends AbstractType
         ]);
     }
 }
+

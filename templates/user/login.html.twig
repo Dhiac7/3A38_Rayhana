@@ -14,10 +14,10 @@
 
                     <!-- Start Header Navigation (Moved to the right) -->
                    <div class="navbar-header ms-auto d-flex align-items-center">
-    <a class="navbar-brand" href="{{ path('app_home') }}">
-        <img src="{{ asset('img/logo-mix.png') }}" class="logo" alt="Logo">
-    </a>
-</div>
+                        <a class="navbar-brand" href="{{ path('app_home') }}">
+                            <img src="{{ asset('img/logo-mix.png') }}" class="logo" alt="Logo">
+                        </a>
+                    </div>
 
                     </div>
                     <!-- End Header Navigation -->
@@ -43,58 +43,58 @@
             <div class="row align-center">
    
                 <div class="col-tact-stye-one col-xl-6 col-lg-7">
-    <div class="contact-form-style-one mb-md-50">
-        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
-        <center>
-        <h5 class="sub-title">Rayhana</h5>
-        <h2 class="heading">Accédez à <br>votre compte</h2>
-    </center>
-        {% if error %}
-            <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
-        {% endif %}
+                    <div class="contact-form-style-one mb-md-50">
+                        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found">
+                        <center>
+                        <h5 class="sub-title">Rayhana</h5>
+                        <h2 class="heading">Accédez à <br>votre compte</h2>
+                         </center>
+                        {% if error %}
+                            <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
+                        {% endif %}
 
-        <form method="post" class="contact-form contact-form">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <input class="form-control" id="email" name="email" placeholder="Email*" type="email" required>
-                        <span class="alert-error"></span>
+                        <form method="post" class="contact-form contact-form">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input class="form-control" id="email" name="email" placeholder="Email*" type="email" required>
+                                        <span class="alert-error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <input class="form-control" id="password" name="password" placeholder="Password*" type="password" required>
+                                        <span class="alert-error"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-sign-in"></i> Se connecter
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Lien "Mot de passe oublié ?" -->
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <a href="{{ path('send_sms') }}" style="color: red; text-decoration: none;">
+                                        Mot de passe oublié ?
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Alert Message -->
+                            <div class="col-lg-12 alert-notification">
+                                <div id="message" class="alert-msg"></div>
+                            </div>
+                        </form>
+                        
                     </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="form-group">
-                        <input class="form-control" id="password" name="password" placeholder="Password*" type="password" required>
-                        <span class="alert-error"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa fa-sign-in"></i> Se connecter
-                    </button>
-                </div>
-            </div>
-            <!-- Lien "Mot de passe oublié ?" -->
-            <div class="row">
-                <div class="col-lg-12 text-right">
-                    <a href="{{ path('send_sms') }}" style="color: red; text-decoration: none;">
-                        Mot de passe oublié ?
-                    </a>
-                </div>
-            </div>
-            <!-- Alert Message -->
-            <div class="col-lg-12 alert-notification">
-                <div id="message" class="alert-msg"></div>
-            </div>
-        </form>
-        
-    </div>
-</div>
 
                 <div class="col-tact-stye-one col-xl-5 col-lg-5 pl-80 pl-md-15 pl-xs-15">
                     <div class="contact-style-one-info">
