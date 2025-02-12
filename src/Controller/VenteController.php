@@ -10,15 +10,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/vente')]
 final class VenteController extends AbstractController{
     #[Route(name: 'app_vente_index', methods: ['GET'])]
-    public function index(VenteRepository $venteRepository): Response
+    
+    public function index(Request $request, venteRepository $venteRepository, PaginatorInterface $paginator): Response
     {
+        $query = $venteRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query, // Donneili bch namlou pagination
+            $request->query->getInt('page', 1), // Num page 
+            6 // nbr element par page 
+        );
         return $this->render('vente/index.html.twig', [
-            'vente' => $venteRepository->findAll(),
+            'pagination' => $pagination,
         ]);
+        /*return $this->render('atelier/index.html.twig', [
+            'ateliers' => $atelierRepository->findAll(),
+        ]);*/
     }
 
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
