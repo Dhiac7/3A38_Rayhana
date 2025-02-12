@@ -70,37 +70,36 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     ]);
 }
 
-/* 
-#[Route('/back/login', name: 'app_user_backlogin', methods: ['GET', 'POST'])]
-public function backOfficeLogin(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-{
-    if ($session->get('user')) {
-        return $this->redirectToRoute('app_user_index');
-    }
 
-    $error = null;
-
-    if ($request->isMethod('POST')) {
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-
-        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-
-        if (!$user || !password_verify($password, $user->getPassword())) {
-            $error = 'Invalid email or password';
-        } elseif ($user->getRole() !== User::ROLE_AGRICULTEUR) {
-            $error = 'Access denied. Only agriculteurs can log in to the back office.';
-        } else {
-            $session->set('user', $user);
-
+    #[Route('/loginback', name: 'app_user_login', methods: ['GET', 'POST'])]
+    public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        if ($session->get('user')) {
             return $this->redirectToRoute('app_user_index');
         }
-    }
-    return $this->render('user/backlogin.html.twig', [
-        'error' => $error,
-    ]);
-}*/
 
+        $error = null;
+
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
+
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+            if (!$user || !password_verify($password, $user->getPassword())) {
+                $error = 'Invalid email or password';
+            } else {
+                $session->set('user', $user);
+
+                return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+            }
+        }
+
+        return $this->render('user/loginback.html.twig', [
+            'error' => $error,
+        ]);
+    }
+    
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response
     {
