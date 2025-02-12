@@ -23128,7 +23128,7 @@ code {
 }
 .card .card-body {
   padding: 2.5rem 2.5rem;
-  background-color: rgba(144, 238, 144, 0.3); /* Vert très clair */
+  background-color: white
   color: #052924;
   size: 200;
 }
@@ -26294,7 +26294,7 @@ dl li {
 }
 
 .content-wrapper {
-  background:linear-gradient(to right, #d4f8c4, #a3e8b2);
+  background-color: rgba(144, 238, 144, 0.3);
 
 
   padding: 2.75rem 2.25rem;

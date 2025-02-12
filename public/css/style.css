@@ -120,8 +120,8 @@ Sidebar heading:  22px 'Outfit', sans-serif
      # Reset Browsers
 =================================================================== */
 .text-danger {
-    color: red;
-	
+    color: red !important;
+    font-weight: bold;
 } 
 * {
 	-webkit-box-sizing: border-box;
