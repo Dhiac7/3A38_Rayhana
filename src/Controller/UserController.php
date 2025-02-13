@@ -36,16 +36,48 @@ final class UserController extends AbstractController
 
     }
 
-    #[Route('/listback', name: 'app_user_indexback', methods: ['GET'])]
-    public function indexback(Request $request, UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
-    {  $query = $userRepository->findAll();
+    #[Route('/listemployeback', name: 'app_user_listemploye', methods: ['GET'])]
+    public function listemploye(Request $request, UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
+    {  
+        $user = $session->get('user');
+    
+        // Fetch only users with specific roles
+        $query = $userRepository->createQueryBuilder('u')
+            ->where('u.role IN (:roles)')
+            ->setParameter('roles', ['livreur', 'inspecteur', 'fermier'])
+            ->getQuery();
+    
         $pagination = $paginator->paginate(
             $query, 
             $request->query->getInt('page', 1), 
             4  
         );
-        return $this->render('user/indexback.html.twig', [
+    
+        return $this->render('user/listemploye.html.twig', [
             'pagination' => $pagination,
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/listclientback', name: 'app_user_listclient', methods: ['GET'])]
+    public function listclient(Request $request, UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
+    {  
+        $user = $session->get('user');
+    
+        $query = $userRepository->createQueryBuilder('u')
+            ->where('u.role IN (:roles)')
+            ->setParameter('roles', ['client'])
+            ->getQuery();
+    
+        $pagination = $paginator->paginate(
+            $query, 
+            $request->query->getInt('page', 1), 
+            4  
+        );
+    
+        return $this->render('user/index.html.twig', [
+            'pagination' => $pagination,
+            'user' => $user,
         ]);
     }
     
@@ -84,10 +116,10 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     #[Route('/loginback', name: 'app_user_loginback', methods: ['GET', 'POST'])]
     public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        if ($session->get('user')) {
+       /* if ($session->get('user')) {
             return $this->redirectToRoute('app_user_index');
         }
-
+*/
         $error = null;
 
         if ($request->isMethod('POST')) {
@@ -99,9 +131,12 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             if (!$user || !password_verify($password, $user->getPassword())) {
                 $error = 'Invalid email or password';
             } else {
-                $session->set('user', $user);
-
-                return $this->redirectToRoute('app_dashboard');
+                if ($user->getRole() !== 'agriculteur') {
+                    $error = 'Accès refusé. Seuls les agriculteurs peuvent se connecter.';
+                } else {
+                    $session->set('user', $user);
+                    return $this->redirectToRoute('app_dashboard');
+                }
             }
         }
 
@@ -109,6 +144,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             'error' => $error,
         ]);
     }
+
 
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response

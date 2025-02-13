@@ -14,7 +14,9 @@ final class DashboardController extends AbstractController
     public function index(SessionInterface $session): Response
     {
         $user = $session->get('user');
-
+        if (!$user) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         return $this->render('baseAdmin.html.twig', [
             'controller_name' => 'DashboardController',
             'user' => $user,  // Passer user
