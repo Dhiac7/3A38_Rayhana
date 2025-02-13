@@ -3,11 +3,109 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+<center>
+  <!-- Start Contact Us 
+    ============================================= -->
+    <div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="sahpe-right-bottom">
+            <img src="assets/img/shape/16.png" alt="Image Not Found">
+        </div>
+        <div class="container">
+            <div class="row align-center justify-content-center">
+                <div class="bodycenter"> 
 
-    {{ include('user/_form.html.twig', {'button_label': 'Modifier'}) }}
+                    <div class="col-tact-stye-one col-xl-6 col-lg-7">
+                        <div class="contact-form-style-one mb-md-50 text-center">
+                            <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
+                            <h5 class="sub-title">Votre informations</h5>
+                            <h2 class="heading">Modifier votre compte</h2>
 
-    <a href="{{ path('app_user_index') }}">Revenir à la list</a>
+                            {# Start Symfony Form #}
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
+                            {% for error in form.vars.errors %}
+                                <div class="alert alert-danger" style="color: red; font-weight: bold;">{{ error.message }}</div>
+                            {% endfor %}
 
-    {{ include('user/_delete_form.html.twig') }}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.nom) }}
+                                        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.prenom) }}
+                                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.cin) }}
+                                        {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'placeholder': 'CIN'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.photo) }}
+                                        {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Téléchargez une photo'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.mdp) }} 
+                                        {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.email) }}
+                                        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.tel) }}
+                                        {{ form_widget(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.adresse) }}
+                                        {{ form_widget(form.adresse, {'attr': {'class': 'form-select', 'placeholder': 'Adresse'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form_end(form) }}
+                            {# End Symfony Form #}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </center>
 {% endblock %}

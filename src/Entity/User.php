@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_INSPECTEUR = 'inspecteur';
     public const ROLE_LIVREUR = 'livreur';
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\NotBlank(message: "Le rôle est obligatoire.")]
+    //#[Assert\NotBlank(message: "Le rôle est obligatoire.")]
     #[Assert\Choice(
         choices: ['client', 'fermier', 'agriculteur', 'inspecteur', 'livreur'],
         message: "Le rôle sélectionné n'est pas valide."
