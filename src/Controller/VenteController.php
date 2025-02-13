@@ -34,65 +34,49 @@ final class VenteController extends AbstractController
         ]);
     }
 
+    // Route pour créer une nouvelle vente (définie avant les routes dynamiques comme /{id})
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
     {
         $user = $session->get('user');
         $vente = new Vente();
         
-        // Vérification de l'ID du produit
         $produitId = $request->query->get('id');
-        
+    
         if (!$produitId) {
             $this->addFlash('error', 'Aucun produit sélectionné.');
-            return $this->redirectToRoute('app_vente_index'); // Redirection si l'ID est manquant
+            return $this->redirectToRoute('app_vente_index');
         }
-        
+    
         $produit = $produitRepository->find($produitId);
-        
+    
         if (!$produit) {
             $this->addFlash('error', 'Produit introuvable.');
             return $this->redirectToRoute('app_vente_index');
         }
         
-        // Associer le produit à la vente
         $vente->setProduit($produit);
-        $vente->setPrix($produit->getPrixVente()); // Prix unitaire
-        $vente->setQuantite(1); // Quantité par défaut
-        
-        // Création du formulaire
+        $vente->setPrix($produit->getPrixVente());
+        $vente->setQuantite(1);
+    
         $form = $this->createForm(VenteType::class, $vente, [
-            'prix_unitaire' => $produit->getPrixVente(), // Passer le prix unitaire au formulaire
+            'prix_unitaire' => $produit->getPrixVente(),
         ]);
         
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // Calculer le prix total
             $quantite = $vente->getQuantite();
             $prixUnitaire = $produit->getPrixVente();
             $vente->setPrix($quantite * $prixUnitaire);
             
-            // Appeler le service de reconnaissance faciale
-            $pythonScriptPath = __DIR__ . '/../../python/face_recognition_service.py';
-            $output = shell_exec("python3 $pythonScriptPath 2>&1");
-            
-            // Vérifier le résultat de la reconnaissance faciale
-            if (strpos($output, "Detected:") !== false) {
-                // Si un visage est reconnu, enregistrer la vente
-                $entityManager->persist($vente);
-                $entityManager->flush();
-                
-                $this->addFlash('success', 'Vente enregistrée avec succès.');
-                return $this->redirectToRoute('app_vente_index');
-            } else {
-                // Si aucun visage n'est reconnu, afficher une erreur
-                $this->addFlash('error', 'Aucun visage reconnu. Veuillez réessayer.');
-                return $this->redirectToRoute('app_vente_new', ['id' => $produitId]);
-            }
+            $entityManager->persist($vente);
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Vente enregistrée avec succès.');
+            return $this->redirectToRoute('app_vente_index');
         }
         
-        // Affichage du formulaire
         return $this->render('vente/new.html.twig', [
             'form' => $form->createView(),
             'produit' => $produit,

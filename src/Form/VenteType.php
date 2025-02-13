@@ -29,8 +29,8 @@ class VenteType extends AbstractType
                 'label' => 'Prix Total (€)',
                 'attr' => [
                     'class' => 'form-control',
-                    'readonly' => true, // Empêche la modification manuelle
-                    'id' => 'prix_total', // Id pour JavaScript
+                    'readonly' => true, // Champ en lecture seule
+                    'id' => 'prix_total', // ID pour JavaScript
                 ],
             ])
             ->add('prixUnitaire', HiddenType::class, [
