@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Détails de la Culture Agricole{% endblock %}
 
@@ -57,9 +57,9 @@
                         </ul>
                     </nav>
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_culture_agricole_index') }}" class="btn btn-secondary">Retour</a>
+                <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-secondary">Retour</a>
                 <div>
-                    <a href="{{ path('app_culture_agricole_edit', { id: culture_agricole.id }) }}" class="btn btn-primary">Modifier</a>
+                    <a href="{{ path('app_culture_agricole_dashboard_edit', { id: culture_agricole.id }) }}" class="btn btn-primary">Modifier</a>
                     {{ include('culture_agricole/_delete_form.html.twig') }}
                 </div>
             </div>

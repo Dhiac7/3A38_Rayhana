@@ -569,8 +569,6 @@
     -o-transform: translateX(-10px);
     transform: translateX(-10px);
   }
-
-  
   60% {
     -webkit-transform: translateX(10px);
     -moz-transform: translateX(10px);
@@ -10296,7 +10294,6 @@ progress {
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
 }
-
 
 .table-secondary {
   --bs-table-color: #000;
@@ -21211,10 +21208,10 @@ code {
   width: 6px;
   height: 6px;
 }
-.bg-gradient-primary {
-  background: linear-gradient(to right, #a8e063, #56b347) !important;
-}
 
+.bg-gradient-primary {
+  background: linear-gradient(to right, #009900, #04A804) !important;
+}
 
 .bg-gradient-secondary {
   background: linear-gradient(to right, #e7ebf0, #868e96) !important;
@@ -22327,8 +22324,7 @@ code {
 }
 
 .btn-secondary:not(.btn-light) {
-  color:black;
-  background-color:#1f4e3d;
+  color: #ffffff;
 }
 .btn-secondary:not(.btn-light):hover, .btn-secondary:not(.btn-light):focus, .btn-secondary:not(.btn-light):active {
   color: #ffffff;
@@ -22612,7 +22608,7 @@ code {
   opacity: 0.8;
 }
 .btn-gradient-primary:not(.btn-gradient-light) {
-  color:#46c35f;
+  color: #ffffff;
 }
 .btn-gradient-primary:not(.btn-gradient-light):hover, .btn-gradient-primary:not(.btn-gradient-light):focus, .btn-gradient-primary:not(.btn-gradient-light):active {
   color: #ffffff;
@@ -23128,9 +23124,6 @@ code {
 }
 .card .card-body {
   padding: 2.5rem 2.5rem;
-  background-color: rgba(144, 238, 144, 0.3); /* Vert très clair */
-  color: #052924;
-  size: 200;
 }
 .card .card-body + .card-body {
   padding-top: 1rem;
@@ -23139,14 +23132,8 @@ code {
   color: #343a40;
   margin-bottom: 0.75rem;
   text-transform: capitalize;
-  /*font-family: "ubuntu-medium", sans-serif;*/
+  font-family: "ubuntu-medium", sans-serif;
   font-size: 1.125rem;
-  font-family: var(--font-secondary);
-  color: var(--color-secondary);
-  font-weight: 600;
-  display: inline-block;
-  position: relative;
-  z-index: 1;
 }
 .card .card-subtitle {
   font-family: "ubuntu-regular", sans-serif;
@@ -23590,7 +23577,7 @@ code {
 .tt-hint:focus, .select2-container--default .select2-selection--single .select2-search__field:focus, .select2-container--default .select2-selection--single:focus,
 .form-select:focus {
   background-color: #ffffff;
-  color:#1f4e3d;
+  color: #000000;
   outline: none;
 }
 
@@ -25014,8 +25001,6 @@ dl li {
 .auth .auth-form-transparent {
   background: transparent;
 }
-
-
 .auth .auth-form-transparent .form-control, .auth .auth-form-transparent .select2-container--default .select2-selection--single, .select2-container--default .auth .auth-form-transparent .select2-selection--single, .auth .auth-form-transparent .select2-container--default .select2-selection--single .select2-search__field, .select2-container--default .select2-selection--single .auth .auth-form-transparent .select2-search__field, .auth .auth-form-transparent .typeahead,
 .auth .auth-form-transparent .tt-query,
 .auth .auth-form-transparent .tt-hint,
@@ -25343,7 +25328,7 @@ dl li {
   font-size: 1.25rem;
 }
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-toggle:after {
-  color: #b66dff;
+  color: #009900;
   font-size: 1rem;
 }
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu {
@@ -25486,8 +25471,9 @@ dl li {
     padding-top: 0px;
   }
 }
+/* Navbar color variations */
 .navbar.navbar-primary .navbar-menu-wrapper {
-  background: linear-gradient(to right, #00d06e, #006f3a);
+  background: linear-gradient(to right, #da8cff, #9a55ff);
   color: #ffffff;
 }
 .navbar.navbar-primary .navbar-menu-wrapper .search-field .input-group input:-ms-input-placeholder {
@@ -25649,7 +25635,7 @@ dl li {
 /* Sidebar */
 .sidebar {
   min-height: calc(100vh - 70px);
-  background-color: rgba(144, 238, 144, 0.3);
+  background: #ffffff;
   font-family: "ubuntu-regular", sans-serif;
   padding: 0;
   width: 260px;
@@ -25699,7 +25685,7 @@ dl li {
   font-size: 1.125rem;
   line-height: 1;
   margin-left: auto;
-  color:#006f3a;
+  color: rgba(0, 153, 0, 0.9607843137);
 }
 .rtl .sidebar .nav .nav-item .nav-link i.menu-icon {
   margin-left: 0;
@@ -25713,7 +25699,7 @@ dl li {
   line-height: 1;
   font-size: 1.125rem;
   margin-left: auto;
-  color:#006f3a
+  color: #9e9da0;
 }
 .rtl .sidebar .nav .nav-item .nav-link i.menu-arrow {
   margin-left: 0;
@@ -25753,11 +25739,11 @@ dl li {
   background: #ffffff;
 }
 .sidebar .nav .nav-item.active > .nav-link .menu-title {
-  color: #b66dff;
+  color: rgb(0, 153, 0);
   font-family: "ubuntu-medium", sans-serif;
 }
 .sidebar .nav .nav-item.active > .nav-link i {
-  color: #b66dff;
+  color: rgb(0, 153, 0);
 }
 .sidebar .nav .nav-item:hover {
   background: #fcfcfc;
@@ -25847,7 +25833,7 @@ dl li {
   right: 0;
 }
 .sidebar .nav.sub-menu .nav-item .nav-link.active {
-  color: #b66dff;
+  color: rgba(0, 153, 0, 0.8607843137);
   background: transparent;
 }
 .sidebar .nav.sub-menu .nav-item .nav-link:hover {
@@ -26294,9 +26280,7 @@ dl li {
 }
 
 .content-wrapper {
-  background-color: rgba(144, 238, 144, 0.3);
-
-
+  background: #f2edf3;
   padding: 2.75rem 2.25rem;
   width: 100%;
   -webkit-flex-grow: 1;
