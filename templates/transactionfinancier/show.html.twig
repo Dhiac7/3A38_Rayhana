@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Transactionfinancier{% endblock %}
 
@@ -7,10 +7,7 @@
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ transactionfinancier.id }}</td>
-            </tr>
+            
             <tr>
                 <th>Montant</th>
                 <td>{{ transactionfinancier.montant }}</td>
