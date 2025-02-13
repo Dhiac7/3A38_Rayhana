@@ -35,8 +35,8 @@
       <!-- partial:partials/_navbar.html -->
     <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-        <a class="navbar-brand brand-logo" href="../index.html"><img src="../assets/images/logo.svg" alt="logo" /></a>
-        <a class="navbar-brand brand-logo-mini" href="../index.html"><img src="../assets/images/logo-mini.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo" href="{{ path('app_dashboard') }}"><img src="../assets/images/logo.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo-mini" href="{{ path('app_dashboard') }}"><img src="../assets/images/logo-mini.svg" alt="logo" /></a>
       </div>
       <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
@@ -200,7 +200,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ path('app_dashboard') }}">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
               </a>
@@ -279,17 +279,17 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                <span class="menu-title">User Pages</span>
+                <span class="menu-title">Gérer comptes</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-lock menu-icon"></i>
               </a>
               <div class="collapse" id="auth">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/samples/blank-page.html')}}"> Blank Page </a>
+                    <a class="nav-link" href="{{ path('app_user_listemploye') }}"> Employés </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/samples/login.html')}}"> Login </a>
+                    <a class="nav-link" href="{{ path('app_user_listclient') }}"> Clients </a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{{ asset('assetsback/pages/samples/register.html')}}"> Register </a>
@@ -304,8 +304,8 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="docs/documentation.html" target="_blank">
-                <span class="menu-title">Documentation</span>
+              <a class="nav-link" href="{{ path('app_user_logoutback') }}" target="_blank">
+                <span class="menu-title">Logout</span>
                 <i class="mdi mdi-file-document-box menu-icon"></i>
               </a>
             </li>
@@ -317,7 +317,7 @@
           <div class="content-wrapper">
             <div class="page-header">
               <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <span class="page-title-icon bg-gradient-dark text-white me-2">
                   <i class="mdi mdi-home"></i>
                 </span> Dashboard
               </h3>
