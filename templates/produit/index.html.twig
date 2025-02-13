@@ -89,7 +89,7 @@
                                             <div class="shop-action">
                                                 <ul>
                                                     <li class="cart">
-                                                        <a href="#"><span>Add to cart</span></a>
+                                                       <a href="{{ path('app_vente_new', {'id': produit.id}) }}">buy</a>
                                                     </li>
                                                     <li class="wishlist">
                                                         <a href="#"><span>Add to wishlist</span></a>
@@ -111,7 +111,8 @@
                                             <div class="price">
                                                 <span>{{ produit.prixVente }}  DT </span>
                                             </div>
-                                            <a href="#" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
+                                            <a href="{{ path('app_vente_new', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
+                                            
                                         </div>
                                     </div>
                                 </li>
@@ -148,6 +149,7 @@
     <!-- End Shop -->
 
    
+
 
 
 {% endblock %}
