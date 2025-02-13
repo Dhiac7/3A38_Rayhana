@@ -3,125 +3,96 @@
 {% block title %}Nouvelle Vente{% endblock %}
 
 {% block body %}
-  <!-- Start Vente -->
-  <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
-    <div class="sahpe-right-bottom">
-      <img src="{{ asset('assets/img/shape/16.png') }}" alt="Image Not Found">
-    </div>
-    <div class="container">
-      <div class="row align-center">
-        <div class="col-tact-stye-one col-xl-12 col-lg-12">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="contact-form-style-one mb-md-50">
-                <h5 class="sub-title">Nouvelle Vente</h5>
-                <h2 class="heading">Informations de la vente</h2>
+<div class="contact-area contact-page overflow-hidden bg-gray default-padding">
+  <div class="sahpe-right-bottom">
+    <img src="{{ asset('assets/img/shape/16.png') }}" alt="Image Not Found">
+  </div>
+  <div class="container">
+    <div class="row align-center">
+      <div class="col-tact-stye-one col-xl-12 col-lg-12">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="contact-form-style-one mb-md-50">
+              <h5 class="sub-title">Nouvelle Vente</h5>
+              <h2 class="heading">Informations de la vente</h2>
 
-                {# Start Symfony Form #}
-                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
+              {# Start Symfony Form #}
+              {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
 
-                  {# Display global form errors #}
-                  {% for error in form.vars.errors %}
-                    <div class="alert alert-danger">{{ error.message }}</div>
-                  {% endfor %}
+                {# Display global form errors #}
+                {% for error in form.vars.errors %}
+                  <div class="alert alert-danger">{{ error.message }}</div>
+                {% endfor %}
 
-                  <div class="row">
-                    <!-- Quantité (From Vente) -->
-                    <div class="col-lg-12">
-                      <div class="form-group">
-                        {{ form_label(form.quantite, 'Quantité') }}
-                        {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'id': 'quantite'}}) }}
-                        {{ form_errors(form.quantite) }}
-                      </div>
-                    </div>
-
-                    <!-- Prix (From Vente) -->
-                    <div class="col-lg-12">
-                      <div class="form-group">
-                        {{ form_label(form.prix, 'Prix Total (€)') }}
-                        {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'id': 'prix_total'}}) }}
-                        {{ form_errors(form.prix) }}
-                      </div>
-                    </div>
-
-                    <!-- Prix Unitaire (Hidden) -->
-                    {{ form_widget(form.prixUnitaire, {'attr': {'id': 'prix_unitaire'}}) }}
-
-                    <!-- Méthode de Paiement -->
-                    <div class="col-lg-12">
-                      <div class="form-group">
-                        {{ form_label(form.methodepayement, 'Méthode de paiement') }}
-                        {{ form_widget(form.methodepayement, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.methodepayement) }}
-                      </div>
+                <div class="row">
+                  <!-- Nom du produit -->
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      <label>Nom du produit</label>
+                      <input type="text" class="form-control" value="{{ produit.nom }}" readonly>
                     </div>
                   </div>
 
-                  <!-- Bouton d'enregistrement -->
-                  <div class="row">
-                    <button type="submit" class="btn btn-primary">Enregistrer la vente</button>
+                  <!-- Quantité (From Vente) -->
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      {{ form_label(form.quantite, 'Quantité') }}
+                      {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'id': 'quantite'}}) }}
+                      {{ form_errors(form.quantite) }}
+                    </div>
                   </div>
 
-                {{ form_end(form) }}
-                {# End Symfony Form #}
-              </div>
+                  <!-- Prix (From Vente) -->
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      {{ form_label(form.prix, 'Prix Total (€)') }}
+                      {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'id': 'prix_total'}}) }}
+                      {{ form_errors(form.prix) }}
+                    </div>
+                  </div>
+
+                  <!-- Prix Unitaire (Hidden) -->
+                  {{ form_widget(form.prixUnitaire, {'attr': {'id': 'prix_unitaire'}}) }}
+
+                  <!-- Méthode de Paiement -->
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      {{ form_label(form.methodepayement, 'Méthode de paiement') }}
+                      {{ form_widget(form.methodepayement, {'attr': {'class': 'form-control'}}) }}
+                      {{ form_errors(form.methodepayement) }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bouton d'enregistrement -->
+                <div class="row">
+                  <button type="submit" class="btn btn-primary">Valider la commande</button>
+                </div>
+
+              {{ form_end(form) }}
+              {# End Symfony Form #}
+            </div>
+          </div>
+
+          <!-- Product Information -->
+          <div class="col-lg-6">
+            <div class="product-info">
+              <h3>Informations du Produit</h3>
+              {% if produit is defined %}
+                <p><strong>Nom du produit:</strong> {{ produit.nom }}</p>
+                <p><strong>Quantité Disponible:</strong> {{ produit.quantite }}</p>
+                <p><strong>Prix de Vente:</strong> {{ produit.prixVente }} €</p>
+              {% else %}
+                <p class="text-danger">Aucun produit sélectionné.</p>
+              {% endif %}
             </div>
 
-            <!-- Product Information -->
-            <div class="col-lg-6">
-              <div class="product-info">
-                <h3>Informations du Produit</h3>
-                {% if produit is defined %}
-                 
-                  <p><strong>Quantité Disponible:</strong> {{ produit.quantite }}</p>
-                  <p><strong>Prix de Vente:</strong> {{ produit.prixVente }} €</p>
-                {% else %}
-                  <p class="text-danger">Aucun produit sélectionné.</p>
-                {% endif %}
-              </div>
-
-              <!-- Illustration -->
-              <img src="{{ asset('img/illustration/21.png') }}" alt="Image Not Found" class="img-fluid">
-            </div>
+            <!-- Illustration -->
+            <img src="{{ asset('img/illustration/21.png') }}" alt="Image Not Found" class="img-fluid">
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  {% block javascripts %}
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let quantiteInput = document.getElementById("vente_quantite"); // Vérifie que l'ID est correct
-        let prixUnitaireInput = document.getElementById("vente_prixUnitaire"); 
-        let prixTotalInput = document.getElementById("vente_prix"); 
-    
-        let quantiteDisponible = {{ produit.quantite }}; // Récupère la quantité disponible depuis le template Twig
-    
-        function updatePrixTotal() {
-            let quantite = parseInt(quantiteInput.value) || 0;
-            let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
-            let prixTotal = quantite * prixUnitaire;
-    
-            // Vérifier si la quantité demandée dépasse la quantité disponible
-            if (quantite > quantiteDisponible) {
-                alert("Stock limité ! Vous ne pouvez pas dépasser " + quantiteDisponible);
-                quantiteInput.value = quantiteDisponible; // Remet la valeur max autorisée
-                prixTotal = quantiteDisponible * prixUnitaire;
-            }
-    
-            // Mettre à jour le champ Prix Total
-            prixTotalInput.value = prixTotal.toFixed(2);
-        }
-    
-        // Écoute les changements sur le champ quantité
-        quantiteInput.addEventListener("input", updatePrixTotal);
-    
-        // Initialisation du prix total au chargement de la page
-        updatePrixTotal();
-    });
-    
-</script>
-{% endblock %}
-
+</div>
 {% endblock %}

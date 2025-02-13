@@ -63,6 +63,21 @@ class Vente
         $this->quantite = $quantite;
         return $this;
     }
+    #[ORM\Column(type: 'string', length: 255)]
+    private $nom;
+
+    // Autres champs...
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+        return $this;
+    }
 
     // Getters and Setters for other properties
     public function getId(): ?int
