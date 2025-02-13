@@ -55,7 +55,9 @@
                                     <p>
                                         {{ vente.date|date('Y-m-d H:i:s') }} {# Format the date as needed #}
                                     </p>
-                                
+                                    <p>
+                                       Quantite: {{ vente.quantite }}
+                                    </p>
                                 <a class="btn mt-10 btn-md btn-theme animation" href="{{ path('app_vente_show', {'id': vente.id}) }}">
                                     Voir les détails
                                 </a>

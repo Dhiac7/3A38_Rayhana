@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,6 +51,17 @@ class Produit
 
     #[ORM\ManyToOne(inversedBy: 'stock')]
     private ?Stock $stock = null;
+
+    /**
+     * @var Collection<int, Vente>
+     */
+    #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'produit')]
+    private Collection $ventes;
+
+    public function __construct()
+    {
+        $this->ventes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -195,6 +208,36 @@ class Produit
     public function setStock(?Stock $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vente>
+     */
+    public function getVentes(): Collection
+    {
+        return $this->ventes;
+    }
+
+    public function addVente(Vente $vente): static
+    {
+        if (!$this->ventes->contains($vente)) {
+            $this->ventes->add($vente);
+            $vente->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVente(Vente $vente): static
+    {
+        if ($this->ventes->removeElement($vente)) {
+            // set the owning side to null (unless already changed)
+            if ($vente->getProduit() === $this) {
+                $vente->setProduit(null);
+            }
+        }
 
         return $this;
     }
