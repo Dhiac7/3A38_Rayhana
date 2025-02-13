@@ -13,6 +13,10 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;  // Ajouter cette ligne
+use Symfony\Component\Form\Extension\Core\Type\FileType;  // Importation correcte de FileType
+
+
 
 class StockType extends AbstractType
 {
@@ -36,6 +40,14 @@ class StockType extends AbstractType
                     ])
                 ],
             ])
+
+            /*->add('image', FileType::class, [
+                'label' => 'Image de stock (PNG, JPG)',
+                'mapped' => false,  // Important : cela signifie que ce champ n'est pas directement lié à l'entité Stock
+                'required' => True,
+            ])*/
+          
+
             ->add('quantite', NumberType::class, [
                 'label' => 'Quantité',
                 'attr' => ['placeholder' => 'Entrez la quantité', 'min' => 0],

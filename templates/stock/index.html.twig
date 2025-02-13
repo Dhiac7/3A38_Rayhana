@@ -10,6 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>Nom du produit</th>
+               
                 <th>Quantite</th>
                 <th>Date_stock</th>
                 <th>Quantite_initiale</th>
@@ -26,6 +27,11 @@
             <tr>
                 <td>{{ stock.id }}</td>
                 <td>{{ stock.nom }}</td>
+                     <!-- <td>{% if stock.image %}
+                        <img src="{{ asset('uploads/' ~ stock.image) }}" alt="Image de {{ stock.nom }}" width="100">
+                    {% else %}
+                        Pas d'image disponible
+                    {% endif %}</td>        -->
                 <td>{{ stock.quantite }}</td>
                 <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
                 <td>{{ stock.quantiteInitiale }}</td>

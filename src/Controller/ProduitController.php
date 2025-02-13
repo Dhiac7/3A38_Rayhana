@@ -20,6 +20,8 @@ final class ProduitController extends AbstractController
         return $this->render('produit/index.html.twig', [
             'produits' => $produitRepository->findAll(),
         ]);
+
+        
     }
 
    
@@ -29,6 +31,7 @@ final class ProduitController extends AbstractController
     {
         return $this->render('produit/show.html.twig', [
             'produit' => $produit,
+
         ]);
     }
 
