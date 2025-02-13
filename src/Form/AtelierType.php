@@ -9,7 +9,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 class AtelierType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -38,6 +39,18 @@ class AtelierType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
+            ])
+            ->add('photo', FileType::class, [
+                'label' => 'Téléchargez une photo',
+                'required' => false,
+                'mapped' => false, 
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, WEBP).',
+                    ])
+                ],
             ])
             ->add('save', SubmitType::class, ['label' => 'Confirmer']);
 

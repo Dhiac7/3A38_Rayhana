@@ -36,7 +36,7 @@ class Atelier
 #[Assert\Type(type: \DateTimeInterface::class, message: "La date doit être au bon format.")]
 #[Assert\GreaterThanOrEqual(
     value: "today",
-    message: "La date de l'atelier doit être supérieure ou égale à la date d'aujourd'hui."
+    message: "l'atelier ne peux pas prendre une date déja passée"
 )]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_atelier = null;
@@ -77,6 +77,9 @@ class Atelier
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'ateliers')]
     private Collection $users;
+
+    #[ORM\Column(length: 255)]
+    private ?string $photo = null;
 
     public function __construct()
     {
@@ -209,6 +212,18 @@ class Atelier
     public function removeUser(User $user): static
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }
