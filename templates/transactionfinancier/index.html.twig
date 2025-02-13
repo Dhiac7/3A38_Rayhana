@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Transactionfinancier index{% endblock %}
 
@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+               
                 <th>Montant</th>
                 <th>Description</th>
                 <th>Datetransaction</th>
@@ -20,7 +20,7 @@
         <tbody>
         {% for transactionfinancier in transactionfinanciers %}
             <tr>
-                <td>{{ transactionfinancier.id }}</td>
+                
                 <td>{{ transactionfinancier.montant }}</td>
                 <td>{{ transactionfinancier.description }}</td>
                 <td>{{ transactionfinancier.datetransaction ? transactionfinancier.datetransaction|date('Y-m-d H:i:s') : '' }}</td>

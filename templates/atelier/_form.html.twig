@@ -1,4 +1,4 @@
-{{ form_start(form,{'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
 <center>
 <table>
 <tr>
@@ -31,6 +31,11 @@
     <td>{{form_label(form.statut,"statut")}}</td>
     <td>{{form_widget(form.statut)}}</td>
     <td>{{form_errors(form.statut)}}</td>
+</tr>
+<tr>
+    <td>{{ form_label(form.photo, "Photo de l'atelier") }}</td>
+    <td>{{ form_widget(form.photo) }}</td>
+    <td>{{ form_errors(form.photo) }}</td><br>
 </tr>
 </table>
 </center>

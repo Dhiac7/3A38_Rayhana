@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -21,12 +24,14 @@ class Produit
     private ?float $prix_vente = null;
 
     #[ORM\Column]
+    #[Assert\PositiveOrZero]
     private ?float $quantite_vendues = null;
 
     #[ORM\Column]
     private ?bool $enPromotion = null;
 
     #[ORM\Column]
+    #[Assert\Range(min: 0, max: 100)]
     private ?int $pourcentage_promo = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -36,19 +41,38 @@ class Produit
     private ?\DateTimeInterface $date_fin_promo = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
     private ?float $quantite_retourne = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_retour = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['Disponible', 'En rupture'], message: "Le statut doit être 'Disponible' ou 'En rupture'.")]
     private ?string $statut = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\Choice(choices: ['Erreur de livraison', 'Produit endommagé'], message: "La raison doit être 'Erreur de livraison' ou 'Produit endommagé'.")]
     private ?string $raison_retour = null;
 
-    #[ORM\ManyToOne(inversedBy: 'stock')]
+    #[ORM\ManyToOne(targetEntity: Stock::class, inversedBy: 'produits')]
+    #[ORM\JoinColumn(name: 'stock_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Stock $stock = null;
+
+    /**
+     * @var Collection<int, Vente>
+     */
+    #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'produit')]
+    private Collection $ventes;
+
+
+
+    
+
+    public function __construct()
+    {
+        $this->ventes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -168,10 +192,13 @@ class Produit
         return $this->statut;
     }
 
-    public function setStatut(string $statut): static
+    public function setStatut(string $statut): self
     {
-        $this->statut = $statut;
+        if (!in_array($statut, ['Disponible', 'En rupture'])) {
+            throw new \InvalidArgumentException("Le statut doit être 'Disponible' ou 'En rupture'.");
+        }
 
+        $this->statut = $statut;
         return $this;
     }
 
@@ -180,10 +207,13 @@ class Produit
         return $this->raison_retour;
     }
 
-    public function setRaisonRetour(string $raison_retour): static
+    public function setRaisonRetour(string $raison_retour): self
     {
-        $this->raison_retour = $raison_retour;
+        if (!in_array($raison_retour, ['Erreur de livraison', 'Produit endommagé'])) {
+            throw new \InvalidArgumentException("La raison doit être 'Erreur de livraison' ou 'Produit endommagé'.");
+        }
 
+        $this->raison_retour = $raison_retour;
         return $this;
     }
 
@@ -198,4 +228,42 @@ class Produit
 
         return $this;
     }
+
+    public function getNom(): ?string
+    {
+        return $this->stock ? $this->stock->getNom() : null;
+    }
+
+    /**
+     * @return Collection<int, Vente>
+     */
+    public function getVentes(): Collection
+    {
+        return $this->ventes;
+    }
+
+    public function addVente(Vente $vente): static
+    {
+        if (!$this->ventes->contains($vente)) {
+            $this->ventes->add($vente);
+            $vente->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVente(Vente $vente): static
+    {
+        if ($this->ventes->removeElement($vente)) {
+            // set the owning side to null (unless already changed)
+            if ($vente->getProduit() === $this) {
+                $vente->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    
 }

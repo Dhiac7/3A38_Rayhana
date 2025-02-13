@@ -17,6 +17,9 @@ class Stock
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
     #[ORM\Column]
     private ?int $quantite = null;
 
@@ -37,18 +40,19 @@ class Stock
 
    
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\Choice(choices: ['Sec','Réfrigéré','Congelé'],message: "la condiiton  doit étre 'Sec','Réfrigéré','Congelé' ")]
     private ?string $conditionn = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
+    #[Assert\Choice(choices: ['Disponible','En rupture','Périmé'],message: "le statut doit étre 'Disponible','En rupture','Périmé' ")]
     private ?string $statut = null;
 
     /**
      * @var Collection<int, Produit>
      */
-    #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'stock')]
-    private Collection $stock;
+    #[ORM\OneToMany(mappedBy: 'stock', targetEntity: Produit::class, cascade: ['remove'])]
+    private Collection $produits;
+    
 
     /**
      * @var Collection<int, Dechet>
@@ -67,6 +71,15 @@ class Stock
      */
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'stock_id')]
     private Collection $dechets;
+
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+    
+   
+
+   
 
     public function __construct()
     {
@@ -160,8 +173,8 @@ class Stock
 
     public function setConditionn(string $conditionn): self
     {
-        if(!in_array($conditionn,['ouvert','complet','annulé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
+        if(!in_array($conditionn,['Sec','Réfrigéré','Congelé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Sec','Réfrigéré','Congelé' ");
         }
         $this->conditionn = $conditionn;
 
@@ -175,8 +188,8 @@ class Stock
 
     public function setStatut(string $statut): self
     {
-        if(!in_array($statut,['ouvert','complet','annulé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
+        if(!in_array($statut,['Disponible','En Rupture','Périmé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En Rupture','Périmé' ");
         }
 
         $this->statut = $statut;
@@ -280,4 +293,31 @@ class Stock
     {
         return $this->dechets;
     }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    
+   
 }

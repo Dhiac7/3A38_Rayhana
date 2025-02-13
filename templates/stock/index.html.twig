@@ -1,14 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Stock index{% endblock %}
 
 {% block body %}
-    <h1>Stock index</h1>
+    
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Nom du produit</th>
+                <th>image</th>
                 <th>Quantite</th>
                 <th>Date_stock</th>
                 <th>Quantite_initiale</th>
@@ -24,6 +26,11 @@
         {% for stock in stocks %}
             <tr>
                 <td>{{ stock.id }}</td>
+                <td>{{ stock.nom }}</td>
+               <td>
+    <img src="{{ asset('img/stock/' ~ stock.image) }}" alt="Image du produit" />
+</td>
+
                 <td>{{ stock.quantite }}</td>
                 <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
                 <td>{{ stock.quantiteInitiale }}</td>
