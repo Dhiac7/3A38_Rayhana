@@ -33,6 +33,10 @@ class ProduitType extends AbstractType
                     new Assert\Positive(['message' => 'La quantité doit être positive.']),
                 ],
             ])
+
+
+
+            
             ->add('prix_vente', null, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prix de vente est obligatoire.']),
