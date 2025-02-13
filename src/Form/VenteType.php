@@ -49,7 +49,7 @@ class VenteType extends AbstractType
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Valider la vente',
+                'label' => 'Enregistrer',
                 'attr' => ['class' => 'btn btn-primary'],
             ]);
     }

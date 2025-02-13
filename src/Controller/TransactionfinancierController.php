@@ -48,10 +48,12 @@ final class TransactionfinancierController extends AbstractController{
     }
 
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
-    public function show(Transactionfinancier $transactionfinancier): Response
+    public function show(Transactionfinancier $transactionfinancier,SessionInterface $session): Response
     {
+        $user = $session->get('user');
         return $this->render('transactionfinancier/show.html.twig', [
             'transactionfinancier' => $transactionfinancier,
+            'user' => $user,
         ]);
     }
 

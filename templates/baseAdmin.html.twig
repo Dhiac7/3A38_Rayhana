@@ -227,13 +227,18 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-                <span class="menu-title">Icons</span>
+                <span class="menu-title">Finances</span>
                 <i class="mdi mdi-contacts menu-icon"></i>
               </a>
               <div class="collapse" id="icons">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/icons/font-awesome.html')}}">Font Awesome</a>
+                    <a class="nav-link" href="{{ path('app_vente_indexback') }}"">vente</a>
+                  </li>
+                </ul>
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_transactionfinancier_index') }}">Transaction financier</a>
                   </li>
                 </ul>
               </div>

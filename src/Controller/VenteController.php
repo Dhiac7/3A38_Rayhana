@@ -20,8 +20,9 @@ final class VenteController extends AbstractController
 {
     // Route pour l'index
     #[Route('/', name: 'app_vente_index', methods: ['GET'])]
-    public function index(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator): Response
+    public function index(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         $query = $venteRepository->findAll();
         $pagination = $paginator->paginate(
             $query,
@@ -31,7 +32,25 @@ final class VenteController extends AbstractController
 
         return $this->render('vente/index.html.twig', [
             'pagination' => $pagination,
+            'user' => $user,
         ]);
+    }
+    #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
+    public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session): Response
+    {
+        $user = $session->get('user');
+        $query = $venteRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            6
+        );
+
+       return $this->render('vente/indexback.html.twig', [
+    'pagination' => $pagination,
+    'user' => $user,
+]);
+
     }
 
     // Route pour créer une nouvelle vente (définie avant les routes dynamiques comme /{id})
@@ -86,31 +105,84 @@ final class VenteController extends AbstractController
 
     // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Vente $vente): Response
+    public function show(Vente $vente, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         return $this->render('vente/show.html.twig', [
             'vente' => $vente,
+            'user' => $user,
         ]);
     }
 
     // Route pour éditer une vente
     #[Route('/{id}/edit', name: 'app_vente_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(VenteType::class, $vente);
-        $form->handleRequest($request);
+public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
+{
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $vente->getProduit()->getPrixVente(), // Passer le prix unitaire au formulaire
+    ]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            return $this->redirectToRoute('app_vente_index', [], Response::HTTP_SEE_OTHER);
-        }
+    $form->handleRequest($request);
 
-        return $this->render('vente/edit.html.twig', [
-            'vente' => $vente,
-            'form' => $form->createView(),
-        ]);
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Calculer le prix total
+        $quantite = $vente->getQuantite();
+        $prixUnitaire = $vente->getProduit()->getPrixVente();
+        $vente->setPrix($quantite * $prixUnitaire);
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vente mise à jour avec succès.');
+        return $this->redirectToRoute('app_vente_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    return $this->render('vente/edit.html.twig', [
+        'vente' => $vente,
+        'form' => $form->createView(),
+    ]);
+}
+#[Route('/admin/vente/{id}/edit', name: 'app_vente_edit_back', methods: ['GET', 'POST'])]
+public function editBack(Request $request, Vente $vente, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+{
+    // Récupérer le produit associé à la vente
+    $produit = $vente->getProduit();
+
+    // Vérifier si le produit existe
+    if (!$produit) {
+        $this->addFlash('error', 'Aucun produit associé à cette vente.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+
+    // Créer le formulaire avec le prix unitaire du produit
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $produit->getPrixVente(),
+    ]);
+
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Calculer le prix total en fonction de la quantité et du prix unitaire
+        $quantite = $vente->getQuantite();
+        $prixUnitaire = $produit->getPrixVente();
+        $vente->setPrix($quantite * $prixUnitaire);
+
+        // Enregistrer les modifications
+        $entityManager->flush();
+
+        // Ajouter un message de succès
+        $this->addFlash('success', 'La vente a été mise à jour avec succès.');
+
+        // Rediriger vers la liste des ventes
+        return $this->redirectToRoute('app_vente_index');
+    }
+
+    // Afficher le formulaire d'édition
+    return $this->render('admin/vente/edit.html.twig', [
+        'vente' => $vente,
+        'form' => $form->createView(),
+        'produit' => $produit, // Passer le produit au template
+    ]);
+}
     // Route pour supprimer une vente
     #[Route('/{id}', name: 'app_vente_delete', methods: ['POST'])]
     public function delete(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
