@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/stock')]
+#[Route('/stockback')]
 final class StockbackController extends AbstractController
 {
-    #[Route(name: 'app_stock_index', methods: ['GET'])]
+    #[Route(name: 'app_stockback_index', methods: ['GET'])]
     public function index(StockRepository $stockRepository): Response
     {
         return $this->render('stock/index.html.twig', [
@@ -23,7 +23,7 @@ final class StockbackController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_stock_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_stockback_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $stock = new Stock();
