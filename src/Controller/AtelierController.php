@@ -79,7 +79,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         if ($photoFile instanceof UploadedFile) {
             dump($photoFile); 
             
-            $uploadsDirectory = $this->getParameter('uploads_directory'); // Vérifie que ce paramètre est bien défini dans services.yaml
+            $uploadsDirectory = $this->getParameter('atelier_directory'); // Vérifie que ce paramètre est bien défini dans services.yaml
             $newFilename = uniqid().'.'.$photoFile->guessExtension();
 
             try {
@@ -116,8 +116,9 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     }
 
     #[Route('/{id}/edit', name: 'app_atelier_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Atelier $atelier, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(Request $request, Atelier $atelier, EntityManagerInterface $entityManager ,SessionInterface $session): Response
+    {       $user = $session->get('user');
+
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
         dump($form->getData()->getDateAtelier());
@@ -131,6 +132,8 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         return $this->render('atelier/edit.html.twig', [
             'atelier' => $atelier,
             'form' => $form,
+            'user' => $user,
+
         ]);
     }
 
