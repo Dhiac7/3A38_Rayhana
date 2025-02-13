@@ -63,6 +63,10 @@ class AtelierType extends AbstractType
                 'placeholder' => 'Sélectionnez un rôle',
                 'required' => true,
             ])*/;
+
+
+
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void
