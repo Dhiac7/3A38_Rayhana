@@ -1,11 +1,290 @@
-{% extends 'base.html.twig' %}
+{# templates/produit/new.html.twig #}
+{% extends 'baseAdmin.html.twig' %}
 
-{% block title %}New Produit{% endblock %}
+{% block title %}Ajouter Produit{% endblock %}
 
 {% block body %}
-    <h1>Create new Produit</h1>
+    <style>
+        /* General form style */
+        .formulaire-produit {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            margin: 30px auto;
+            margin-left: 280px;
+            margin-right: 30px;
+        }
 
-    {{ include('produit/_form.html.twig') }}
+        /* Titles */
+        .formulaire-produit h1 {
+            font-size: 32px;
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+        /* Labels */
+        .formulaire-produit label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            color: #2C3E50;
+        }
+
+        /* Input fields */
+        .formulaire-produit input,
+        .formulaire-produit select {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        /* Focus state */
+        .formulaire-produit input:focus,
+        .formulaire-produit select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+            background-color: #fff;
+        }
+
+        /* Submit button */
+        .formulaire-produit button {
+            width: 100%;
+            padding: 16px;
+            background-color: rgb(20, 171, 38);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .formulaire-produit button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 12px 20px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+
+        /* Form group spacing */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        /* Invalid input state */
+        .is-invalid {
+            border-color: #ef4444 !important;
+        }
+
+        /* Select styling */
+        .formulaire-produit select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-position: right 15px center;
+            background-repeat: no-repeat;
+            padding-right: 45px;
+        }
+
+        /* Checkbox styling */
+        .formulaire-produit input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        /* Date input styling */
+        .formulaire-produit input[type="datetime-local"] {
+            padding: 12px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .formulaire-produit {
+                margin-left: 30px;
+                max-width: calc(100% - 60px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .formulaire-produit {
+                padding: 25px;
+            }
+
+            .formulaire-produit h1 {
+                font-size: 24px;
+            }
+
+            .formulaire-produit input,
+            .formulaire-produit select,
+            .formulaire-produit button {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+
+    <div class="main-content">
+        <div class="formulaire-produit">
+            <h1>Ajouter un nouveau produit</h1>
+
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.stock) }}
+                    {{ form_widget(form.stock, {'attr': {'class': form.stock.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.stock.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.stock.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.quantite) }}
+                    {{ form_widget(form.quantite, {'attr': {'class': form.quantite.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.quantite.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.quantite.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.prix_vente) }}
+                    {{ form_widget(form.prix_vente, {'attr': {'class': form.prix_vente.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.prix_vente.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.prix_vente.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.statut) }}
+                    {{ form_widget(form.statut, {'attr': {'class': form.statut.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.statut.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.statut.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+              
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        {{ form_widget(form.enPromotion) }}
+                        {{ form_label(form.enPromotion) }}
+                    </div>
+                </div>
+
+                <div class="form-group promo-fields" style="display: none;">
+                    {{ form_label(form.pourcentage_promo) }}
+                    {{ form_widget(form.pourcentage_promo, {'attr': {'class': form.pourcentage_promo.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.pourcentage_promo.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.pourcentage_promo.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group promo-fields" style="display: none;">
+                    {{ form_label(form.date_debut_promo) }}
+                    {{ form_widget(form.date_debut_promo, {'attr': {'class': form.date_debut_promo.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.date_debut_promo.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.date_debut_promo.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group promo-fields" style="display: none;">
+                    {{ form_label(form.date_fin_promo) }}
+                    {{ form_widget(form.date_fin_promo, {'attr': {'class': form.date_fin_promo.vars.errors|length > 0 ? 'is-invalid' : ''}}) }}
+                    {% if form.date_fin_promo.vars.errors|length > 0 %}
+                        <div class="alert alert-danger">
+                            {% for error in form.date_fin_promo.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+              
+
+                <button type="submit" class="btn">Enregistrer le produit</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input, select');
+            const enPromotionCheckbox = document.querySelector('input[name$="[enPromotion]"]');
+            const promoFields = document.querySelectorAll('.promo-fields');
+
+            // Handle promotion fields visibility
+            function togglePromoFields() {
+                promoFields.forEach(field => {
+                    field.style.display = enPromotionCheckbox.checked ? 'block' : 'none';
+                });
+            }
+
+            // Initial state
+            if (enPromotionCheckbox) {
+                togglePromoFields();
+                enPromotionCheckbox.addEventListener('change', togglePromoFields);
+            }
+
+            // Clear validation errors on input
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const formGroup = this.closest('.form-group');
+                    const alertEl = formGroup.querySelector('.alert-danger');
+                    if (alertEl) {
+                        alertEl.style.display = 'none';
+                    }
+                    this.classList.remove('is-invalid');
+                });
+            });
+        });
+    </script>
 {% endblock %}
