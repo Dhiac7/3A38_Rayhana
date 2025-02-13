@@ -3,7 +3,7 @@
 {% block title %}Stock index{% endblock %}
 
 {% block body %}
-    <h1>Stock index</h1>
+    
 
     <table class="table">
         <thead>
@@ -28,7 +28,7 @@
                 <td>{{ stock.id }}</td>
                 <td>{{ stock.nom }}</td>
                <td>
-    <img src="{{ asset('img/users/' ~ stock.image) }}" alt="Image du produit" />
+    <img src="{{ asset('img/stock/' ~ stock.image) }}" alt="Image du produit" />
 </td>
 
                 <td>{{ stock.quantite }}</td>

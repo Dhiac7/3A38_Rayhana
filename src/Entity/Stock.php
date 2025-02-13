@@ -40,7 +40,7 @@ class Stock
 
    
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\Choice(choices: ['Sec','Réfrigéré','Congelé'],message: "le statut doit étre 'Sec','Réfrigéré','Congelé' ")]
+    #[Assert\Choice(choices: ['Sec','Réfrigéré','Congelé'],message: "la condiiton  doit étre 'Sec','Réfrigéré','Congelé' ")]
     private ?string $conditionn = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
@@ -75,6 +75,9 @@ class Stock
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    
+   
 
    
 
@@ -314,4 +317,7 @@ class Stock
 
         return $this;
     }
+
+    
+   
 }
