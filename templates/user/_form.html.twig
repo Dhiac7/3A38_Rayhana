@@ -21,13 +21,8 @@
     <td>{{form_errors(form.photo)}}</td>
 </tr>
 <tr>
-    <td>{{form_label(form.role,"role")}}</td>
-    <td>{{form_widget(form.role)}}</td>
-    <td>{{form_errors(form.role)}}</td>
-</tr>
-<tr>
     <td>{{form_label(form.mdp,"mdp")}}</td>
-    <td>{{form_widget(form.mdp)}}</td>
+    <td>{{ form_widget(form.mdp)}}</td>
     <td>{{form_errors(form.mdp)}}</td>
 </tr>
 <tr>
@@ -39,6 +34,11 @@
     <td>{{form_label(form.tel,"tel")}}</td>
     <td>{{form_widget(form.tel)}}</td>
     <td>{{form_errors(form.tel)}}</td>
+</tr>
+<tr>
+    <td>{{form_label(form.adresse,"adresse")}}</td>
+    <td>{{form_widget(form.adresse)}}</td>
+    <td>{{form_errors(form.adresse)}}</td>
 </tr>
 </table>
     {{form_widget(form.save)}}

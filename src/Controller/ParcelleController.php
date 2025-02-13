@@ -109,23 +109,48 @@ final class ParcelleController extends AbstractController
 
 
     //ADMIN
-    #[Route('/dashboard',name: 'app_parcelle_index', methods: ['GET'])]
-    public function index2(Request $request, ParcelleRepository $parcelleRepository): Response
+    #[Route('/dashboard', name: 'app_parcelle_index2', methods: ['GET'])]
+    public function dashparcelle(Request $request, ParcelleRepository $parcelleRepository): Response
     {
-
+        $query = $request->query->get('q', '');
+        $parcelles = !empty($query) ? $parcelleRepository->searchByName($query) : $parcelleRepository->findAll();
+        
+        // Si c'est une requête AJAX (XMLHttpRequest)
+        if ($request->isXmlHttpRequest()) {
+            // Vérifier si les parcelles sont trouvées
+            if (empty($parcelles)) {
+                return $this->json([]);
+            }
     
-        // Get the parcelles for the current page
-        $parcelles = $parcelleRepository->findAll();
+            return $this->json(array_map(function ($parcelle) {
+                return [
+                    'id' => $parcelle->getId(),
+                    'nom' => $parcelle->getNom(),
+                    'irrigationDisponible' => $parcelle->isIrrigationDisponible(),
+                    'superficie' => $parcelle->getSuperficie(),
+                    'latitude' => $parcelle->getLatitude(),
+                    'longitude' => $parcelle->getLongitude(),
+                ];
+            }, $parcelles));
+        }
     
-        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+        // Si ce n'est pas une requête AJAX, on rend la vue
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY'];
+        
         return $this->render('parcelle/indexAdmin.html.twig', [
             'parcelles' => $parcelles,
-            'MAPBOX_API_KEY' => $mapboxApiKey, // Pass to Twig
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+            'query' => $query,
         ]);
     }
     
+    
 
-    #[Route('/dashboard/new', name: 'app_parcelle_new', methods: ['GET', 'POST'])]
+    
+
+    
+
+    #[Route('/dashboard/new', name: 'app_parcelle_new2', methods: ['GET', 'POST'])]
     public function new2(Request $request, EntityManagerInterface $entityManager): Response
     {
         $parcelle = new Parcelle();
@@ -137,7 +162,7 @@ final class ParcelleController extends AbstractController
             $entityManager->flush();
             //$this->saveSatelliteImage($parcelle);
 
-            return $this->redirectToRoute('app_parcelle_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('parcelle/newAdmin.html.twig', [
@@ -146,7 +171,7 @@ final class ParcelleController extends AbstractController
         ]);
     }
 
-    #[Route('/dashboard/{id}', name: 'app_parcelle_show', methods: ['GET'])]
+    #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
     public function show2(Parcelle $parcelle): Response
     {
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
@@ -157,7 +182,7 @@ final class ParcelleController extends AbstractController
         ]);
     }
 
-    #[Route('/dashboard/{id}/edit', name: 'app_parcelle_edit', methods: ['GET', 'POST'])]
+    #[Route('/dashboard/{id}/edit', name: 'app_parcelle_edit2', methods: ['GET', 'POST'])]
     public function edit2(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ParcelleType::class, $parcelle);
@@ -166,7 +191,7 @@ final class ParcelleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_parcelle_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('parcelle/editAdmin.html.twig', [
@@ -175,7 +200,7 @@ final class ParcelleController extends AbstractController
         ]);
     }
 
-    #[Route('/dashboard/{id}', name: 'app_parcelle_delete', methods: ['POST'])]
+    #[Route('/dashboard/{id}', name: 'app_parcelle_delete2', methods: ['POST'])]
     public function delete2(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$parcelle->getId(), $request->getPayload()->getString('_token'))) {
@@ -183,7 +208,7 @@ final class ParcelleController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_parcelle_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
     }
 
 

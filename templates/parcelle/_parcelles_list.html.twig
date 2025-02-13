@@ -1,0 +1,22 @@
+{# templates/parcelle/_parcelles.html.twig #}
+
+<div id="parcelles-container" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    {% for parcelle in parcelles %}
+        <div class="parcelle-item rounded-lg bg-white p-5 dark:bg-darkblack-600 shadow-lg">
+            <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}">
+                <div id="map-{{ parcelle.id }}" class="mini-map rounded-lg overflow-hidden" data-lat="{{ parcelle.latitude }}" data-lng="{{ parcelle.longitude }}"></div>
+            </a>
+            <div class="mt-4 flex items-center space-x-3">
+                <img src="{{ asset('assets/images/icons/farm.svg') }}" alt="icon" class="w-8 h-8">
+                <p class="text-lg font-semibold text-bgray-900 dark:text-white">
+                    {{ parcelle.nom }} - Irrigation: {{ parcelle.irrigationDisponible ? 'Oui' : 'Non' }}
+                </p>
+            </div>
+            <h4 class="text-bgray-700 dark:text-bgray-50">
+                {{ parcelle.superficie }} ha - {{ parcelle.latitude }}° {{ parcelle.longitude }}°
+            </h4>
+        </div>
+    {% else %}
+        <p class="text-center text-bgray-700 dark:text-bgray-50">Aucune parcelle trouvée.</p>
+    {% endfor %}
+</div>

@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Atelier index{% endblock %}
-
 {% block body %}
-   <!-- Start Blog 
-    ============================================= -->
-
+   <!-- Start Blog ======= -->
     <div class="blog-area blog-grid default-padding">
         <div class="container">
             <div class="blog-item-box">
@@ -14,13 +10,10 @@
                     {% for atelier in pagination %}
                     <div class="col-xl-4 col-md-6 single-item">
                         <div class="blog-style-one">
-                        
                             <div class="thumb">
-                                <a href="{{ path('app_atelier_show', {'id': atelier.id}) }}" >
-                                    <img src="{{ asset('img/blog/1.jpg') }}" alt="Image Not Found">
+                                    <img src="{{ asset('img/blog/5.jpg') }}" alt="Image Not Found">
                                 </a>
                             </div>
-                            
                             <div >
                                 <div class="meta-title">
                                  <span class="post-date">
@@ -28,9 +21,7 @@
     {{ atelier.dateAtelier ? atelier.dateAtelier|date('d M Y') : 'Date non définie' }}
 </span>
                                 </div>
-                               <h5>
-    {{ atelier.nom }}
-</h5>
+                            <h3> {{ atelier.nom }}</h3>
                             </div>
                             <div class="info">
                                 <div class="meta">
@@ -40,7 +31,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                              
+                                  <a href="{{ path('app_vente_new', {'id': atelier.id}) }}"  class="btn">Reserver</a>
                             </div>
                         </div>
                     </div>
@@ -51,21 +42,19 @@
         </div>
     </div>
     <!-- End Blog -->
-
     <div class="d-flex justify-content-center">
         {{ knp_pagination_render(pagination) }}
     </div>
     <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
-
     <script>
         // Tri 
         $(document).ready(function () {
             $('#atelierTable').DataTable({
-                "ordering": true,         // Activer le tri par colonne
-                "paging": false,          // Désactiver la pagination
-                "searching": true,        // Activer la recherche
-                "pageLength": 6,          // Nombre d'éléments par page
-                "lengthChange": false,    // Désactiver le menu de modification du nombre d'éléments par page
+                "ordering": true, // Activer le tri par colonne
+                "paging": false, // Désactiver la pagination
+                "searching": true,// Activer la recherche
+                "pageLength": 6, // Nombre d'éléments par page
+                "lengthChange": false, // Désactiver le menu de modification du nombre d'éléments par page
                 "language": {
                     "url": "{{ asset('js/French.json') }}"
                 }

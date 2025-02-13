@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/css/style.css') }}">
+    <link rel="shortcut icon" href="{{ asset('assetsback/images/favicon.png') }}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth">
+          <div class="row flex-grow">
+            <div class="col-lg-6 mx-auto">
+              <div class="auth-form-light text-left p-5">
+                <div class="brand-logo">
+                  <img src="{{ asset('assetsback/images/logo.svg') }}">
+                </div>
+                <h4>Créer votre compte</h4><br>
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
+                    {% for error in form.vars.errors %}
+                        <div class="alert alert-danger">{{ error.message }}</div>
+                    {% endfor %}
+                  <div class="form-group">
+                    {{ form_errors(form.nom)}}
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.prenom)}}
+                    {{ form_widget(form.prenom, {'attr': {'class': 'form-control', 'placeholder': 'Prénom'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.cin)}}
+                    {{ form_widget(form.cin, {'attr': {'class': 'form-control', 'placeholder': 'CIN'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.photo)}}
+                    {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Photo'}}) }}
+                  </div>
+                  <div class="form-group">
+                   {{ form_errors(form.mdp)}}
+                    {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.email)}}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Email'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.tel)}}
+                    {{ form_widget(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
+                  </div>
+                  <div class="form-group">
+                    {{ form_errors(form.adresse)}}
+                    {{ form_widget(form.adresse, {'attr': {'class': 'form-select', 'placeholder': 'Adresse'}}) }}
+                  </div>
+                  <br>
+                  <div class="mt-3 d-grid gap-2">
+                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
+                  </div>
+                  {{ form_end(form) }}
+                  {# End Symfony Form #}
+                <div class="text-center mt-4 font-weight-light"> Déjà un compte? <a href="{{ path('app_user_loginback') }}" class="text-dark">Se connecter</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ asset('assetsback/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assetsback/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assetsback/js/misc.js') }}"></script>
+  </body>
+</html>

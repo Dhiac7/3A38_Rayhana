@@ -3,37 +3,243 @@
 {% block title %}Vente index{% endblock %}
 
 {% block body %}
-    <h1>Vente index</h1>
+  
+<!-- Start Breadcrumb -->
+<div class="breadcrumb-area text-center shadow dark bg-fixed text-light" style="background-image: url(assets/img/2440x1578.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h1>Latest purshases</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="active">Blog</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb -->
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Prix</th>
-                <th>Methodepayement</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for vente in vente %}
-            <tr>
-                <td>{{ vente.id }}</td>
-                <td>{{ vente.date ? vente.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ vente.prix }}</td>
-                <td>{{ vente.methodepayement }}</td>
-                <td>
-                    <a href="{{ path('app_vente_show', {'id': vente.id}) }}">show</a>
-                    <a href="{{ path('app_vente_edit', {'id': vente.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<!-- Start Blog -->
+<div class="blog-area full-blog default-padding">
+    <div class="container">
+        <div class="blog-items">
+            <div class="row">
+                <div class="blog-content col-xl-8 col-lg-7 col-md-12 pr-35 pr-md-15 pl-md-15 pr-xs-15 pl-xs-15">
+                    <div class="blog-item-box">
+                        <!-- Single Item -->
+                        {% for vente in pagination %}
+                        <div class="item">
+                            <div class="info">
+                                <div class="meta">
+                                    <ul>
+                                        <li>
+                                            <a href="#">Admin</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">26 Comments</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <h2 class="title">
+                                    <a href="{{ path('app_vente_show', {'id': vente.id}) }}">
+                                        Vente de {{ vente.prix }} €
+                                    </a>
+                                </h2>
+                                <p>
+                                    {{ vente.methodepayement }}
+                                </p>
+                                
+                                    <p>
+                                        {{ vente.date|date('Y-m-d H:i:s') }} {# Format the date as needed #}
+                                    </p>
+                                    <p>
+                                       Quantite: {{ vente.quantite }}
+                                    </p>
+                                <a class="btn mt-10 btn-md btn-theme animation" href="{{ path('app_vente_show', {'id': vente.id}) }}">
+                                    Voir les détails
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-    <a href="{{ path('app_vente_new') }}">Create new</a>
+                <!-- Start Sidebar -->
+                <div class="sidebar col-xl-4 col-lg-5 col-md-12 mt-md-100 mt-xs-50">
+                    <aside>
+                        <div class="sidebar-item search">
+                            <div class="sidebar-info">
+                                <form>
+                                    <input type="text" placeholder="Enter Keyword" name="text" class="form-control">
+                                    <button type="submit"><i class="fas fa-search"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="sidebar-item recent-post">
+                            <h4 class="title">Recent Post</h4>
+                            <ul>
+                                <li>
+                                    <div class="thumb">
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <div class="meta-title">
+                                            <span class="post-date">12 Feb, 2020</span>
+                                        </div>
+                                        <a href="blog-single-with-sidebar.html">Commanded household smallness delivered.</a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="thumb">
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <div class="meta-title">
+                                            <span class="post-date">05 Jul, 2022</span>
+                                        </div>
+                                        <a href="blog-single-with-sidebar.html">Future Plan & Strategy for Consutruction </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="thumb">
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="Thumb">
+                                        </a>
+                                    </div>
+                                    <div class="info">
+                                        <div class="meta-title">
+                                            <span class="post-date">29 Aug, 2020</span>
+                                        </div>
+                                        <a href="blog-single-with-sidebar.html">Melancholy particular devonshire alteration</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="sidebar-item category">
+                            <h4 class="title">category list</h4>
+                            <div class="sidebar-info">
+                                <ul>
+                                    <li>
+                                        <a href="blog-with-sidebar.html">national <span>69</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-with-sidebar.html">national <span>25</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-with-sidebar.html">sports <span>18</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-with-sidebar.html">megazine <span>37</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-with-sidebar.html">health <span>12</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sidebar-item gallery">
+                            <h4 class="title">Gallery</h4>
+                            <div class="sidebar-info">
+                                <ul>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="blog-single-with-sidebar.html">
+                                            <img src="assets/img/800x800.png" alt="thumb">
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sidebar-item archives">
+                            <h4 class="title">Archives</h4>
+                            <div class="sidebar-info">
+                                <ul>
+                                    <li><a href="blog-with-sidebar.html">Aug 2020</a></li>
+                                    <li><a href="blog-with-sidebar.html">Sept 2020</a></li>
+                                    <li><a href="blog-with-sidebar.html">Nov 2020</a></li>
+                                    <li><a href="blog-with-sidebar.html">Dec 2020</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sidebar-item social-sidebar">
+                            <h4 class="title">follow us</h4>
+                            <div class="sidebar-info">
+                                <ul>
+                                    <li class="facebook">
+                                        <a href="#">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                    </li>
+                                    <li class="twitter">
+                                        <a href="#">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                    </li>
+                                    <li class="pinterest">
+                                        <a href="#">
+                                            <i class="fab fa-pinterest"></i>
+                                        </a>
+                                    </li>
+                                    <li class="linkedin">
+                                        <a href="#">
+                                            <i class="fab fa-linkedin-in"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sidebar-item tags">
+                            <h4 class="title">tags</h4>
+                            <div class="sidebar-info">
+                                <ul>
+                                    <li><a href="blog-with-sidebar.html">Fashion</a></li>
+                                    <li><a href="blog-with-sidebar.html">Education</a></li>
+                                    <li><a href="blog-with-sidebar.html">nation</a></li>
+                                    <li><a href="blog-with-sidebar.html">study</a></li>
+                                    <li><a href="blog-with-sidebar.html">health</a></li>
+                                    <li><a href="blog-with-sidebar.html">food</a></li>
+                                    <li><a href="blog-with-sidebar.html">travel</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+                <!-- End Start Sidebar -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Blog -->
+
 {% endblock %}

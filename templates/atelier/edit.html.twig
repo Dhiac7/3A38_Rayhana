@@ -1,33 +1,38 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Modifier atelier{% endblock %}
+{% block title %}Modifier Atelier{% endblock %}
 
 {% block body %}
-<div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    {#  classes Flexbox (d-flex justify-content-center align-items-center) pour centrer et min-height: 100vh pour occuper toute la hauteur #}
-    <div class="container">
-        <div class="row align-center justify-content-center">
-            {#  justify-content-center pour centrer horizontalement #}
-            
-            <div class="col-lg-6">
-                <div class="contact-form-style-one mb-md-50 text-center">
-                    {# Ligne modifiée : Centrer le texte avec text-center #}
-                    <h1 class="mb-4">Modifier atelier</h1>
-                    {#  mb-4 pour un espacement sous le titre #}
-                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+    <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-primary text-white me-2" id="toggleForm">
+            <i class="mdi mdi-plus"></i>
+        </span> Ajouter un Atelier
+    </h3>
+</div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Mettez à jour les informations</h4>
 
-                    {{ include('atelier/_form.html.twig', {'button_label': 'Modifier'}) }}
+                        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4 d-block mx-auto">
 
-                    <div class="text-center mt-3">
-                        <a href="{{ path('app_atelier_index') }}" class="btn btn-secondary">
-                            <i class="fa fa-arrow-left"></i> Revenir à la liste
-                        </a>
+                        {{ include('atelier/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_atelier_index') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+
+                        {{ include('atelier/_delete_form.html.twig') }}
                     </div>
-
-                    {{ include('atelier/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </div> <!-- content-wrapper -->
+</div> <!-- main-panel -->
 {% endblock %}

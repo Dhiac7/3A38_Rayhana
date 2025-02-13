@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 #[Route('/atelier')]
 final class AtelierController extends AbstractController
 {
@@ -33,8 +35,9 @@ final class AtelierController extends AbstractController
     }
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         $atelier = new Atelier();
         $form = $this->createForm(AtelierType::class, $atelier);
         $form->handleRequest($request);
@@ -43,7 +46,7 @@ final class AtelierController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) 
         {
             // Vérifie si un atelier existe déjà à la même date
-           $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
+            $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
                 'date_atelier' => $atelier->getDateAtelier()
             ]);
     
@@ -64,6 +67,7 @@ final class AtelierController extends AbstractController
         return $this->render('atelier/new.html.twig', [
             'atelier' => $atelier,
             'form' => $form,
+            'user' => $user,
         ]);
     }
     

@@ -11,7 +11,7 @@
         </a>
     </div>
 
-    <table class="table table-striped">
+    <table id="cultureTable" class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -75,4 +75,22 @@
     </nav>
     <div>________</div>
 </div>
+
+
+
+  <script>
+//tri 
+        $(document).ready(function () {
+            $('#cultureTable').DataTable({
+                "ordering": true,  // tri 3al colonne
+                "paging": false,    // nactiviw l pagination
+                "searching": true, // nactiviw l recherche
+                "pageLength": 4,   // nbr element par page
+                "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
+                "language": {
+                     "url": "{{ asset('js/French.json') }}"
+                }
+            });
+        });
+    </script>
 {% endblock %}
