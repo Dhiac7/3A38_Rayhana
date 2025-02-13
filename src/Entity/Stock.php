@@ -72,9 +72,9 @@ class Stock
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'stock_id')]
     private Collection $dechets;
 
-    #[ORM\Column(type: 'string', length: 255 )]
-    private ?string $image = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
    
 
@@ -314,6 +314,4 @@ class Stock
 
         return $this;
     }
-
-   
 }
