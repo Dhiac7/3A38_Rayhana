@@ -10,15 +10,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/produitback')]
 final class ProduitbackController extends AbstractController
 {
     #[Route(name: 'app_produitback_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository): Response
+    public function index(ProduitRepository $produitRepository, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         return $this->render('produit/produitback.html.twig', [
             'produits' => $produitRepository->findAll(),
+            'user' => $user,
+        
         ]);
     }
 
