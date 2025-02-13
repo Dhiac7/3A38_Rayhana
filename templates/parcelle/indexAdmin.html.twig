@@ -21,91 +21,62 @@
             </nav>
         </div>
 
+
         <!-- Parcelles Section -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-lg">
-                    <div class="card-body">
-                        <h4 class="card-title text-center font-bold text-primary mb-5">
-                            🌱 Liste des Cultures Parcelles
-                        </h4>
-                        
-                        <!-- Recherche -->
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-                            <div class="w-100 mb-3 mb-md-0">
-                                <input 
-                                    type="text" 
-                                    id="search" 
-                                    class="form-control w-100 rounded-lg shadow-sm p-3" 
-                                    placeholder="🔍 Rechercher une parcelle..." 
-                                    value="{{ app.request.query.get('q') }}">
-                            </div>
-                            <button 
-                                id="search-btn" 
-                                class="btn btn-primary ml-md-3 px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80" 
-                                onclick="searchParcelles()">
-                                Rechercher
-                            </button>
-                        </div>
-                        
-                        <!-- Link to Create New Parcelle -->
-                        <div class="text-center mb-5">
-                            <a href="{{ path('app_parcelle_new2') }}" 
-                            class="btn btn-success text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-80">
-                                <i class="fa fa-plus"></i> Créer une nouvelle parcelle
-                            </a>
-                        </div>
-                        
-                        <!-- Liste des parcelles -->
-                        <div id="parcelles-container">
-                            {% for i in 0..(parcelles|length - 1) %}
-                                {% if i % 3 == 0 %}
-                                    <!-- Démarre une nouvelle rangée pour chaque 3 éléments -->
-                                    <div class="row mb-4">
-                                {% endif %}
-                                
-                                <div class="col-lg-4 col-md-6 mb-3">
-                                    <div class="parcelle-item rounded-lg bg-light p-4 dark:bg-darkblack-600 shadow-md transition-all hover:shadow-xl">
-                                        <a href="{{ path('app_parcelle_show2', {'id': parcelles[i].id}) }}">
-                                            <div 
-                                                id="map-{{ parcelles[i].id }}" 
-                                                class="mini-map rounded-lg overflow-hidden mb-3" 
-                                                data-lat="{{ parcelles[i].latitude }}" 
-                                                data-lng="{{ parcelles[i].longitude }}">
-                                            </div>
-                                        </a>
-                                        <div class="mt-2">
-                                            <p class="font-bold text-lg text-darkgray dark:text-white mb-2">
-                                                {{ parcelles[i].nom }}
-                                            </p>
-                                            <span class="badge {{ parcelles[i].irrigationDisponible ? 'bg-success' : 'bg-danger' }} text-white p-2 rounded-lg">
-                                                Irrigation : {{ parcelles[i].irrigationDisponible ? 'Oui' : 'Non' }}
-                                            </span>
-                                        </div>
-                                        <p class="text-muted mt-2">
-                                            Superficie : <strong>{{ parcelles[i].superficie }} ha</strong><br>
-                                            Coordonnées : <strong>{{ parcelles[i].latitude }}° {{ parcelles[i].longitude }}°</strong>
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                {% if i % 3 == 2 or i == parcelles|length - 1 %}
-                                    <!-- Ferme la rangée après 3 éléments ou à la fin -->
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        
-                        {% if parcelles|length == 0 %}
-                            <!-- Message si aucune parcelle n'est trouvée -->
-                            <p class="text-center text-muted mt-5">
-                                Aucune parcelle trouvée. Veuillez en créer une nouvelle.
+        <h4 class="card-title text-center font-bold text-primary mb-5">🌱 Liste des Cultures Parcelles</h4>
+
+        <!-- Recherche -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+            <div class="w-100 mb-3 mb-md-0">
+                <input type="text" id="search" class="form-control rounded-lg shadow-sm p-3" placeholder="🔍 Rechercher une parcelle..." value="{{ app.request.query.get('q') }}">
+            </div>
+            <button id="search-btn" class="btn btn-primary ms-md-3 px-4 py-2 rounded-lg shadow-md" onclick="searchParcelles()">Rechercher</button>
+        </div>
+
+        <!-- Link to Create New Parcelle -->
+        <div class="text-center mb-5">
+            <a href="{{ path('app_parcelle_new2') }}" class="btn btn-success text-white px-4 py-2 rounded-lg shadow-md">
+                <i class="fa fa-plus"></i> Créer une nouvelle parcelle
+            </a>
+        </div>
+        <!-- Liste des parcelles -->
+        <div id="parcelles-container">
+            {% for i in 0..(parcelles|length - 1) %}
+                {% if i % 3 == 0 %}
+                    <!-- Démarre une nouvelle rangée pour chaque 3 éléments -->
+                    <div class="row">
+                {% endif %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card parcelle-item shadow-md rounded-lg bg-light dark:bg-darkblack-600 transition-all hover:shadow-lg">
+                        <a href="{{ path('app_parcelle_show2', {'id': parcelles[i].id}) }}">
+                            <div id="map-{{ parcelles[i].id }}" class="mini-map rounded-lg overflow-hidden mb-3" data-lat="{{ parcelles[i].latitude }}" data-lng="{{ parcelles[i].longitude }}"></div>
+                        </a>
+                        <div class="card-body">
+                            <p class="font-bold text-lg text-darkgray dark:text-white mb-2">
+                                {{ parcelles[i].nom }}
                             </p>
-                        {% endif %}
+                            <span class="badge {{ parcelles[i].irrigationDisponible ? 'bg-success' : 'bg-danger' }} text-white p-2 rounded-lg">
+                                Irrigation : {{ parcelles[i].irrigationDisponible ? 'Oui' : 'Non' }}
+                            </span>
+                            <p class="text-muted mt-3">
+                                Superficie : <strong>{{ parcelles[i].superficie }} ha</strong><br>
+                                Coordonnées : <strong>{{ parcelles[i].latitude }}° {{ parcelles[i].longitude }}°</strong>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+                {% if i % 3 == 2 or i == parcelles|length - 1 %}
+                    <!-- Ferme la rangée après 3 éléments ou à la fin -->
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
+
+        {% if parcelles|length == 0 %}
+            <!-- Message si aucune parcelle n'est trouvée -->
+            <p class="text-center text-muted mt-5">Aucune parcelle trouvée. Veuillez en créer une nouvelle.</p>
+        {% endif %}
+
 
 
     </div>

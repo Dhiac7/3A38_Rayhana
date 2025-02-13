@@ -112,7 +112,7 @@ final class ParcelledashboardController extends AbstractController
             $entityManager->flush();
             //$this->saveSatelliteImage($parcelle);
 
-            return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_parcelle_dashboard_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('parcelle/newAdmin.html.twig', [
@@ -149,7 +149,7 @@ final class ParcelledashboardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_parcelle_dashboard_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('parcelle/editAdmin.html.twig', [
@@ -167,6 +167,6 @@ final class ParcelledashboardController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_parcelle_dashboard_index', [], Response::HTTP_SEE_OTHER);
     }
 }
