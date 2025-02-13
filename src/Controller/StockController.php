@@ -41,7 +41,7 @@ final class StockController extends AbstractController
 
             if ($photoFile instanceof UploadedFile) {
                 dump($photoFile); 
-                $uploadsDirectory = $this->getParameter('uploads_directory'); 
+                $uploadsDirectory = $this->getParameter('image_directory'); 
                 $newFilename = uniqid().'.'.$photoFile->guessExtension();
     
                 $photoFile->move($uploadsDirectory, $newFilename);
@@ -55,7 +55,6 @@ final class StockController extends AbstractController
 
             return $this->redirectToRoute('app_stock_index', [], Response::HTTP_SEE_OTHER);
         }
-
         return $this->render('stock/new.html.twig', [
             'stock' => $stock,
             'form' => $form,
@@ -63,17 +62,21 @@ final class StockController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/{id}', name: 'app_stock_show', methods: ['GET'])]
-    public function show(Stock $stock): Response
-    {
+    public function show(Stock $stock, SessionInterface $session): Response
+    {   $user = $session->get('user');
         return $this->render('stock/show.html.twig', [
             'stock' => $stock,
+            'user' => $user,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_stock_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Stock $stock, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Stock $stock, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         $form = $this->createForm(StockType::class, $stock);
         $form->handleRequest($request);
 
@@ -86,12 +89,13 @@ final class StockController extends AbstractController
         return $this->render('stock/edit.html.twig', [
             'stock' => $stock,
             'form' => $form,
+            'user' => $user,
         ]);
     }
 
     #[Route('/{id}', name: 'app_stock_delete', methods: ['POST'])]
-    public function delete(Request $request, Stock $stock, EntityManagerInterface $entityManager): Response
-    {
+    public function delete(Request $request, Stock $stock, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {    $user = $session->get('user');
         if ($this->isCsrfTokenValid('delete'.$stock->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($stock);
             $entityManager->flush();

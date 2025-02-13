@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+
 #[Route('/produitback')]
 final class ProduitbackController extends AbstractController
 {
@@ -27,8 +28,8 @@ final class ProduitbackController extends AbstractController
     }
 
     #[Route('/new', name: 'app_produitback_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {$user = $session->get('user');
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
@@ -43,20 +44,22 @@ final class ProduitbackController extends AbstractController
         return $this->render('produit/new.html.twig', [
             'produit' => $produit,
             'form' => $form,
+            'user' => $user,
         ]);
     }
 
     #[Route('/{id}', name: 'app_produitback_show', methods: ['GET'])]
-    public function show(Produit $produit): Response
-    {
+    public function show(Produit $produit,SessionInterface $session): Response
+    {$user = $session->get('user');
         return $this->render('produit/showback.html.twig', [
             'produit' => $produit,
+            'user' => $user,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {$user = $session->get('user');
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
@@ -69,12 +72,13 @@ final class ProduitbackController extends AbstractController
         return $this->render('produit/edit.html.twig', [
             'produit' => $produit,
             'form' => $form,
+            'user' => $user,
         ]);
     }
 
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
-    public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
-    {
+    public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {$user = $session->get('user');
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();
