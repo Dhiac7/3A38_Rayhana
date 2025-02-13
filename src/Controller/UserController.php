@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\UserAdminType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,7 @@ final class UserController extends AbstractController
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request,UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
     {
-    /*   if (!$session->get('user')) {
+       /* if (!$session->get('user')) {
             return $this->redirectToRoute('app_user_login');
         }*/
         $query = $userRepository->findAll();
@@ -100,7 +101,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             } else {
                 $session->set('user', $user);
 
-                return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+                return $this->redirectToRoute('app_dashboard');
             }
         }
 
@@ -114,6 +115,13 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     {
         $session->clear();
         return $this->redirectToRoute('app_home');
+    }
+
+    #[Route('/logoutback', name: 'app_user_logoutback')]
+    public function logoutback(SessionInterface $session): Response
+    {
+        $session->clear();
+        return $this->redirectToRoute('app_user_loginback');
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
@@ -140,11 +148,12 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
+            $user->setRole('client');
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('user/new.html.twig', [
@@ -161,13 +170,27 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
+
+        if ($photoFile instanceof UploadedFile) {
+            dump($photoFile); 
+            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+            $photoFile->move($uploadsDirectory, $newFilename);
+
+            $user->setPhoto($newFilename);
+            } else {
+                dump('No file uploaded'); 
+            }
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
+            $user->setRole('agriculteur');
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_loginback', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('user/newback.html.twig', [
@@ -177,18 +200,66 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
+
+        if ($photoFile instanceof UploadedFile) {
+            dump($photoFile); 
+            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+            $photoFile->move($uploadsDirectory, $newFilename);
+
+            $user->setPhoto($newFilename);
+            } else {
+                dump('No file uploaded'); 
+            }
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/editback', name: 'app_user_editback', methods: ['GET', 'POST'])]
+    public function editback(Request $request, User $user, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $form = $this->createForm(UserAdminType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
+
+        if ($photoFile instanceof UploadedFile) {
+            dump($photoFile); 
+            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+            $photoFile->move($uploadsDirectory, $newFilename);
+
+            $user->setPhoto($newFilename);
+            } else {
+                dump('No file uploaded'); 
+            }
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('user/edit.html.twig', [
+        return $this->render('user/editback.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);

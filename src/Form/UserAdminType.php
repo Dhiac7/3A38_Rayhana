@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
-class UserType extends AbstractType
+class UserAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -32,9 +32,20 @@ class UserType extends AbstractType
                 ])
             ],
         ])
-        ->add('mdp', PasswordType::class) 
+        ->add('role', ChoiceType::class, [
+            'choices' => [
+                'agriculteur' => 'agriculteur',
+                'fermier' => 'fermier',
+                'livreur' => 'livreur',
+                'inspecteur' => 'inspecteur',
+            ],
+            'placeholder' => 'entrez votre role',
+            'required' => true,
+        ])
+        ->add('mdp') 
         ->add('email')
         ->add('tel')
+        ->add('salaire')
         ->add('adresse', ChoiceType::class, [
             'choices' => [
                 'Ariana' => 'Ariana',
@@ -65,7 +76,7 @@ class UserType extends AbstractType
             'attr' => ['class' => 'form-select']
         ])
         ->add('save', SubmitType::class, ['label' => 'Confirmer']);
-    }
+        }
 
 
     public function configureOptions(OptionsResolver $resolver): void
