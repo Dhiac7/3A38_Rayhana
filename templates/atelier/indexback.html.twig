@@ -1,96 +1,88 @@
-{% extends 'baseAdmin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Liste des Ateliers{% endblock %}
+{% block title %}Modifier un Atelier{% endblock %}
 
 {% block body %}
 <div class="main-panel">
-    <div class="content-wrapper">
-        <div class="page-header">
-            <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-info text-white me-2">
-                    <i class="mdi mdi-view-list"></i>
-                </span> Liste des Ateliers
-            </h3>
-        </div>
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title text-center">Modifier un Atelier</h4>
+          <p class="card-description text-center">Mettez à jour les informations</p>
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Tous les ateliers disponibles</h4>
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="atelierTable">
-                                <thead>
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Description</th>
-                                        <th>Date de l'Atelier</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% if pagination|length > 0 %}
-                                        {% for atelier in pagination %}
-                                            <tr>
-                                                <td>{{ atelier.nom }}</td>
-                                                <td>{{ atelier.description }}</td>
-                                                <td>{{ atelier.dateAtelier ? atelier.dateAtelier|date('d M Y') : 'Date non définie' }}</td>
-                                                <td>
-                                                    <a href="{{ path('app_atelier_showback', {'id': atelier.id}) }}" class="btn btn-info btn-sm">
-                                                        <i class="mdi mdi-eye"></i> Afficher
-                                                    </a>
-                                                    <a href="{{ path('app_vente_new', {'id': atelier.id}) }}" class="btn btn-success btn-sm">
-                                                        <i class="mdi mdi-cart"></i> Réserver
-                                                    </a>
-                                                    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-warning btn-sm">
-                                                        <i class="mdi mdi-pencil"></i> Modifier
-                                                    </a>
-                                                    {{ include('atelier/_delete_form.html.twig', {'atelier': atelier}) }}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% else %}
-                                        <tr>
-                                            <td colspan="4" class="text-center">Aucun atelier disponible.</td>
-                                        </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
+          {% for error in form.vars.errors %}
+              <div class="alert alert-danger">{{ error.message }}</div>
+          {% endfor %}
+          {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                  <div class="alert alert-{{ label }}">{{ message }}</div>
+              {% endfor %}
+          {% endfor %}
 
-                        <div class="d-flex justify-content-center mt-3">
-                            {{ knp_pagination_render(pagination) }}
-                        </div>
-
-                      <div class="page-header">
-    <h3 class="page-title">
-        <span class="page-title-icon bg-gradient-primary text-white me-2" id="toggleForm">
-            <i class="mdi mdi-plus"></i>
-        </span> Ajouter un Atelier
-    </h3>
-</div>
-
-                    </div>
-                </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.nom, 'Nom') }}
+              {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
+              {{ form_errors(form.nom) }}
             </div>
-        </div>
-    </div> <!-- content-wrapper -->
-</div> <!-- main-panel -->
+            <div class="col-md-6 form-group">
+              {{ form_label(form.description, 'Description') }}
+              {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+              {{ form_errors(form.description) }}
+            </div>
+          </div>
 
-<!-- Script pour activer le tri et la recherche -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        $('#atelierTable').DataTable({
-            "ordering": true, // Activer le tri par colonne
-            "paging": true, // Activer la pagination
-            "searching": true, // Activer la recherche
-            "pageLength": 6, // Nombre d'éléments par page
-            "lengthChange": false, // Désactiver le menu de modification du nombre d'éléments par page
-            "language": {
-                "url": "{{ asset('js/French.json') }}"
-            }
-        });
-    });
-</script>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
+              {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.date_atelier) }}
+            </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.capacite_max, 'Capacité max') }}
+              {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
+              {{ form_errors(form.capacite_max) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.prix, 'Prix') }}
+              {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
+              {{ form_errors(form.prix) }}
+            </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.statut, 'Statut') }}
+              {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.statut) }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            {{ form_label(form.photo, "Photo de l'atelier") }}
+            {{ form_widget(form.photo, {'attr': {'class': 'form-control-file'}}) }}
+            {{ form_errors(form.photo) }}
+
+            {% if form.vars.value.photo %}
+              <p>Image actuelle :</p>
+              <img src="{{ asset('uploads/' ~ form.vars.value.photo) }}" alt="Photo actuelle" class="img-thumbnail" width="200">
+            {% endif %}
+          </div>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-gradient-primary w-50">
+              <i class="mdi mdi-content-save"></i> {{ button_label|default('Enregistrer') }}
+            </button>
+          </div>
+
+          {{ form_end(form) }}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
