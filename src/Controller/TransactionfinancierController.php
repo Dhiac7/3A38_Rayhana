@@ -58,8 +58,9 @@ final class TransactionfinancierController extends AbstractController{
     }
 
     #[Route('/{id}/edit', name: 'app_transactionfinancier_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Transactionfinancier $transactionfinancier, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Transactionfinancier $transactionfinancier, EntityManagerInterface $entityManager,SessionInterface $session): Response
     {
+        $user = $session->get('user');
         $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
         $form->handleRequest($request);
 
@@ -72,6 +73,7 @@ final class TransactionfinancierController extends AbstractController{
         return $this->render('transactionfinancier/edit.html.twig', [
             'transactionfinancier' => $transactionfinancier,
             'form' => $form,
+            'user' => $user,
             
         ]);
     }
