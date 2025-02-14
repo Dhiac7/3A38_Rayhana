@@ -116,8 +116,9 @@ final class VenteController extends AbstractController
 
     // Route pour éditer une vente
     #[Route('/{id}/edit', name: 'app_vente_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
+public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager,SessionInterface $session): Response
 {
+    $user = $session->get('user');
     $form = $this->createForm(VenteType::class, $vente, [
         'prix_unitaire' => $vente->getProduit()->getPrixVente(), // Passer le prix unitaire au formulaire
     ]);
@@ -139,50 +140,10 @@ public function edit(Request $request, Vente $vente, EntityManagerInterface $ent
     return $this->render('vente/edit.html.twig', [
         'vente' => $vente,
         'form' => $form->createView(),
+        'user' => $user,
     ]);
 }
-#[Route('/admin/vente/{id}/edit', name: 'app_vente_edit_back', methods: ['GET', 'POST'])]
-public function editBack(Request $request, Vente $vente, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
-{
-    // Récupérer le produit associé à la vente
-    $produit = $vente->getProduit();
 
-    // Vérifier si le produit existe
-    if (!$produit) {
-        $this->addFlash('error', 'Aucun produit associé à cette vente.');
-        return $this->redirectToRoute('app_vente_index');
-    }
-
-    // Créer le formulaire avec le prix unitaire du produit
-    $form = $this->createForm(VenteType::class, $vente, [
-        'prix_unitaire' => $produit->getPrixVente(),
-    ]);
-
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Calculer le prix total en fonction de la quantité et du prix unitaire
-        $quantite = $vente->getQuantite();
-        $prixUnitaire = $produit->getPrixVente();
-        $vente->setPrix($quantite * $prixUnitaire);
-
-        // Enregistrer les modifications
-        $entityManager->flush();
-
-        // Ajouter un message de succès
-        $this->addFlash('success', 'La vente a été mise à jour avec succès.');
-
-        // Rediriger vers la liste des ventes
-        return $this->redirectToRoute('app_vente_index');
-    }
-
-    // Afficher le formulaire d'édition
-    return $this->render('admin/vente/edit.html.twig', [
-        'vente' => $vente,
-        'form' => $form->createView(),
-        'produit' => $produit, // Passer le produit au template
-    ]);
-}
     // Route pour supprimer une vente
     #[Route('/{id}', name: 'app_vente_delete', methods: ['POST'])]
     public function delete(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
