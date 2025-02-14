@@ -39,26 +39,8 @@ class StockType extends AbstractType
                     ])
                 ],
             ])
-            ->add('image', FileType::class, [
-                'label' => 'Téléchargez une photo',
-                'required' => false,
-                'mapped' => false, 
-                'constraints' => [
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
-                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, WEBP).',
-                    ])
-                ],
-            ])
-            ->add('quantite', NumberType::class, [
-                'label' => 'Quantité',
-                'attr' => ['placeholder' => 'Entrez la quantité', 'min' => 0],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La quantité est obligatoire']),
-                    new Assert\PositiveOrZero(['message' => 'La quantité doit être un nombre positif ou zéro'])
-                ],
-            ])
+          
+           
             ->add('date_stock', DateType::class, [
                 'label' => 'Date de stock',
                 'widget' => 'single_text',
@@ -68,22 +50,8 @@ class StockType extends AbstractType
                 ],
                 'empty_data' => (new \DateTime())->format('Y-m-d'), // Valeur par défaut : aujourd'hui
             ])
-            ->add('quantite_initiale', NumberType::class, [
-                'label' => 'Quantité initiale',
-                'attr' => ['placeholder' => 'Entrez la quantité initiale', 'min' => 0],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La quantité initiale est obligatoire']),
-                    new Assert\PositiveOrZero(['message' => 'La quantité initiale doit être un nombre positif ou zéro'])
-                ],
-            ])
-            ->add('quantite_utilise', NumberType::class, [
-                'label' => 'Quantité utilisée',
-                'attr' => ['placeholder' => 'Entrez la quantité utilisée', 'min' => 0],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La quantité utilisée est obligatoire']),
-                    new Assert\PositiveOrZero(['message' => 'La quantité utilisée doit être un nombre positif ou zéro'])
-                ],
-            ])
+          
+         
             ->add('date_expiration', DateType::class, [
                 'label' => 'Date d\'expiration',
                 'widget' => 'single_text',

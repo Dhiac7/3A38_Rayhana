@@ -12,8 +12,11 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\FileType;  // Importation correcte de FileType
+use Symfony\Component\Validator\Constraints\File;
 
 class ProduitType extends AbstractType
 {
@@ -33,10 +36,6 @@ class ProduitType extends AbstractType
                     new Assert\Positive(['message' => 'La quantité doit être positive.']),
                 ],
             ])
-
-
-
-            
             ->add('prix_vente', null, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prix de vente est obligatoire.']),
@@ -77,7 +76,48 @@ class ProduitType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La date de fin de promotion est obligatoire.']),
                 ],
+            ])
+            ->add('nom', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le nom du produit est obligatoire.']),
+                ],
+            ])
+            ->add('image', FileType::class, [
+                'label' => 'Téléchargez une photo',
+                'required' => false,
+                'mapped' => false, 
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, WEBP).',
+                    ])
+                ],
+            ])
+            ->add('description_globale', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La description globale est obligatoire.']),
+                ],
+            ])
+            ->add('description_detaille', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La description détaillée est obligatoire.']),
+                ],
+            ])
+            
+            ->add('categorie', ChoiceType::class, [
+                'choices' => [
+                    'Fruits' => 'Fruits',
+                    'Légumes' => 'Légumes',
+                    'Déchets' => 'Déchets',
+                ],
+                'placeholder' => 'Sélectionnez une catégorie',
+                'required' => true,
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La catégorie est obligatoire.']),
+                ],
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

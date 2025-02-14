@@ -37,19 +37,6 @@ final class StockController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-           $photoFile = $form->get('image')->getData();
-
-            if ($photoFile instanceof UploadedFile) {
-                dump($photoFile); 
-                $uploadsDirectory = $this->getParameter('image_directory'); 
-                $newFilename = uniqid().'.'.$photoFile->guessExtension();
-    
-                $photoFile->move($uploadsDirectory, $newFilename);
-    
-                $stock->setImage($newFilename);
-                } else {
-                    dump('No file uploaded'); 
-                }
             $entityManager->persist($stock);
             $entityManager->flush();
 
