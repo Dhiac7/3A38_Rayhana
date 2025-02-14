@@ -88,18 +88,15 @@ class StockType extends AbstractType
                 'label' => 'Statut',
                 'choices' => [
                     'Disponible' => 'Disponible',
-                    'En Rupture' => 'En Rupture',
+                    'En rupture' => 'En rupture',
                     'Périmé' => 'Périmé'
                 ],
                 'placeholder' => 'Sélectionnez un statut',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le statut est obligatoire'])
                 ],
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Ajouter stock',
-                'attr' => ['class' => 'btn-submit']
             ]);
+          
     }
 
     public function configureOptions(OptionsResolver $resolver): void

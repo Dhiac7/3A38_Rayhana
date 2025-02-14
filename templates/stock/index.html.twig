@@ -1,47 +1,208 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Stock index{% endblock %}
+{% block title %}Gestion des Stocks{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-success text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Gestion des Stocks</h4>
+                        <a href="{{ path('app_stock_new') }}" class="btn btn-light">
+                            <i class="fas fa-plus me-2"></i> Nouveau Stock
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Produit</th>
+                                    <th>Date Stock</th>
+                                    <th>Date Expiration</th>
+                                    <th>Lieu</th>
+                                    <th>Conditionnement</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in stocks %}
+                                <tr>
+                                    <td>{{ stock.id }}</td>
+                                    <td>{{ stock.nom }}</td>
+                                    <td>{{ stock.dateStock ? stock.dateStock|date('d/m/Y') : '' }}</td>
+                                    <td>
+                                        {% if stock.dateExpiration %}
+                                            {% set daysUntilExpiration = date(stock.dateExpiration).diff(date()).days %}
+                                            <span class="{% if daysUntilExpiration <= 30 %}text-danger{% endif %}">
+                                                {{ stock.dateExpiration|date('d/m/Y') }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ stock.lieu }}</td>
+                                    <td>{{ stock.conditionn }}</td>
+                                    <td>
+                                        {% if stock.statut == 'Disponible' %}
+                                            <span class="badge bg-success">{{ stock.statut }}</span>
+                                        {% elseif stock.statut == 'En rupture' %}
+                                            <span class="badge bg-danger">{{ stock.statut }}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">{{ stock.statut }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ path('app_stock_show', {'id': stock.id}) }}" 
+                                               class="btn btn-success btn-sm me-2" 
+                                               data-bs-toggle="tooltip"
+                                               title="Voir les détails">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_stock_edit', {'id': stock.id}) }}" 
+                                               class="btn btn-success btn-sm"
+                                               data-bs-toggle="tooltip" 
+                                               title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Aucun enregistrement trouvé
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .card {
+        transition: all 0.3s ease;
+        border: none;
+    }
     
+    .card-header {
+        background-color: #198754 !important;
+        border-bottom: 3px solid #146c43;
+    }
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom du produit</th>
-                <th>Date_stock</th>
-                <th>Date_expiration</th>
-                <th>Lieu</th>
-                <th>Conditionn</th>
-                <th>Statut</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for stock in stocks %}
-            <tr>
-                <td>{{ stock.id }}</td>
-                <td>{{ stock.nom }}</td>
-   
-              
-                <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
-                <td>{{ stock.dateExpiration ? stock.dateExpiration|date('Y-m-d') : '' }}</td>
-                <td>{{ stock.lieu }}</td>
-                <td>{{ stock.conditionn }}</td>
-                <td>{{ stock.statut }}</td>
-                <td>
-                    <a href="{{ path('app_stock_show', {'id': stock.id}) }}">show</a>
-                    <a href="{{ path('app_stock_edit', {'id': stock.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    .table {
+        font-size: 0.875rem;
+    }
+    
+    .table thead th {
+        border-top: none;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        background-color: #f8f9fa;
+        padding: 1rem;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        padding: 1rem;
+    }
+    
+    .badge {
+        padding: 0.5em 0.75em;
+        font-weight: 500;
+    }
+    
+    .btn {
+        padding: 10px 25px;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        height: 45px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-    <a href="{{ path('app_stock_new') }}">Create new</a>
+    .btn-sm {
+        height: 32px;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .btn-success {
+        background-color: #198754;
+        border: none;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #146c43;
+        transform: translateY(-1px);
+    }
+
+    .btn-light {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        color: #212529;
+    }
+
+    .btn-light:hover {
+        background-color: #e2e6ea;
+        border-color: #ddd;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+    }
+    
+    .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        border-radius: 8px;
+    }
+    
+    .alert {
+        border-radius: 6px;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(25, 135, 84, 0.05);
+    }
+
+    /* Animation des boutons */
+    .btn:active {
+        transform: translateY(1px);
+    }
+</style>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+{% endblock %}
 {% endblock %}

@@ -16,22 +16,12 @@
                 <th>Id</th>
                 <td>{{ stock.id }}</td>
             </tr>
-            <tr>
-                <th>Quantite</th>
-                <td>{{ stock.quantite }}</td>
-            </tr>
+          
             <tr>
                 <th>Date tock</th>
                 <td>{{ stock.dateStock ? stock.dateStock|date('Y-m-d') : '' }}</td>
             </tr>
-            <tr>
-                <th>Quantite initiale</th>
-                <td>{{ stock.quantiteInitiale }}</td>
-            </tr>
-            <tr>
-                <th>Quantite utilise</th>
-                <td>{{ stock.quantiteUtilise }}</td>
-            </tr>
+        
             <tr>
                 <th>Dateexpiration</th>
                 <td>{{ stock.dateExpiration ? stock.dateExpiration|date('Y-m-d') : '' }}</td>

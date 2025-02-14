@@ -159,6 +159,7 @@
                     <td>
                         <a href="{{ path('app_produitback_show', {'id': produit.id}) }}">Show</a>
                         <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">Edit</a>
+                         <a href="{{ path('app_vente_new', {'id': produit.id}) }}">add order</a>
                     </td>
                 </tr>
             {% else %}
