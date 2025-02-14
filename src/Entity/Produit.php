@@ -65,6 +65,21 @@ class Produit
     #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'produit')]
     private Collection $ventes;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description_globale = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $description_detaille = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $categorie = null;
+
 
 
     
@@ -260,6 +275,64 @@ class Produit
                 $vente->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDescriptionGlobale(): ?string
+    {
+        return $this->description_globale;
+    }
+
+    public function setDescriptionGlobale(string $description_globale): static
+    {
+        $this->description_globale = $description_globale;
+
+        return $this;
+    }
+
+    public function getDescriptionDetaille(): ?string
+    {
+        return $this->description_detaille;
+    }
+
+    public function setDescriptionDetaille(string $description_detaille): static
+    {
+        $this->description_detaille = $description_detaille;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(string $categorie): self
+    {
+        if(!in_array($categorie,['Fruits','Légumes','Déchets'])){
+            throw new \InvalidArgumentException("la catégorie doit etre 'Fruits','Légumes','Déchets' ");
+        }
+        $this->categorie = $categorie;
 
         return $this;
     }
