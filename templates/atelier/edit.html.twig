@@ -1,38 +1,87 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Modifier Atelier{% endblock %}
-
 {% block body %}
 <div class="main-panel">
-    <div class="content-wrapper">
-        <div class="page-header">
-    <h3 class="page-title">
-        <span class="page-title-icon bg-gradient-primary text-white me-2" id="toggleForm">
-            <i class="mdi mdi-plus"></i>
-        </span> Ajouter un Atelier
-    </h3>
-    </div>
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">Mettez à jour les informations</h4>
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title text-center">Modifier un Atelier</h4>
+          <p class="card-description text-center">Mettez à jour les informations</p>
 
-                        <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4 d-block mx-auto">
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
-                        {{ include('atelier/_form.html.twig', {'button_label': 'Modifier'}) }}
+          {% for error in form.vars.errors %}
+              <div class="text-danger">{{ error.message }}</div>
+          {% endfor %}
+          {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                  <div class="alert alert-{{ label }}">{{ message }}</div>
+              {% endfor %}
+          {% endfor %}
 
-                        <div class="text-center mt-3">
-                            <a href="{{ path('app_atelier_index') }}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
-                            </a>
-                        </div>
-
-                        {{ include('atelier/_delete_form.html.twig') }}
-                    </div>
-                </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.nom, 'Nom') }}
+              {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
+              {{ form_errors(form.nom) }}
             </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.description, 'Description') }}
+              {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+              {{ form_errors(form.description) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
+              {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.date_atelier) }}
+            </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.capacite_max, 'Capacité max') }}
+              {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
+              {{ form_errors(form.capacite_max) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.prix, 'Prix') }}
+              {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
+              {{ form_errors(form.prix) }}
+            </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.statut, 'Statut') }}
+              {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.statut) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.photo, "Photo de l'atelier") }}
+              {{ form_widget(form.photo, {'attr': {'class': 'form-control-file'}}) }}
+              {{ form_errors(form.photo) }}
+
+              {% if form.vars.value.photo %}
+                <p>Image actuelle :</p>
+                <img src="{{ asset('uploads/' ~ form.vars.value.photo) }}" alt="Photo actuelle" class="img-thumbnail" width="200">
+              {% endif %}
+            </div>
+          </div>
+<div class="row">
+            <div class="col-md-6">
+            {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
+                <button type="submit" class="btn btn-gradient-light">Annuler</button>
+            </div>
+          </div>
+          {{ form_end(form) }}
+
         </div>
-    </div> <!-- content-wrapper -->
-</div> <!-- main-panel -->
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
