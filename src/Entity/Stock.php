@@ -148,8 +148,8 @@ class Stock
 
     public function setStatut(string $statut): self
     {
-        if(!in_array($statut,['Disponible','En Rupture','Périmé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En Rupture','Périmé' ");
+        if(!in_array($statut,['Disponible','En rupture','Périmé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En rupture','Périmé' ");
         }
 
         $this->statut = $statut;
