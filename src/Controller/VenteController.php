@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Vente;
 use App\Entity\Produit;
 use App\Form\VenteType;
+use App\Entity\Transactionfinancier;
 use App\Repository\VenteRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,54 +56,68 @@ final class VenteController extends AbstractController
 
     // Route pour créer une nouvelle vente (définie avant les routes dynamiques comme /{id})
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
-    {
-        $user = $session->get('user');
-        $vente = new Vente();
-        
-        $produitId = $request->query->get('id');
+public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
+{
+    $user = $session->get('user');
+    $vente = new Vente();
     
-        if (!$produitId) {
-            $this->addFlash('error', 'Aucun produit sélectionné.');
-            return $this->redirectToRoute('app_vente_index');
-        }
-    
-        $produit = $produitRepository->find($produitId);
-    
-        if (!$produit) {
-            $this->addFlash('error', 'Produit introuvable.');
-            return $this->redirectToRoute('app_vente_index');
-        }
-        
-        $vente->setProduit($produit);
-        $vente->setPrix($produit->getPrixVente());
-        $vente->setQuantite(1);
-    
-        $form = $this->createForm(VenteType::class, $vente, [
-            'prix_unitaire' => $produit->getPrixVente(),
-        ]);
-        
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $quantite = $vente->getQuantite();
-            $prixUnitaire = $produit->getPrixVente();
-            $vente->setPrix($quantite * $prixUnitaire);
-            
-            $entityManager->persist($vente);
-            $entityManager->flush();
-    
-            $this->addFlash('success', 'Vente enregistrée avec succès.');
-            return $this->redirectToRoute('app_vente_index');
-        }
-        
-        return $this->render('vente/new.html.twig', [
-            'form' => $form->createView(),
-            'produit' => $produit,
-            'user' => $user,
-        ]);
+    $produitId = $request->query->get('id');
+
+    if (!$produitId) {
+        $this->addFlash('error', 'Aucun produit sélectionné.');
+        return $this->redirectToRoute('app_vente_index');
     }
 
+    $produit = $produitRepository->find($produitId);
+
+    if (!$produit) {
+        $this->addFlash('error', 'Produit introuvable.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+    
+    // Définir le nom de la vente avec le nom du produit
+    $vente->setNom($produit->getNom());
+    
+    $vente->setProduit($produit);
+    $vente->setPrix($produit->getPrixVente());
+    $vente->setQuantite(1);
+
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $produit->getPrixVente(),
+    ]);
+    
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        $quantite = $vente->getQuantite();
+        $prixUnitaire = $produit->getPrixVente();
+        $vente->setPrix($quantite * $prixUnitaire);
+        
+        // Créer une nouvelle transaction financière
+        $transaction = new Transactionfinancier();
+        $transaction->setMontant($vente->getPrix());
+        $transaction->setDate(new \DateTime());
+        $transaction->setType('Revenue'); // Type de transaction
+        $transaction->setVente($vente); // Associer la transaction à la vente
+
+        // Associer la transaction à la vente
+        $vente->setTransaction($transaction);
+
+        // Persister la vente et la transaction
+        $entityManager->persist($vente);
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+    
+    return $this->render('vente/new.html.twig', [
+        'form' => $form->createView(),
+        'produit' => $produit,
+        'user' => $user,
+    ]);
+}
     // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Vente $vente, SessionInterface $session): Response

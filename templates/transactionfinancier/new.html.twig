@@ -33,11 +33,7 @@
                             {{ form_errors(form.montant) }}
                         </div>
 
-                        <div class="form-group">
-                            {{ form_label(form.description, 'Description') }}
-                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
-                            {{ form_errors(form.description) }}
-                        </div>
+                       
 
                         <div class="form-group">
                             {{ form_label(form.type, 'Type') }}
@@ -45,13 +41,9 @@
                             {{ form_errors(form.type) }}
                         </div>
 
-                        {% if form.nbrheure is defined %}
-                        <div class="form-group">
-                            {{ form_label(form.nbrheure, 'Nombre d’heures') }}
-                            {{ form_widget(form.nbrheure, {'attr': {'class': 'form-control', 'placeholder': 'Nombre d’heures'}}) }}
-                            {{ form_errors(form.nbrheure) }}
-                        </div>
-                        {% endif %}
+                       
+                        
+                       
 
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
 

@@ -28,15 +28,8 @@ class TransactionfinancierType extends AbstractType
                     new Positive(['message' => 'Le montant doit être positif.']),
                 ],
             ])
-            ->add('description', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Description',
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'La description est obligatoire.']),
-                ],
-            ])
+            
+        
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Dépense' => 'Dépense',
@@ -48,17 +41,8 @@ class TransactionfinancierType extends AbstractType
                 'constraints' => [
                     new NotBlank(['message' => 'Le type est obligatoire.']),
                 ],
-            ])
-            ->add('nbrheure', NumberType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Nombre d\'heures',
-                ],
-                'required' => false, // Rendre ce champ facultatif
-                'constraints' => [
-                    new Positive(['message' => 'Le nombre d\'heures doit être positif.']),
-                ],
             ]);
+           
     }
 
     public function configureOptions(OptionsResolver $resolver): void
