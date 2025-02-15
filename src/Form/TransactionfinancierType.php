@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
 
 class TransactionfinancierType extends AbstractType
 {
@@ -21,13 +23,13 @@ class TransactionfinancierType extends AbstractType
                     'class' => 'form-control',
                     'placeholder' => 'Montant',
                 ],
-            ])
-            ->add('description', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Description',
+                'constraints' => [
+                    new NotBlank(['message' => 'Le montant est obligatoire.']),
+                    new Positive(['message' => 'Le montant doit être positif.']),
                 ],
             ])
+            
+        
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Dépense' => 'Dépense',
@@ -36,13 +38,11 @@ class TransactionfinancierType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                 ],
-            ])
-            ->add('nbrheure', NumberType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Nombre d\'heures',
+                'constraints' => [
+                    new NotBlank(['message' => 'Le type est obligatoire.']),
                 ],
             ]);
+           
     }
 
     public function configureOptions(OptionsResolver $resolver): void

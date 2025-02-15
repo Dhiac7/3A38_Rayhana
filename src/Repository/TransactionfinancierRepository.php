@@ -1,5 +1,6 @@
 <?php
 
+// src/Repository/TransactionfinancierRepository.php
 namespace App\Repository;
 
 use App\Entity\Transactionfinancier;
@@ -15,6 +16,7 @@ class TransactionfinancierRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Transactionfinancier::class);
     }
+}
 
 //    /**
 //     * @return Transactionfinancier[] Returns an array of Transactionfinancier objects
@@ -40,4 +42,4 @@ class TransactionfinancierRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+

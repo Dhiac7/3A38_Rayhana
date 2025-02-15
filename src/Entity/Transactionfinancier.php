@@ -1,14 +1,13 @@
 <?php
 
+// src/Entity/Transactionfinancier.php
 namespace App\Entity;
 
-use App\Repository\TransactionfinancierRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: TransactionfinancierRepository::class)] // Correct repository
-#[ORM\HasLifecycleCallbacks] // Enable lifecycle callbacks
+use App\Repository\TransactionfinancierRepository; // Ensure this use statement is present
+
+#[ORM\Entity(repositoryClass: TransactionfinancierRepository::class)] // Ensure this is correct
 class Transactionfinancier
 {
     #[ORM\Id]
@@ -16,54 +15,23 @@ class Transactionfinancier
     #[ORM\Column]
     private ?int $id = null;
 
-    // Define the "datetransaction" property if you want it
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $datetransaction = null;
-
-    #[ORM\Column(type: Types::FLOAT)]
-    #[Assert\NotBlank(message: "Le montant est obligatoire.")]
-    #[Assert\Type(type: "numeric", message: "Le montant doit être un nombre.")]
-    #[Assert\Positive(message: "Le montant doit être supérieur à 0.")]
+    #[ORM\Column(type: 'float')]
     private ?float $montant = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La description est obligatoire.")]
-    private ?string $description = null;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\Choice(choices: ["Dépense", "Revenu"], message: "Veuillez choisir un type valide.")]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $type = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\NotBlank(message: "Le nombre d'heures est obligatoire.")]
-    #[Assert\Positive(message: "Le nombre d'heures doit être supérieur à 0.")]
-    private ?int $nbrheure = null;
-
-    // Add lifecycle callback for default date setting
-    #[ORM\PrePersist]
-    public function setDefaultDate(): void
-    {
-        if ($this->datetransaction === null) {
-            $this->datetransaction = new \DateTime(); // Set current date if none is provided
-        }
-    }
-
-    // Getters and Setters for all fields
-
+    #[ORM\OneToOne(targetEntity: Vente::class, inversedBy: 'transaction')]
+    #[ORM\JoinColumn(name: "vente_id", referencedColumnName: "id")]
+    private ?Vente $vente = null;
+    
+    // Getters and Setters
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getDatetransaction(): ?\DateTimeInterface
-    {
-        return $this->datetransaction;
-    }
-
-    public function setDatetransaction(?\DateTimeInterface $datetransaction): static
-    {
-        $this->datetransaction = $datetransaction;
-        return $this;
     }
 
     public function getMontant(): ?float
@@ -71,42 +39,51 @@ class Transactionfinancier
         return $this->montant;
     }
 
-    public function setMontant(float $montant): static
+    public function setMontant(float $montant): self
     {
         $this->montant = $montant;
         return $this;
     }
 
-    public function getDescription(): ?string
+    #[ORM\PrePersist]
+    public function setDateAutomatically(): void
     {
-        return $this->description;
+        $this->date = new \DateTime(); // Set the current date and time
     }
 
-    public function setDescription(string $description): static
+    public function getDate(): ?\DateTimeInterface
     {
-        $this->description = $description;
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
         return $this;
     }
+
 
     public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string $type): self
     {
         $this->type = $type;
         return $this;
     }
 
-    public function getNbrheure(): ?int
+    public function getVente(): ?Vente
     {
-        return $this->nbrheure;
+        return $this->vente;
     }
 
-    public function setNbrheure(int $nbrheure): static
+    public function setVente(?Vente $vente): self
     {
-        $this->nbrheure = $nbrheure;
+        $this->vente = $vente;
         return $this;
     }
+   
+
 }
