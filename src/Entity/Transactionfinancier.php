@@ -24,9 +24,11 @@ class Transactionfinancier
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $type = null;
 
-    #[ORM\OneToOne(targetEntity: Vente::class, inversedBy: 'transaction')]
-    #[ORM\JoinColumn(name: "vente_id", referencedColumnName: "id")]
+    #[ORM\OneToOne(targetEntity: Vente::class, inversedBy: 'transaction', cascade: ['remove'])]
+    #[ORM\JoinColumn(name: "vente_id", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Vente $vente = null;
+    
+
     
     // Getters and Setters
     public function getId(): ?int
