@@ -153,6 +153,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Vente::class, mappedBy: 'user')]
     private Collection $ventes;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $nbrHeuresTravail = null;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
@@ -405,6 +408,18 @@ public function getPassword(): ?string
                 $vente->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNbrHeuresTravail(): ?float
+    {
+        return $this->nbrHeuresTravail;
+    }
+
+    public function setNbrHeuresTravail(?float $nbrHeuresTravail): static
+    {
+        $this->nbrHeuresTravail = $nbrHeuresTravail;
 
         return $this;
     }
