@@ -1,85 +1,162 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Edit Produit{% endblock %}
+{% block title %}Modifier Produit{% endblock %}
 
 {% block body %}
-    <style>
-        /* Réutilisation du style du formulaire */
-        .formulaire-produit {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            max-width: 800px;
-            margin: 30px auto;
-            margin-left: 280px;
-            margin-right: 30px;
-        }
+<div class="container py-5">
+   <div class="row justify-content-center">
+       <div class="col-md-10">
+           <div class="card shadow-lg border-0 rounded-lg">
+               <div class="card-header bg-primary text-white py-3">
+                   <h4 class="card-title mb-0 text-center">Modifier le produit</h4>
+               </div>
+               <div class="card-body p-5">
+                   {# Ajout du JavaScript pour appliquer les classes #}
+                   <script>
+                       document.addEventListener('DOMContentLoaded', () => {
+                           // Appliquer les classes globalement
+                           const applyClasses = (selector, classes) => {
+                               document.querySelectorAll(selector).forEach(el => {
+                                   classes.forEach(cls => el.classList.add(cls));
+                               });
+                           };
 
-        .formulaire-produit h1 {
-            font-size: 32px;
-            color: #2C3E50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 700;
-            gap: 15px; /* Espacement uniforme entre les champs */
-        }
+                           applyClasses('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])', ['form-control', 'form-control-lg', 'rounded-3']);
+                           applyClasses('select', ['form-select', 'rounded-3']);
+                           applyClasses('textarea', ['form-control', 'rounded-3']);
+                           applyClasses('label', ['fw-bold', 'mb-2']);
+                           applyClasses('.invalid-feedback', ['text-danger']);
 
-        .formulaire-produit table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+                           const submitButton = document.querySelector('button[type="submit"]');
+                           if (submitButton && !submitButton.querySelector('i.fas.fa-save')) {
+                               const icon = document.createElement('i');
+                               icon.classList.add('fas', 'fa-save', 'me-2');
+                               submitButton.prepend(icon);
+                               submitButton.classList.add('btn', 'btn-success', 'me-3');
+                           }
+                       });
+                   </script>
 
-        .formulaire-produit th, .formulaire-produit td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid transparent;
-        }
+                   <form method="post">
+                       <!-- Ajoute ici ton formulaire (tu peux inclure _form.html.twig) -->
+                       {{ include('produit/_form.html.twig', {'button_label': 'Modifier produit'}) }}
 
-        .formulaire-produit th {
-            background-color: #f4f4f4;
-            font-weight: 600;
-        }
+                       <div class="form-group row mt-5">
+                           <div class="col-12 text-center">
+                               <button type="submit" class="btn btn-success me-3">
+                                   <i class="fas fa-save me-2"></i>Modifier stock
+                               </button>
+                               <a href="{{ path('app_produitback_index') }}" class="btn btn-light">
+                                   <i class="fas fa-times me-2"></i> Retour à la liste
+                               </a>
+                           </div>
+                       </div>
+                   </form>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
 
-        .formulaire-produit button {
-            width: 100%;
-            padding: 16px;
-            background-color: rgb(20, 171, 38);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
+{% block stylesheets %}
+<style>
+   .card {
+       transition: all 0.3s ease;
+       border: none;
+   }
 
-        .formulaire-produit button:hover {
-            background-color: #2980b9;
-        }
+   .card-header {
+       background-color: #198754 !important;
+       border-bottom: 3px solid #146c43;
+   }
 
-        .formulaire-produit a {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #2980b9;
-            text-decoration: none;
-            font-weight: 600;
-        }
+   .form-control:focus, 
+   .form-select:focus {
+       border-color: #198754;
+       box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+   }
 
-        .formulaire-produit a:hover {
-            text-decoration: underline;
-        }
-    </style>
+   .form-control, 
+   .form-select {
+       height: 45px;
+       border: 1px solid #ddd;
+   }
 
-    <div class="formulaire-produit">
-        <h1>Edit Produit</h1>
+   .btn {
+       padding: 10px 25px;
+       border-radius: 4px;
+       font-weight: 500;
+       transition: all 0.3s ease;
+       height: 45px;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+   }
 
-        {{ include('produit/_form.html.twig', {'button_label': 'Update'}) }}
+   .btn-success {
+       background-color: #198754;
+       border: none;
+       color: white;
+   }
 
-        {{ include('produit/_delete_form.html.twig') }}
+   .btn-success:hover {
+       background-color: #146c43;
+       transform: translateY(-1px);
+   }
 
-        <a href="{{ path('app_produitback_index') }}">Retour à la liste</a>
-    </div>
+   .btn-light {
+       background-color: #f8f9fa;
+       border: 1px solid #ddd;
+       color: #212529;
+   }
+
+   .btn-light:hover {
+       background-color: #e2e6ea;
+       border-color: #ddd;
+   }
+   
+   .form-label {
+       color: #444;
+       font-weight: 500;
+   }
+
+   .card-body {
+       background-color: #fff;
+   }
+
+   .shadow-lg {
+       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+   }
+
+   .text-danger {
+       font-size: 0.875rem;
+       margin-top: 0.25rem;
+   }
+
+   .btn:active {
+       transform: translateY(1px);
+   }
+   
+   .form-group {
+       margin-bottom: 1.5rem;
+   }
+   
+   label {
+       display: block;
+       margin-bottom: 0.5rem;
+   }
+   
+   .form-control,
+   .form-select,
+   .custom-select {
+       height: calc(2.5em + 0.75rem + 2px);
+   }
+
+   textarea.form-control {
+       height: auto;
+       min-height: 100px;
+   }
+</style>
+{% endblock %}
+
 {% endblock %}

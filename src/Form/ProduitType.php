@@ -45,7 +45,7 @@ class ProduitType extends AbstractType
             ->add('statut', ChoiceType::class, [
                 'choices' => [
                     'Disponible' => 'Disponible',
-                    'En Rupture' => 'En Rupture',
+                    'En rupture' => 'En rupture',
                 ],
                 'placeholder' => 'Sélectionnez un statut',
                 'required' => true,
