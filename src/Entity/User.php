@@ -67,7 +67,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-  
+
+    //
+    private static ?User $currentUser = null;
 
     // Define roles as constants
     public const ROLE_CLIENT = 'client';
@@ -162,6 +164,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    public static function setCurrentUser(?User $user): void
+    {
+        self::$currentUser = $user;
+    }
+
+    public static function getCurrentUser(): ?User
+    {
+        return self::$currentUser;
+    }
+    
     public function getNom(): ?string
     {
         return $this->nom;
