@@ -128,7 +128,8 @@
 
     attachDeleteListeners(); // Initialiser les événements au chargement de la page
 
-    // Recherche en temps réel
+    // Recherche en temps réel 
+    
     document.getElementById("search").addEventListener("input", function () {
       fetchAteliers("", this.value);
     });
