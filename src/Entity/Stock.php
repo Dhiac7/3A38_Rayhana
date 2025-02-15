@@ -20,17 +20,10 @@ class Stock
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column]
-    private ?int $quantite = null;
-
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_stock = null;
 
-    #[ORM\Column]
-    private ?float $quantite_initiale = null;
-
-    #[ORM\Column]
-    private ?float $quantite_utilise = null;
+    
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_expiration = null;
@@ -94,17 +87,7 @@ class Stock
         return $this->id;
     }
 
-    public function getQuantite(): ?int
-    {
-        return $this->quantite;
-    }
-
-    public function setQuantite(int $quantite): static
-    {
-        $this->quantite = $quantite;
-
-        return $this;
-    }
+    
 
     public function getDateStock(): ?\DateTimeInterface
     {
@@ -117,30 +100,7 @@ class Stock
 
         return $this;
     }
-
-    public function getQuantiteInitiale(): ?float
-    {
-        return $this->quantite_initiale;
-    }
-
-    public function setQuantiteInitiale(float $quantite_initiale): static
-    {
-        $this->quantite_initiale = $quantite_initiale;
-
-        return $this;
-    }
-
-    public function getQuantiteUtilise(): ?float
-    {
-        return $this->quantite_utilise;
-    }
-
-    public function setQuantiteUtilise(float $quantite_utilise): static
-    {
-        $this->quantite_utilise = $quantite_utilise;
-
-        return $this;
-    }
+    
 
     public function getDateExpiration(): ?\DateTimeInterface
     {
@@ -174,7 +134,7 @@ class Stock
     public function setConditionn(string $conditionn): self
     {
         if(!in_array($conditionn,['Sec','Réfrigéré','Congelé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'Sec','Réfrigéré','Congelé' ");
+            throw new \InvalidArgumentException("la condition doit etre 'Sec','Réfrigéré','Congelé' ");
         }
         $this->conditionn = $conditionn;
 
@@ -188,8 +148,8 @@ class Stock
 
     public function setStatut(string $statut): self
     {
-        if(!in_array($statut,['Disponible','En Rupture','Périmé'])){
-            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En Rupture','Périmé' ");
+        if(!in_array($statut,['Disponible','En rupture','Périmé'])){
+            throw new \InvalidArgumentException("le statut doit etre 'Disponible','En rupture','Périmé' ");
         }
 
         $this->statut = $statut;
@@ -311,7 +271,7 @@ class Stock
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(string $image): self
     {
         $this->image = $image;
 

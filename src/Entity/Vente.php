@@ -34,9 +34,8 @@ class Vente
     #[ORM\ManyToOne(inversedBy: 'ventes')]
     private ?User $user = null;
 
-    #[ORM\OneToOne(targetEntity: Transactionfinancier::class)]
-    #[ORM\JoinColumn(name: "transaction_id", referencedColumnName: "id", nullable: true)]
-    private ?Transactionfinancier $transaction = null;
+    #[ORM\OneToOne(targetEntity: Transactionfinancier::class, mappedBy: 'vente', cascade: ['persist'])]
+private ?Transactionfinancier $transaction = null;
 
     #[ORM\ManyToOne(inversedBy: 'ventes')]
     private ?Produit $produit = null;
@@ -61,6 +60,21 @@ class Vente
     public function setQuantite(float $quantite): static
     {
         $this->quantite = $quantite;
+        return $this;
+    }
+    #[ORM\Column(type: 'string', length: 255)]
+    private $nom;
+
+    // Autres champs...
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
         return $this;
     }
 

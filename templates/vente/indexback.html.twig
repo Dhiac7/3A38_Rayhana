@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Ventes{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <!-- Title with box -->
+      <div class="p-3 mb-4 bg-primary text-white text-center rounded">
+        <h4>Liste des Ventes</h4>
+      </div>
+      <p class="card-description">Liste des transactions enregistrées</p>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th> nom  </th>
+            <th> ID </th>
+            <th> Prix (€) </th>
+            <th> Méthode de paiement </th>
+            <th> Date </th>
+            <th> Quantité </th>
+            <th> Actions </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for vente in pagination %}
+          <tr>
+            <td> {{ vente.nom }} </td>
+            <td> {{ vente.id }} </td>
+            <td> {{ vente.prix }} </td>
+            <td> {{ vente.methodepayement }} </td>
+            <td> {{ vente.date ? vente.date|date('Y-m-d H:i:s') : 'N/A' }} </td>
+            <td> {{ vente.quantite }} </td>
+            <td>
+              <a href="{{ path('app_vente_show', {'id': vente.id}) }}" class="btn btn-info btn-sm">
+                <i class="mdi mdi-eye"></i> Voir
+              </a>
+              <a href="{{ path('app_vente_edit', {'id': vente.id}) }}" class="btn btn-warning btn-sm">
+                <i class="mdi mdi-pencil"></i> Modifier
+              </a>
+              {{ include('vente/_delete_form.html.twig') }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(pagination) }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

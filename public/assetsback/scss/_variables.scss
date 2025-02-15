@@ -12,8 +12,8 @@ $sidebar-light-menu-active-color: $primary;
 $sidebar-light-menu-hover-bg: darken($sidebar-light-bg, 1%);
 $sidebar-light-menu-hover-color: darken($sidebar-light-menu-color, 10%);
 $sidebar-light-submenu-hover-color: darken($sidebar-light-submenu-color, 20%);
-$sidebar-light-menu-icon-color: #e9f1ee;
-$sidebar-light-menu-arrow-color: #a09f9d;
+$sidebar-light-menu-icon-color: #bba8bff5;
+$sidebar-light-menu-arrow-color: #9e9da0;
 $sidebar-light-menu-border-color: #f2edf3;
 
 $sidebar-dark-bg: #18151e;
@@ -57,4 +57,4 @@ $icon-only-menu-bg-dark: $sidebar-dark-menu-hover-bg;
 
 $bullet-line-list-shape-bg: color(white) !default;
 $pro-banner: #000;
-$blue-teal-gradient: linear-gradient(to right, #f9f3fc, #9a55ff) !important;
+$blue-teal-gradient: linear-gradient(to right, #da8cff, #9a55ff) !important;

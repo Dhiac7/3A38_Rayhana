@@ -4,3 +4,7 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+app_atelier_delete_ajax:
+    path: /atelierBack/atelier/delete
+    controller: App\Controller\AtelierController::deleteAtelierAjax
+    methods: POST

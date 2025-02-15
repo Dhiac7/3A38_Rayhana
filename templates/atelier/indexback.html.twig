@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block title %}Modifier un Atelier{% endblock %}
 
@@ -8,8 +8,8 @@
     <div class="col-12 grid-margin">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title text-center">Modifier un Atelier</h4>
-          <p class="card-description text-center">Mettez à jour les informations</p>
+          <h4 class="card-title text-center">Mes Atelier</h4>
+          <p class="card-description text-center">Mettez à jour les informations / suppression des ateliers </p>
 
           <!-- Zone de recherche et tri -->
           <div class="d-flex justify-content-between mb-3">
@@ -24,75 +24,6 @@
           <div id="atelier-list">
             <!-- Le contenu de la liste sera mis à jour ici avec AJAX -->
           </div>
-
-          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
-
-          {% for error in form.vars.errors %}
-              <div class="alert alert-danger">{{ error.message }}</div>
-          {% endfor %}
-          {% for label, messages in app.flashes %}
-              {% for message in messages %}
-                  <div class="alert alert-{{ label }}">{{ message }}</div>
-              {% endfor %}
-          {% endfor %}
-
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.nom, 'Nom') }}
-              {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
-              {{ form_errors(form.nom) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.description, 'Description') }}
-              {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
-              {{ form_errors(form.description) }}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
-              {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
-              {{ form_errors(form.date_atelier) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.capacite_max, 'Capacité max') }}
-              {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
-              {{ form_errors(form.capacite_max) }}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.prix, 'Prix') }}
-              {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
-              {{ form_errors(form.prix) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.statut, 'Statut') }}
-              {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-              {{ form_errors(form.statut) }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            {{ form_label(form.photo, "Photo de l'atelier") }}
-            {{ form_widget(form.photo, {'attr': {'class': 'form-control-file'}}) }}
-            {{ form_errors(form.photo) }}
-
-            {% if form.vars.value.photo %}
-              <p>Image actuelle :</p>
-              <img src="{{ asset('uploads/' ~ form.vars.value.photo) }}" alt="Photo actuelle" class="img-thumbnail" width="200">
-            {% endif %}
-          </div>
-
-          <div class="text-center">
-            <button type="submit" class="btn btn-gradient-primary w-50">
-              <i class="mdi mdi-content-save"></i> {{ button_label|default('Enregistrer') }}
-            </button>
-          </div>
-
-          {{ form_end(form) }}
 
         </div>
       </div>

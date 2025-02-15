@@ -3,184 +3,198 @@
 {% block title %}Ajouter Stock{% endblock %}
 
 {% block body %}
-    <style>
-        /* General form style */
-        .formulaire-stock {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            max-width: 800px;
-            margin: 30px auto;
-            margin-left: 280px;
-            margin-right: 30px;
-        }
+<div class="container py-5">
+   <div class="row justify-content-center">
+       <div class="col-md-10">
+           <div class="card shadow-lg border-0 rounded-lg">
+               <div class="card-header bg-primary text-white py-3">
+                   <h4 class="card-title mb-0 text-center">Ajouter un nouveau stock</h4>
+               </div>
+               <div class="card-body p-5">
+                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
+                   
+                   {# Nom #}
+                   <div class="form-group row mb-4">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.nom) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.nom, {
+                               'attr': {
+                                   'class': 'form-control form-control-lg rounded-3',
+                                   'placeholder': 'Entrez le nom du stock'
+                               }
+                           }) }}
+                           {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
 
-        /* Titles */
-        .formulaire-stock h1 {
-            font-size: 32px;
-            color: #2C3E50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
+                   {# Dates #}
+                   <div class="row mb-4">
+                       <div class="col-md-6">
+                           <div class="form-group">
+                               <label class="fw-bold mb-2">{{ form_label(form.date_stock) }}</label>
+                               {{ form_widget(form.date_stock, {
+                                   'attr': {
+                                       'class': 'form-control rounded-3 flatpickr-input',
+                                       'placeholder': 'Sélectionnez une date'
+                                   }
+                               }) }}
+                               {{ form_errors(form.date_stock, {'attr': {'class': 'text-danger'}}) }}
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="form-group">
+                               <label class="fw-bold mb-2">{{ form_label(form.date_expiration) }}</label>
+                               {{ form_widget(form.date_expiration, {
+                                   'attr': {
+                                       'class': 'form-control rounded-3 flatpickr-input',
+                                       'placeholder': 'Sélectionnez une date'
+                                   }
+                               }) }}
+                               {{ form_errors(form.date_expiration, {'attr': {'class': 'text-danger'}}) }}
+                           </div>
+                       </div>
+                   </div>
 
-        /* Labels */
-        .formulaire-stock label {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: block;
-            color: #2C3E50;
-        }
+                   {# Lieu #}
+                   <div class="form-group row mb-4">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.lieu) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.lieu, {
+                               'attr': {
+                                   'class': 'form-control rounded-3',
+                                   'placeholder': 'Entrez le lieu de stockage'
+                               }
+                           }) }}
+                           {{ form_errors(form.lieu, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
 
-        /* Input fields */
-        .formulaire-stock input,
-        .formulaire-stock select {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
-        }
+                   {# Condition et Statut #}
+                   <div class="row mb-4">
+                       <div class="col-md-6">
+                           <div class="form-group">
+                               <label class="fw-bold mb-2">{{ form_label(form.conditionn) }}</label>
+                               {{ form_widget(form.conditionn, {
+                                   'attr': {
+                                       'class': 'form-select rounded-3'
+                                   }
+                               }) }}
+                               {{ form_errors(form.conditionn, {'attr': {'class': 'text-danger'}}) }}
+                           </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="form-group">
+                               <label class="fw-bold mb-2">{{ form_label(form.statut) }}</label>
+                               {{ form_widget(form.statut, {
+                                   'attr': {
+                                       'class': 'form-select rounded-3'
+                                   }
+                               }) }}
+                               {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
+                           </div>
+                       </div>
+                   </div>
 
-        /* Focus state */
-        .formulaire-stock input:focus,
-        .formulaire-stock select:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-            outline: none;
-            background-color: #fff;
-        }
 
-        /* Submit button */
-        .formulaire-stock button {
-            width: 100%;
-            padding: 16px;
-            background-color: rgb(20, 171, 38);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
-        }
+                   {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-success me-3">
+                               <i class="fas fa-save me-2"></i>Ajouter stock
+                           </button>
+                           <a href="{{ path('app_stock_index') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i> Retour à la liste
+                           </a>
+                       </div>
+                   </div>
 
-        .formulaire-stock button:hover {
-            background-color: #2980b9;
-        }
+                   {{ form_end(form) }}
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
 
-        /* Alert styles */
-        .alert {
-            padding: 12px 20px;
-            margin: 10px 0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
+{% block stylesheets %}
+<style>
+   .card {
+       transition: all 0.3s ease;
+       border: none;
+   }
+   
+   .card-header {
+       background-color: #198754 !important;
+       border-bottom: 3px solid #146c43;
+   }
 
-        .alert-danger {
-            background-color: #fee2e2;
-            border: 1px solid #ef4444;
-            color: #991b1b;
-        }
+   .form-control:focus, 
+   .form-select:focus {
+       border-color: #198754;
+       box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+   }
 
-        /* Form group spacing */
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
+   .form-control, 
+   .form-select {
+       height: 45px;
+       border: 1px solid #ddd;
+   }
 
-        /* Invalid input state */
-        .is-invalid {
-            border-color: #ef4444 !important;
-        }
+   .btn {
+       padding: 10px 25px;
+       border-radius: 4px;
+       font-weight: 500;
+       transition: all 0.3s ease;
+       height: 45px;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+   }
 
-        /* Select styling */
-        .formulaire-stock select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-            background-position: right 15px center;
-            background-repeat: no-repeat;
-            padding-right: 45px;
-        }
+   .btn-success {
+       background-color: #198754;
+       border: none;
+       color: white;
+   }
 
-        /* Responsive design */
-        @media (max-width: 992px) {
-            .formulaire-stock {
-                margin-left: 30px;
-                max-width: calc(100% - 60px);
-            }
-        }
+   .btn-success:hover {
+       background-color: #146c43;
+       transform: translateY(-1px);
+   }
 
-        @media (max-width: 768px) {
-            .formulaire-stock {
-                padding: 25px;
-            }
+   .btn-light {
+       background-color: #f8f9fa;
+       border: 1px solid #ddd;
+       color: #212529;
+   }
 
-            .formulaire-stock h1 {
-                font-size: 24px;
-            }
+   .btn-light:hover {
+       background-color: #e2e6ea;
+       border-color: #ddd;
+   }
 
-            .formulaire-stock input,
-            .formulaire-stock select,
-            .formulaire-stock button {
-                font-size: 14px;
-                padding: 12px;
-            }
-        }
-    </style>
+   .form-label {
+       color: #444;
+       font-weight: 500;
+   }
 
-    <div class="main-content">
-        <div class="formulaire-stock">
-            <h1>Ajouter un nouveau stock</h1>
+   .card-body {
+       background-color: #fff;
+   }
 
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                {% for field in form %}
-                    {% if field.vars.name != '_token' %}
-                        <div class="form-group">
-                            {{ form_label(field) }}
-                            {{ form_widget(field, {
-                                'attr': {
-                                    'class': field.vars.errors is defined and field.vars.errors|length > 0 ? 'is-invalid' : ''
-                                }
-                            }) }}
-                            {% if field.vars.errors is defined and field.vars.errors|length > 0 %}
-                                <div class="alert alert-danger">
-                                    {% for error in field.vars.errors %}
-                                        {{ error.message }}
-                                        {% if not loop.last %}<br>{% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {{ form_end(form) }}
-        </div>
-    </div>
+   .shadow-lg {
+       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+   }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const inputs = form.querySelectorAll('input, select');
+   .text-danger {
+       font-size: 0.875rem;
+       margin-top: 0.25rem;
+   }
 
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    const formGroup = this.closest('.form-group');
-                    const alertEl = formGroup.querySelector('.alert-danger');
-                    if (alertEl) {
-                        alertEl.style.display = 'none';
-                    }
-                    this.classList.remove('is-invalid');
-                });
-            });
-        });
-    </script>
+   /* Animation des boutons */
+   .btn:active {
+       transform: translateY(1px);
+   }
+</style>
+{% endblock %}
+
 {% endblock %}

@@ -24,7 +24,7 @@
 }
 
 .content-wrapper {
-  background: #e9f1ee;
+  background: $content-bg;
   padding: 2.75rem 2.25rem;
   width: 100%;
   @include flex-grow(1);

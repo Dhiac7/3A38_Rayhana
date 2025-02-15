@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Vente;
 use App\Entity\Produit;
 use App\Form\VenteType;
+use App\Entity\Transactionfinancier;
 use App\Repository\VenteRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,102 +14,155 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/vente')]
 final class VenteController extends AbstractController
 {
-    #[Route(name: 'app_vente_index', methods: ['GET'])]
-    public function index(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator): Response
+    // Route pour l'index
+    #[Route('/', name: 'app_vente_index', methods: ['GET'])]
+    public function index(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         $query = $venteRepository->findAll();
         $pagination = $paginator->paginate(
-            $query, // Donnée pour la pagination
-            $request->query->getInt('page', 1), // Numéro de page
-            6 // Nombre d'éléments par page
+            $query,
+            $request->query->getInt('page', 1),
+            6
         );
 
         return $this->render('vente/index.html.twig', [
             'pagination' => $pagination,
+            'user' => $user,
         ]);
     }
+    #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
+    public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session): Response
+    {
+        $user = $session->get('user');
+        $query = $venteRepository->findAll();
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            6
+        );
 
-   
-    #[Route('/new', name: 'app_vente_new')]
-public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+       return $this->render('vente/indexback.html.twig', [
+    'pagination' => $pagination,
+    'user' => $user,
+]);
+
+    }
+
+    // Route pour créer une nouvelle vente (définie avant les routes dynamiques comme /{id})
+    #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
 {
+    $user = $session->get('user');
     $vente = new Vente();
     
-    // Fetch the product ID from the request
     $produitId = $request->query->get('id');
+
+    if (!$produitId) {
+        $this->addFlash('error', 'Aucun produit sélectionné.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+
     $produit = $produitRepository->find($produitId);
-    
-    if ($produit) {
-        // Associate the product with the sale
-        $vente->setProduit($produit);
-        
-        // Pre-fill the price and quantity fields with the product's data
-        $vente->setPrix($produit->getPrixVente()); // Set the initial price
-        $vente->setQuantite(1); // Default quantity
+
+    if (!$produit) {
+        $this->addFlash('error', 'Produit introuvable.');
+        return $this->redirectToRoute('app_vente_index');
     }
     
-    // Create the form
-    $form = $this->createForm(VenteType::class, $vente, [
-        'prix_unitaire' => $produit->getPrixVente(), // Récupère le prix du produit
-    ]);
+    // Définir le nom de la vente avec le nom du produit
+    $vente->setNom($produit->getNom());
     
+    $vente->setProduit($produit);
+    $vente->setPrix($produit->getPrixVente());
+    $vente->setQuantite(1);
+
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $produit->getPrixVente(),
+    ]);
     
     $form->handleRequest($request);
     
     if ($form->isSubmitted() && $form->isValid()) {
-        // Calculate the total price based on quantity
         $quantite = $vente->getQuantite();
         $prixUnitaire = $produit->getPrixVente();
         $vente->setPrix($quantite * $prixUnitaire);
         
-        // Persist the sale
+        // Créer une nouvelle transaction financière
+        $transaction = new Transactionfinancier();
+        $transaction->setMontant($vente->getPrix());
+        $transaction->setDate(new \DateTime());
+        $transaction->setType('Revenue'); // Type de transaction
+        $transaction->setVente($vente); // Associer la transaction à la vente
+
+        // Associer la transaction à la vente
+        $vente->setTransaction($transaction);
+
+        // Persister la vente et la transaction
         $entityManager->persist($vente);
+        $entityManager->persist($transaction);
         $entityManager->flush();
-    
-        // Redirect to the sales index page
+
+        $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
         return $this->redirectToRoute('app_vente_index');
     }
     
-    // Render the template with the form and product data
     return $this->render('vente/new.html.twig', [
         'form' => $form->createView(),
-        'produit' => $produit, // Pass the product to the template
+        'produit' => $produit,
+        'user' => $user,
     ]);
 }
-    #[Route('/{id}', name: 'app_vente_show', methods: ['GET'])]
-    public function show(Vente $vente): Response
+    // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
+    #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(Vente $vente, SessionInterface $session): Response
     {
+        $user = $session->get('user');
         return $this->render('vente/show.html.twig', [
             'vente' => $vente,
+            'user' => $user,
         ]);
     }
 
+    // Route pour éditer une vente
     #[Route('/{id}/edit', name: 'app_vente_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(VenteType::class, $vente);
-        $form->handleRequest($request);
+public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager,SessionInterface $session): Response
+{
+    $user = $session->get('user');
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $vente->getProduit()->getPrixVente(), // Passer le prix unitaire au formulaire
+    ]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    $form->handleRequest($request);
 
-            return $this->redirectToRoute('app_vente_index', [], Response::HTTP_SEE_OTHER);
-        }
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Calculer le prix total
+        $quantite = $vente->getQuantite();
+        $prixUnitaire = $vente->getProduit()->getPrixVente();
+        $vente->setPrix($quantite * $prixUnitaire);
 
-        return $this->render('vente/edit.html.twig', [
-            'vente' => $vente,
-            'form' => $form->createView(),
-        ]);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vente mise à jour avec succès.');
+        return $this->redirectToRoute('app_vente_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    return $this->render('vente/edit.html.twig', [
+        'vente' => $vente,
+        'form' => $form->createView(),
+        'user' => $user,
+    ]);
+}
+
+    // Route pour supprimer une vente
     #[Route('/{id}', name: 'app_vente_delete', methods: ['POST'])]
     public function delete(Request $request, Vente $vente, EntityManagerInterface $entityManager): Response
     {
-        // Vérifier si le token CSRF est valide
         if ($this->isCsrfTokenValid('delete'.$vente->getId(), $request->request->get('_token'))) {
             $entityManager->remove($vente);
             $entityManager->flush();
