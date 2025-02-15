@@ -11,6 +11,20 @@
           <h4 class="card-title text-center">Modifier un Atelier</h4>
           <p class="card-description text-center">Mettez à jour les informations</p>
 
+          <!-- Zone de recherche et tri -->
+          <div class="d-flex justify-content-between mb-3">
+            <input type="text" id="search" class="form-control w-50" placeholder="Rechercher un atelier...">
+            <div>
+              <button class="btn btn-outline-primary" id="sortAsc">Tri Croissant</button>
+              <button class="btn btn-outline-secondary" id="sortDesc">Tri Décroissant</button>
+            </div>
+          </div>
+
+          <!-- Conteneur pour afficher dynamiquement la liste des ateliers -->
+          <div id="atelier-list">
+            <!-- Le contenu de la liste sera mis à jour ici avec AJAX -->
+          </div>
+
           {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
           {% for error in form.vars.errors %}
@@ -85,4 +99,38 @@
     </div>
   </div>
 </div>
+
+<!-- Script AJAX -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function fetchAteliers(sortOrder = "", searchQuery = "") {
+      let url = "{{ path('atelier_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
+
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("atelier-list").innerHTML = data;
+        });
+    }
+
+    // Recherche en temps réel
+    document.getElementById("search").addEventListener("input", function () {
+      fetchAteliers("", this.value);
+    });
+
+    // Tri croissant
+    document.getElementById("sortAsc").addEventListener("click", function () {
+      fetchAteliers("asc", document.getElementById("search").value);
+    });
+
+    // Tri décroissant
+    document.getElementById("sortDesc").addEventListener("click", function () {
+      fetchAteliers("desc", document.getElementById("search").value);
+    });
+
+    // Chargement initial des ateliers
+    fetchAteliers();
+  });
+</script>
+
 {% endblock %}

@@ -131,7 +131,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
         return $this->render('atelier/edit.html.twig', [
             'atelier' => $atelier,
-            'form' => $form,
+'form' => $form->createView(),
             'user' => $user,
 
         ]);
@@ -147,4 +147,31 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
         return $this->redirectToRoute('app_atelier_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/ateliers/list', name: 'atelier_list_ajax')]
+    public function listAteliers(Request $request, AtelierRepository $atelierRepo): Response
+    {
+        $search = $request->query->get('search', '');
+        $sort = $request->query->get('sort', '');
+    
+        $query = $atelierRepo->createQueryBuilder('a');
+    
+        if ($search) {
+            $query->andWhere('a.nom LIKE :search OR a.description LIKE :search')
+                  ->setParameter('search', '%' . $search . '%');
+        }
+    
+        if ($sort === 'asc') {
+            $query->orderBy('a.nom', 'ASC');
+        } elseif ($sort === 'desc') {
+            $query->orderBy('a.nom', 'DESC');
+        }
+    
+        $ateliers = $query->getQuery()->getResult();
+    
+        return $this->render('atelier/_list.html.twig', [
+            'ateliers' => $ateliers,
+        ]);
+    }
+    
 }
