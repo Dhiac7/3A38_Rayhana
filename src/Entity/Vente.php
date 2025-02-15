@@ -31,9 +31,9 @@ class Vente
     #[Assert\Choice(choices: ["espèces", "carte_bancaire", "chèque", "virement"], message: "Veuillez choisir une méthode de paiement valide.")]
     private ?string $methodepayement = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ventes')]
-    private ?User $user = null;
-
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ventes')]
+#[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+private ?User $user = null;
     #[ORM\OneToOne(targetEntity: Transactionfinancier::class, mappedBy: 'vente', cascade: ['persist'])]
 private ?Transactionfinancier $transaction = null;
 
@@ -120,15 +120,15 @@ private ?Transactionfinancier $transaction = null;
     }
 
     public function getUser(): ?User
-    {
-        return $this->user;
-    }
+{
+    return $this->user;
+}
 
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-        return $this;
-    }
+public function setUser(?User $user): self
+{
+    $this->user = $user;
+    return $this;
+}
 
     public function getTransaction(): ?Transactionfinancier
     {

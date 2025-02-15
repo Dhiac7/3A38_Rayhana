@@ -16,11 +16,10 @@ class Avis
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'L\'ID client ne peut pas être vide.')]
+    //#[Assert\NotBlank(message: 'L\'ID client ne peut pas être vide.')]
     private ?int $id_Client = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'L\'ID produit ne peut pas être vide.')]
     private ?int $id_produit = null;
 
     #[ORM\Column]
@@ -32,9 +31,13 @@ class Avis
     #[Assert\NotBlank(message: 'Le commentaire ne peut pas être vide.')]
     private ?string $commentaire = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotBlank(message: 'La date ne peut pas être vide.')]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $date = null;
+
+    public function __construct()
+    {
+        $this->date = new \DateTimeImmutable(); // Définit la date et l'heure actuelles automatiquement
+    }
 
     public function getId(): ?int
     {
@@ -49,7 +52,6 @@ class Avis
     public function setIdClient(int $id_Client): static
     {
         $this->id_Client = $id_Client;
-
         return $this;
     }
 
@@ -61,7 +63,6 @@ class Avis
     public function setIdProduit(int $id_produit): static
     {
         $this->id_produit = $id_produit;
-
         return $this;
     }
 
@@ -73,7 +74,6 @@ class Avis
     public function setRate(float $rate): static
     {
         $this->rate = $rate;
-
         return $this;
     }
 
@@ -85,19 +85,11 @@ class Avis
     public function setCommentaire(string $commentaire): static
     {
         $this->commentaire = $commentaire;
-
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
     }
 }

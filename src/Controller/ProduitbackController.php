@@ -13,24 +13,40 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use App\Entity\User;
 
 #[Route('/produitback')]
 final class ProduitbackController extends AbstractController
 {
     #[Route(name: 'app_produitback_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository, SessionInterface $session): Response
-    {
-        $user = $session->get('user');
+    public function index(ProduitRepository $produitRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    { $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         return $this->render('produit/produitback.html.twig', [
             'produits' => $produitRepository->findAll(),
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         
         ]);
     }
 
     #[Route('/new', name: 'app_produitback_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$user = $session->get('user');
+    {  $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
@@ -61,22 +77,38 @@ final class ProduitbackController extends AbstractController
         return $this->render('produit/new.html.twig', [
             'produit' => $produit,
             'form' => $form,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/{id}', name: 'app_produitback_show', methods: ['GET'])]
-    public function show(Produit $produit,SessionInterface $session): Response
-    {$user = $session->get('user');
+    public function show(Produit $produit,SessionInterface $session, EntityManagerInterface $entityManager): Response
+    { $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         return $this->render('produit/showback.html.twig', [
             'produit' => $produit,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$user = $session->get('user');
+    { $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
@@ -89,13 +121,21 @@ final class ProduitbackController extends AbstractController
         return $this->render('produit/edit.html.twig', [
             'produit' => $produit,
             'form' => $form,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$user = $session->get('user');
+    { $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();
