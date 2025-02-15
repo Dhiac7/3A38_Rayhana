@@ -25,10 +25,12 @@
                 <td>{{ avi.idProduit }}</td>
                 <td>{{ avi.rate }}</td>
                 <td>{{ avi.commentaire }}</td>
-                <td>{{ avi.date ? avi.date|date('Y-m-d') : '' }}</td>
+                <td>{{ avi.date ? avi.date|date('Y-m-d H:i:s') : '' }}</td>
+
                 <td>
-                    <a href="{{ path('app_avis_show', {'id': avi.id}) }}">show</a>
-                    <a href="{{ path('app_avis_edit', {'id': avi.id}) }}">edit</a>
+                    <a href="{{ path('app_avis_show', {'id': avi.id}) }}">Show</a>
+                    <a href="{{ path('app_avis_edit', {'id': avi.id}) }}">Edit</a>
+                    {{ include('avis/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
