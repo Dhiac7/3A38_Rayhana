@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\User;
 use App\Entity\Transactionfinancier;
 use App\Form\TransactionfinancierType;
 use App\Repository\TransactionfinancierRepository;
@@ -16,19 +16,36 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 #[Route('/transactionfinancier')]
 final class TransactionfinancierController extends AbstractController{
     #[Route(name: 'app_transactionfinancier_index', methods: ['GET'])]
-    public function index(TransactionfinancierRepository $transactionfinancierRepository,SessionInterface $session): Response
+    public function index(TransactionfinancierRepository $transactionfinancierRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         return $this->render('transactionfinancier/index.html.twig', [
             'transactionfinanciers' => $transactionfinancierRepository->findAll(),
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
+           
         ]);
     }
 
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
 {
-    $user = $session->get('user');
+    $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
     $transactionfinancier = new Transactionfinancier();
     $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
     $form->handleRequest($request);
@@ -45,24 +62,40 @@ public function new(Request $request, EntityManagerInterface $entityManager,Sess
 
     return $this->render('transactionfinancier/new.html.twig', [
         'form' => $form->createView(),
-        'user' => $user,
+        'loggedInUser' => $loggedInUser,
     ]);
 }
 
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
-    public function show(Transactionfinancier $transactionfinancier,SessionInterface $session): Response
+    public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         return $this->render('transactionfinancier/show.html.twig', [
             'transactionfinancier' => $transactionfinancier,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_transactionfinancier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Transactionfinancier $transactionfinancier, EntityManagerInterface $entityManager,SessionInterface $session): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
         $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
         $form->handleRequest($request);
 
@@ -75,7 +108,7 @@ public function new(Request $request, EntityManagerInterface $entityManager,Sess
         return $this->render('transactionfinancier/edit.html.twig', [
             'transactionfinancier' => $transactionfinancier,
             'form' => $form,
-            'user' => $user,
+           'loggedInUser' => $loggedInUser,
             
         ]);
     }
