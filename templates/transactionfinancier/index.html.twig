@@ -21,12 +21,12 @@
                 <table class="table table-striped table-hover">
                     <thead class="bg-secondary text-white">
                         <tr>
+                            <th>Id</th>
                             <th>Montant</th>
-                            <th>Description</th>
                             <th>Date Transaction</th>
                             <th>Type</th>
-                            <th>Nombre d'heures</th>
-                            <th>Actions</th>
+                            
+                          
                         </tr>
                     </thead>
                     <tbody>
@@ -34,10 +34,13 @@
                             <tr>
                                 <td>{{ transactionfinancier.id }}</td>
                                 <td>{{ transactionfinancier.montant }}</td>
-                                <td>{{ transactionfinancier.description }}</td>
-                                <td>{{ transactionfinancier.datetransaction ? transactionfinancier.datetransaction|date('Y-m-d H:i:s') : 'N/A' }}</td>
+                                <td> {{ transactionfinancier.date|date('Y-m-d H:i:s') }} </td>
                                 <td>{{ transactionfinancier.type }}</td>
-                                <td>{{ transactionfinancier.nbrheure }}</td>
+                              
+                               
+                              
+                                
+
                                 <td>
                                     <a href="{{ path('app_transactionfinancier_show', {'id': transactionfinancier.id}) }}" class="btn btn-info btn-sm">
                                         <i class="mdi mdi-eye"></i> Voir

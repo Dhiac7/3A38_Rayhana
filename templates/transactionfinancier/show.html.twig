@@ -23,21 +23,16 @@
                             <th>Montant</th>
                             <td>{{ transactionfinancier.montant }} €</td>
                         </tr>
-                        <tr>
-                            <th>Description</th>
-                            <td>{{ transactionfinancier.description }}</td>
-                        </tr>
-                        <tr>
-                            <th>Date de Transaction</th>
-                            <td>{{ transactionfinancier.datetransaction ? transactionfinancier.datetransaction|date('Y-m-d H:i:s') : 'N/A' }}</td>
-                        </tr>
+                       
+                       
                         <tr>
                             <th>Type</th>
                             <td>{{ transactionfinancier.type }}</td>
                         </tr>
                         <tr>
-                            <th>Nombre d'Heures</th>
-                            <td>{{ transactionfinancier.nbrheure }}</td>
+                            <th>date transaction</th>
+                            <td>{{ transactionfinancier.date|date('Y-m-d H:i:s') }}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
