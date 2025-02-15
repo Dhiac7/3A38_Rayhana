@@ -7,19 +7,21 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-header bg-success text-white py-3">
+                {# En-tête avec un vert olive naturel #}
+                <div class="card-header py-3" style="background-color: #198754; color: white;">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0">Gestion des Stocks</h4>
-                        <a href="{{ path('app_stock_new') }}" class="btn btn-light">
+                        {# Bouton avec couleur terre claire #}
+                        <a href="{{ path('app_stock_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
                             <i class="fas fa-plus me-2"></i> Nouveau Stock
                         </a>
                     </div>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4" style="background-color: #fff ;">
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
-                                <tr>
+                                <tr style="background-color: #8FBC8F; color: #2F4F4F;">
                                     <th>Id</th>
                                     <th>Produit</th>
                                     <th>Date Stock</th>
@@ -39,7 +41,7 @@
                                     <td>
                                         {% if stock.dateExpiration %}
                                             {% set daysUntilExpiration = date(stock.dateExpiration).diff(date()).days %}
-                                            <span class="{% if daysUntilExpiration <= 30 %}text-danger{% endif %}">
+                                            <span class="{% if daysUntilExpiration <= 30 %}text-danger{% else %}text-success{% endif %}">
                                                 {{ stock.dateExpiration|date('d/m/Y') }}
                                             </span>
                                         {% endif %}
@@ -48,34 +50,32 @@
                                     <td>{{ stock.conditionn }}</td>
                                     <td>
                                         {% if stock.statut == 'Disponible' %}
-                                            <span class="badge bg-success">{{ stock.statut }}</span>
+                                            <span class="badge" style="background-color: #228B22;">{{ stock.statut }}</span>
                                         {% elseif stock.statut == 'En rupture' %}
-                                            <span class="badge bg-danger">{{ stock.statut }}</span>
+                                            <span class="badge" style="background-color:rgb(211, 54, 54);">{{ stock.statut }}</span>
                                         {% else %}
-                                            <span class="badge bg-warning">{{ stock.statut }}</span>
+                                            <span class="badge" style="background-color: #DAA520;">{{ stock.statut }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ path('app_stock_show', {'id': stock.id}) }}" 
-                                               class="btn btn-success btn-sm me-2" 
-                                               data-bs-toggle="tooltip"
-                                               title="Voir les détails">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ path('app_stock_edit', {'id': stock.id}) }}" 
-                                               class="btn btn-success btn-sm"
-                                               data-bs-toggle="tooltip" 
-                                               title="Modifier">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </div>
+                                        <a href="{{ path('app_stock_show', {'id': stock.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
+                                            <i class="mdi mdi-eye"></i> 
+                                        </a>
+                                        <a href="{{ path('app_stock_edit', {'id': stock.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
+                                            <i class="mdi mdi-pencil"></i> 
+                                        </a>
+                                        <form method="post" action="{{ path('app_stock_delete', {'id': stock.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce stock ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ stock.id) }}">
+                                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
+                                                <i class="mdi mdi-delete"></i> 
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% else %}
                                 <tr>
                                     <td colspan="8" class="text-center py-4">
-                                        <div class="alert alert-info mb-0">
+                                        <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
                                             <i class="fas fa-info-circle me-2"></i>
                                             Aucun enregistrement trouvé
                                         </div>
@@ -90,119 +90,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block stylesheets %}
-{{ parent() }}
-<style>
-    .card {
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .card-header {
-        background-color: #198754 !important;
-        border-bottom: 3px solid #146c43;
-    }
-
-    .table {
-        font-size: 0.875rem;
-    }
-    
-    .table thead th {
-        border-top: none;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        background-color: #f8f9fa;
-        padding: 1rem;
-    }
-    
-    .table td {
-        vertical-align: middle;
-        padding: 1rem;
-    }
-    
-    .badge {
-        padding: 0.5em 0.75em;
-        font-weight: 500;
-    }
-    
-    .btn {
-        padding: 10px 25px;
-        border-radius: 4px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        height: 45px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-sm {
-        height: 32px;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .btn-success {
-        background-color: #198754;
-        border: none;
-        color: white;
-    }
-
-    .btn-success:hover {
-        background-color: #146c43;
-        transform: translateY(-1px);
-    }
-
-    .btn-light {
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        color: #212529;
-    }
-
-    .btn-light:hover {
-        background-color: #e2e6ea;
-        border-color: #ddd;
-    }
-    
-    .btn-group .btn {
-        padding: 0.25rem 0.5rem;
-        transition: all 0.2s;
-    }
-    
-    .btn-group .btn:hover {
-        transform: translateY(-1px);
-    }
-    
-    .card {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-        border-radius: 8px;
-    }
-    
-    .alert {
-        border-radius: 6px;
-    }
-    
-    .table-hover tbody tr:hover {
-        background-color: rgba(25, 135, 84, 0.05);
-    }
-
-    /* Animation des boutons */
-    .btn:active {
-        transform: translateY(1px);
-    }
-</style>
-
-{% block javascripts %}
-{{ parent() }}
-<script>
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-</script>
-{% endblock %}
 {% endblock %}
