@@ -42,7 +42,11 @@ class UserAdminType extends AbstractType
             'placeholder' => 'entrez votre role',
             'required' => true,
         ])
-        ->add('mdp') 
+        ->add('mdp', PasswordType::class, [
+            'mapped' => false, // Prevents binding hashed password
+            'required' => false, // Optional, allows keeping the old password
+            'attr' => ['autocomplete' => 'new-password'], // Avoid browser autofill
+        ])
         ->add('email')
         ->add('tel')
         ->add('salaire')
