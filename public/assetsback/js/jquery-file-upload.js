@@ -2,7 +2,7 @@
   'use strict';
   if ($("#fileuploader").length) {
     $("#fileuploader").uploadFile({
-      url: "./images/",
+      url: "../../../assets/images/",
       fileName: "myfile"
     });
   }

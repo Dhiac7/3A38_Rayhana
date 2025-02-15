@@ -1,6 +1,5 @@
 <?php
 namespace App\Controller; 
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
@@ -9,103 +8,173 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Service\MailService;
 
 
 #[Route('/interface')]
 class InterfaceController extends AbstractController
 {
-    private Security $security;
     private $twilioService;
 
 
-    public function __construct(MailService $twilioService,Security $security)
+    public function __construct(MailService $twilioService)
     {
         $this->twilioService = $twilioService;
-        $this->security = $security;
+        //$this->security = $security;
 
     }
 
     #[Route('/{role}', name: 'role_interface', requirements: ['role' => 'client|fermier|agriculteur|inspecteur|livreur'])]
-    public function roleDashboard(SessionInterface $session, string $role): Response
+    public function roleDashboard(SessionInterface $session, string $role, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
-        if (!$user) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
 
-        if ($user->getRole() !== $role) {
+        if ($loggedInUser->getRole() !== $role) {
             $this->addFlash('error', 'You do not have permission to access this page.');
-            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+            return $this->redirectToRoute('role_interface', ['role' => $loggedInUser->getRole()]);
         }
 
         return $this->render("user/{$role}.html.twig");
     }
 
     #[Route('/client', name: 'client_interface')]
-    public function clientDashboard(SessionInterface $session): Response
+    public function clientDashboard(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        if (!$session->get('user')) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
 
         return $this->render('user/client.html.twig');
     }
 
     #[Route('/fermier', name: 'fermier_interface')]
-    public function fermierDashboard(SessionInterface $session): Response
+    public function fermierDashboard(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        if (!$session->get('user')) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
 
         return $this->render('user/fermier.html.twig');
     }
 
     #[Route('/agriculteur', name: 'agriculteur_interface')]
-    public function agriculteurDashboard(SessionInterface $session): Response
+    public function agriculteurDashboard(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        if (!$session->get('user')) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
 
         return $this->render('user/agriculteur.html.twig');
     }
 
     #[Route('/inspecteur', name: 'inspecteur_interface')]
-    public function inspecteurDashboard(SessionInterface $session): Response
+    public function inspecteurDashboard(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        if (!$session->get('user')) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
-
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
         return $this->render('user/inspecteur.html.twig');
     }
 
     #[Route('/livreur', name: 'livreur_interface')]
-    public function livreurDashboard(SessionInterface $session): Response
+    public function livreurDashboard(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        if (!$session->get('user')) {
+        $userId = $session->get('client_user_id');
+
+        if (!$userId) {
             return $this->redirectToRoute('app_home');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        User::setCurrentUser($loggedInUser);
 
         return $this->render('user/livreur.html.twig');
     }
 
     #[Route('/profile', name: 'user_profile')]
-    public function userProfile(SessionInterface $session): Response
+    public function userProfile(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $userId = $session->get('client_user_id');
 
-        if (!$user) {
+        if (!$userId) {
+            return $this->redirectToRoute('app_home');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+    
+        if (!$loggedInUser) {
+            $session->remove('client_user_id');
             return $this->redirectToRoute('app_user_login');
         }
+    
+        User::setCurrentUser($loggedInUser);
 
         return $this->render('user/profile.html.twig', [
-            'user' => $user,
+            'user' => $loggedInUser,
         ]);
     }
 
