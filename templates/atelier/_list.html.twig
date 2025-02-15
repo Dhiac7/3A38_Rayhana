@@ -1,4 +1,3 @@
-{% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
 <div class="main-panel">
@@ -28,7 +27,7 @@
                                   <p class="card-text"><strong>Date:</strong> {{ atelier.dateAtelier|date("d/m/Y") }}</p>
                                   <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
                                   <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
-                                  <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-primary">Modifier</a>
+                                  <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-primary">Modifier</a><br>
                                   <a href="#" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
                               </div>
                           </div>
