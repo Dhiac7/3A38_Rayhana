@@ -1,54 +1,99 @@
-{% extends 'base.html.twig' %}
+{% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Atelier{% endblock %}
+{% block title %}Nouveau Atelier{% endblock %}
 
 {% block body %}
-    <h1>Atelier</h1>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-plus"></i>
+                </span> Ajouter un Atelier
+            </h3>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">Remplissez le formulaire</h4>
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ atelier.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ atelier.nom }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ atelier.description }}</td>
-            </tr>
-            <tr>
-                <th>Date_atelier</th>
-                <td>{{ atelier.dateAtelier ? atelier.dateAtelier|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Capacite_max</th>
-                <td>{{ atelier.capaciteMax }}</td>
-            </tr>
-            <tr>
-                <th>Prix</th>
-                <td>{{ atelier.prix }}</td>
-            </tr>
-        {#   <tr>
-                <th>IdUser</th>
-                <td>{{ atelier.idUser }}</td>
-            </tr> #}
-            <tr>
-                <th>Statut</th>
-                <td>{{ atelier.statut }}</td>
-            </tr>
-           {# <tr>
-                <th>Role</th>
-                <td>{{ atelier.Role }}</td>
-            </tr> #}
-        </tbody>
-    </table>
+                        {% for error in form.vars.errors %}
+                         <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endfor %}
 
-    <a href="{{ path('app_atelier_index') }}">Revenir à list</a>
+                        <div class="form-group">
+                            {{ form_label(form.nom, 'Nom') }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
+                            {{ form_errors(form.nom) }}
+                        </div>
 
-    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}">Modifier</a>
+                        <div class="form-group">
+                            {{ form_label(form.description, 'Description') }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+                            {{ form_errors(form.description) }}
+                        </div>
 
-    {{ include('atelier/_delete_form.html.twig') }}
+                        <div class="form-group">
+                            {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
+                            {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.date_atelier) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.capacite_max, 'Capacité max') }}
+                            {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
+                            {{ form_errors(form.capacite_max) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.prix, 'Prix') }}
+                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
+                            {{ form_errors(form.prix) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.statut, 'Statut') }}
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.statut) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.photo,  "Photo de l'atelier") }}
+                            {{ form_widget(form.photo, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.photo) }}
+                        </div>
+
+                        {{ form_end(form) }}
+
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-warning">
+                                <i class="mdi mdi-pencil"></i> Modifier
+                            </a>
+                            
+                            <form action="{{ path('app_atelier_delete', {'id': atelier.id}) }}" method="post" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet atelier ?');">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ atelier.id) }}">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="mdi mdi-delete"></i> Supprimer
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_atelier_indexBack') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- content-wrapper -->
+</div> <!-- main-panel -->
 {% endblock %}

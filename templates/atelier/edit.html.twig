@@ -71,10 +71,11 @@
               {% endif %}
             </div>
           </div>
-<div class="row">
+
+          <div class="row">
             <div class="col-md-6">
-            {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
-                <button type="submit" class="btn btn-gradient-light">Annuler</button>
+              {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
+              <button type="submit" class="btn btn-gradient-light">Annuler</button>
             </div>
           </div>
           {{ form_end(form) }}
@@ -84,4 +85,67 @@
     </div>
   </div>
 </div>
+
+<!-- SCRIPT AJAX -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function fetchAteliers(sortOrder = "", searchQuery = "") {
+      let url = "{{ path('atelier_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
+
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("atelier-container").innerHTML = data;
+          attachDeleteListeners(); // Réattacher les événements après mise à jour
+        });
+    }
+
+    function attachDeleteListeners() {
+      document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          let atelierId = this.getAttribute("data-id");
+
+          if (confirm("Voulez-vous vraiment supprimer cet atelier ?")) {
+            fetch(`/atelier/delete/${atelierId}`, {
+              method: "DELETE",
+              headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                document.querySelector(`.atelier-card[data-id='${atelierId}']`).remove();
+              } else {
+                alert("Erreur lors de la suppression");
+              }
+            })
+            .catch(error => console.error("Erreur:", error));
+          }
+        });
+      });
+    }
+
+    attachDeleteListeners(); // Initialiser les événements au chargement de la page
+
+    // Recherche en temps réel
+    document.getElementById("search").addEventListener("input", function () {
+      fetchAteliers("", this.value);
+    });
+
+    // Tri croissant
+    document.getElementById("sortAsc").addEventListener("click", function () {
+      fetchAteliers("asc", document.getElementById("search").value);
+    });
+
+    // Tri décroissant
+    document.getElementById("sortDesc").addEventListener("click", function () {
+      fetchAteliers("desc", document.getElementById("search").value);
+    });
+
+    // Chargement initial des ateliers
+    fetchAteliers();
+  });
+</script>
+
 {% endblock %}
