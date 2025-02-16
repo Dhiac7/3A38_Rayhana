@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\UserEditType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -108,37 +109,39 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            // Handle Photo Upload
             $photoFile = $form->get('photo')->getData();
-
-        if ($photoFile instanceof UploadedFile) {
-            dump($photoFile); 
-            $uploadsDirectory = $this->getParameter('uploads_directory'); 
-            $newFilename = uniqid().'.'.$photoFile->guessExtension();
-
-            $photoFile->move($uploadsDirectory, $newFilename);
-
-            $user->setPhoto($newFilename);
-            } else {
-                dump('No file uploaded'); 
+            if ($photoFile instanceof UploadedFile) {
+                $uploadsDirectory = $this->getParameter('uploads_directory'); 
+                $newFilename = uniqid().'.'.$photoFile->guessExtension();
+                $photoFile->move($uploadsDirectory, $newFilename);
+                $user->setPhoto($newFilename);
             }
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
+    
+            // Handle Password Change
+            $plainPassword = $form->get('mdp')->getData();
+            if (!empty($plainPassword)) { 
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+            }
+    
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
         ]);
     }
+    
     
 
 
