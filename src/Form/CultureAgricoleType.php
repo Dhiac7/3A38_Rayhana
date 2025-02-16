@@ -38,6 +38,7 @@ class CultureAgricoleType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'label' => 'Date de semis',
+                'required' => false, // Autorise les valeurs nulles
                 'constraints' => [
                     new LessThanOrEqual([
                         'value' => 'today',

@@ -41,6 +41,8 @@
         </div>
         <!-- Liste des parcelles -->
         <div id="parcelles-container">
+        {% if parcelles is not empty %}
+
             {% for i in 0..(parcelles|length - 1) %}
                 {% if i % 3 == 0 %}
                     <!-- Démarre une nouvelle rangée pour chaque 3 éléments -->
@@ -70,6 +72,7 @@
                     </div>
                 {% endif %}
             {% endfor %}
+        {% endif %}
         </div>
 
         {% if parcelles|length == 0 %}

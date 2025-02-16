@@ -12,14 +12,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entity\User;
+
 
 #[Route('/culturedash')]
 final class CultureAgricoleDashboardController extends AbstractController
 {
     #[Route(name: 'app_culture_agricole_dashboard_index', methods: ['GET'])]
-    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, SessionInterface $session): Response
+    public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+
 
         $limit = 2; // Nombre d'éléments par page
         $page = $request->query->getInt('page', 1); // Page actuelle (par défaut la page 1)
@@ -38,7 +49,7 @@ final class CultureAgricoleDashboardController extends AbstractController
             'cultures' => $cultureAgricoleRepository->findAll(),
             'currentPage' => $page,
             'totalPages' => $totalPages,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
 
         ]);
     }
@@ -46,13 +57,24 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/new', name: 'app_culture_agricole_dashboard_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
 
         $cultureAgricole = new CultureAgricole();
         $form = $this->createForm(CultureAgricoleType::class, $cultureAgricole);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($cultureAgricole->getDateSemi() === null) {
+                $cultureAgricole->setDateSemi(new \DateTime()); // Définit une date par défaut si nécessaire
+            }
             $entityManager->persist($cultureAgricole);
             $entityManager->flush();
 
@@ -62,19 +84,19 @@ final class CultureAgricoleDashboardController extends AbstractController
         return $this->render('culture_agricole_dashboard/new.html.twig', [
             'culture_agricole' => $cultureAgricole,
             'form' => $form,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
 
         ]);
     }
 
     #[Route('/{id}', name: 'app_culture_agricole_dashboard_show', methods: ['GET'])]
-    public function show(CultureAgricole $cultureAgricole, SessionInterface $session): Response
+    public function show(CultureAgricole $cultureAgricole, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         $user = $session->get('user');
 
         return $this->render('culture_agricole_dashboard/show.html.twig', [
             'culture_agricole' => $cultureAgricole,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
 
         ]);
     }
@@ -82,7 +104,15 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/{id}/edit', name: 'app_culture_agricole_dashboard_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
 
         $form = $this->createForm(CultureAgricoleType::class, $cultureAgricole);
         $form->handleRequest($request);
@@ -96,7 +126,7 @@ final class CultureAgricoleDashboardController extends AbstractController
         return $this->render('culture_agricole_dashboard/edit.html.twig', [
             'culture_agricole' => $cultureAgricole,
             'form' => $form,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
 
         ]);
     }
