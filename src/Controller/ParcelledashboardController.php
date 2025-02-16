@@ -17,14 +17,24 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Entity\User;
 
 
 final class ParcelledashboardController extends AbstractController
 {
     #[Route('/parcelledashboard', name: 'app_parcelle_dashboard_index')]
-    public function index(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session): Response
+    public function index(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+
         $query = $request->query->get('q', '');
         $parcelles = !empty($query) ? $parcelleRepository->searchByName($query) : $parcelleRepository->findAll();
         
@@ -54,15 +64,23 @@ final class ParcelledashboardController extends AbstractController
             'parcelles' => $parcelles,
             'MAPBOX_API_KEY' => $mapboxApiKey,
             'query' => $query,
-            'user' => $user,
-
+            'loggedInUser' => $loggedInUser,
         ]);
     }
     
     #[Route('/dashboard', name: 'app_parcelle_index2')]
-    public function dashparcelle(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session): Response
+    public function dashparcelle(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+
 
         $query = $request->query->get('q', '');
         $parcelles = !empty($query) ? $parcelleRepository->searchByName($query) : $parcelleRepository->findAll();
@@ -93,7 +111,7 @@ final class ParcelledashboardController extends AbstractController
             'parcelles' => $parcelles,
             'MAPBOX_API_KEY' => $mapboxApiKey,
             'query' => $query,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,        
         ]);
     }
     
@@ -101,7 +119,15 @@ final class ParcelledashboardController extends AbstractController
     #[Route('/dashboard/new', name: 'app_parcelle_new2', methods: ['GET', 'POST'])]
     public function new2(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
 
         $parcelle = new Parcelle();
         $form = $this->createForm(ParcelleType::class, $parcelle);
@@ -118,30 +144,44 @@ final class ParcelledashboardController extends AbstractController
         return $this->render('parcelle/newAdmin.html.twig', [
             'parcelle' => $parcelle,
             'form' => $form,
-            'user' => $user,
-
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
-    public function show2(Parcelle $parcelle, SessionInterface $session): Response
+    public function show2(Parcelle $parcelle, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
 
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
         return $this->render('parcelle/showAdmin.html.twig', [
             'parcelle' => $parcelle,
             'MAPBOX_API_KEY' => $mapboxApiKey,
-            'user' => $user,
-
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/dashboard/{id}/edit', name: 'app_parcelle_edit2', methods: ['GET', 'POST'])]
     public function edit2(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $user = $session->get('user');
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
 
         $form = $this->createForm(ParcelleType::class, $parcelle);
         $form->handleRequest($request);
@@ -155,7 +195,7 @@ final class ParcelledashboardController extends AbstractController
         return $this->render('parcelle/editAdmin.html.twig', [
             'parcelle' => $parcelle,
             'form' => $form,
-            'user' => $user,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 

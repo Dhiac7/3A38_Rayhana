@@ -28,7 +28,7 @@ class CultureAgricole
     #[Assert\NotBlank(message: "Le type de culture est obligatoire.")]
     private ?string $type = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Assert\Type("\DateTimeInterface", message: "La date de semis doit être une date valide.")]
     private ?\DateTimeInterface $dateSemi = null;
 
@@ -48,6 +48,12 @@ class CultureAgricole
 
     #[ORM\ManyToOne(inversedBy: 'recolte')]
     private ?Stock $stock = null;
+
+    public function __construct()
+    {
+        $this->dateSemi = new \DateTime(); // Définit la date actuelle par défaut
+    }
+
 
     public function getId(): ?int
     {
