@@ -1,71 +1,200 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Produit{% endblock %}
+{% block title %}Détail du Produit{% endblock %}
 
 {% block body %}
-    <h1>Produit</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Quantite</th>
-                <td>{{ produit.quantite }}</td>
-            </tr>
-            <tr>
-                <th>Prix_vente</th>
-                <td>{{ produit.prixVente }}</td>
-            </tr>
-           
-            <tr>
-                <th>EnPromotion</th>
-                <td>{{ produit.enPromotion ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Pour_promo</th>
-                <td>{{ produit.pourcentagePromo }}</td>
-            </tr>
-         
-            <tr>
-                <th>Date_debut_promo</th>
-                <td>{{ produit.dateDebutPromo ? produit.dateDebutPromo|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_fin_promo</th>
-                <td>{{ produit.dateFinPromo ? produit.dateFinPromo|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-
-             <tr>
-                <th>Statut</th>
-                <td>{{ produit.statut }}</td>
-            </tr>
-
-             <tr>
-                <th>Quantite_vendues</th>
-                <td>{{ produit.quantiteVendues }}</td>
-            </tr>
-            <tr>
-                <th>Quantite_retourne</th>
-                <td>{{ produit.quantiteRetourne }}</td>
-            </tr>
-            <tr>
-                <th>Date_retour</th>
-                <td>{{ produit.dateRetour ? produit.dateRetour|date('Y-m-d') : '' }}</td>
-            </tr>
-           
-            <tr>
-                <th>Raison_retour</th>
-                <td>{{ produit.raisonRetour }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_produitback_index') }}">back to list</a>
-
-    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
-
-    {{ include('produit/_delete_form.html.twig') }}
+<div class="container py-4">
+    <div class="card shadow border-0 rounded-3 overflow-hidden">
+        <div class="card-header text-white" style="background-color: #198754;">
+            <h2 class="my-2">Détail du Produit</h2>
+        </div>
+        
+        <div class="card-body">
+            <div class="row g-4">
+                <!-- Image du produit -->
+                <div class="col-md-4 text-center">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            {% if produit.image %}
+                                <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" class="img-fluid rounded" style="max-height: 280px; width: auto;">
+                            {% else %}
+                                <div class="text-muted">
+                                    <i class="fas fa-image fa-5x mb-3"></i>
+                                    <p>Aucune image disponible</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informations principales -->
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <!-- Nom et ID -->
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h3 class="card-title mb-0" style="color: #198754;">{{ produit.nom }}</h3>
+                                    <small class="text-muted">ID: {{ produit.id }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Prix et statut de stock -->
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-tag me-2"></i>Prix</h5>
+                                    <div class="d-flex align-items-baseline">
+                                        {% if produit.enPromotion %}
+                                            <h3 class="me-2" style="color: #198754;">
+                                                {{ (produit.prixVente * (1 - produit.pourcentagePromo / 100))|number_format(2, ',', ' ') }} DT
+                                            </h3>
+                                            <p class="text-decoration-line-through text-muted">
+                                                {{ produit.prixVente|number_format(2, ',', ' ') }} DT
+                                            </p>
+                                        {% else %}
+                                            <h3 style="color: #198754;">{{ produit.prixVente|number_format(2, ',', ' ') }} DT</h3>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <span class="badge {{ produit.quantite > 10 ? 'bg-success' : (produit.quantite > 0 ? 'bg-warning' : 'bg-danger') }}">
+                                            {{ produit.quantite > 10 ? 'En stock' : (produit.quantite > 0 ? 'Stock limité' : 'Épuisé') }}
+                                        </span>
+                                        <span class="ms-2 text-muted">({{ produit.quantite }} unités)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Promotion -->
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-percent me-2"></i>Promotion</h5>
+                                    {% if produit.enPromotion %}
+                                        <div class="badge bg-danger mb-2">-{{ produit.pourcentagePromo }}%</div>
+                                        <p class="mb-1">
+                                            <i class="far fa-calendar-alt me-1"></i> Début: 
+                                            {{ produit.dateDebutPromo ? produit.dateDebutPromo|date('d/m/Y') : 'N/A' }}
+                                        </p>
+                                        <p>
+                                            <i class="far fa-calendar-alt me-1"></i> Fin: 
+                                            {{ produit.dateFinPromo ? produit.dateFinPromo|date('d/m/Y') : 'N/A' }}
+                                        </p>
+                                    {% else %}
+                                        <p class="text-muted">Aucune promotion en cours</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-align-left me-2"></i>Description</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 style="color: #198754;">Description globale</h6>
+                            <p>{{ produit.DescriptionGlobale ?: 'Aucune description globale' }}</p>
+                            
+                            <h6 style="color: #198754;" class="mt-3">Description détaillée</h6>
+                            <p>{{ produit.DescriptionDetaille ?: 'Aucune description détaillée' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistiques de vente -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Statistiques de vente</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle p-3 me-3" style="background-color: rgba(25, 135, 84, 0.1);">
+                                            <i class="fas fa-shopping-cart" style="color: #198754;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Quantité vendue</h6>
+                                            <h4 class="mt-1 mb-0">{{ produit.quantiteVendues ?: '0' }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
+                                            <i class="fas fa-undo text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Quantité retournée</h6>
+                                            <h4 class="mt-1 mb-0">{{ produit.quantiteRetourne ?: '0' }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle p-3 me-3" style="background-color: rgba(25, 135, 84, 0.1);">
+                                            <i class="fas fa-percentage" style="color: #198754;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Taux de retour</h6>
+                                            <h4 class="mt-1 mb-0">
+                                                {% if produit.quantiteVendues > 0 %}
+                                                    {{ ((produit.quantiteRetourne / produit.quantiteVendues) * 100)|number_format(1) }}%
+                                                {% else %}
+                                                    0%
+                                                {% endif %}
+                                            </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if produit.quantiteRetourne > 0 %}
+                            <div class="mt-4">
+                                <h6 class="text-danger"><i class="fas fa-exclamation-circle me-2"></i>Informations de retour</h6>
+                                <div class="row mt-2">
+                                    <div class="col-md-6">
+                                        <p><strong>Date du dernier retour:</strong> {{ produit.dateRetour ? produit.dateRetour|date('d/m/Y') : 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Raison du retour:</strong> {{ produit.raisonRetour ?: 'Non spécifiée' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light">
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_produitback_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                </a>
+                <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn" style="background-color: #198754; color: white;">
+                    <i class="fas fa-edit me-1"></i> Modifier
+                </a>
+                <div class="ms-auto">
+                    {{ include('produit/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

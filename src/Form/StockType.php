@@ -106,4 +106,6 @@ class StockType extends AbstractType
             'attr' => ['novalidate' => 'novalidate'], // Désactive la validation HTML5 pour utiliser Symfony
         ]);
     }
+
+
 }

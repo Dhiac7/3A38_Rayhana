@@ -7,156 +7,144 @@
    <div class="row justify-content-center">
        <div class="col-md-10">
            <div class="card shadow-lg border-0 rounded-lg">
-               <div class="card-header bg-primary text-white py-3">
-                   <h4 class="card-title mb-0 text-center">Modifier le produit</h4>
+               <div class="card-header bg-warning text-white py-3">
+                   <h4 class="card-title mb-0 text-center">Modifier le Produit</h4>
                </div>
                <div class="card-body p-5">
-                   {# Ajout du JavaScript pour appliquer les classes #}
-                   <script>
-                       document.addEventListener('DOMContentLoaded', () => {
-                           // Appliquer les classes globalement
-                           const applyClasses = (selector, classes) => {
-                               document.querySelectorAll(selector).forEach(el => {
-                                   classes.forEach(cls => el.classList.add(cls));
-                               });
-                           };
-
-                           applyClasses('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])', ['form-control', 'form-control-lg', 'rounded-3']);
-                           applyClasses('select', ['form-select', 'rounded-3']);
-                           applyClasses('textarea', ['form-control', 'rounded-3']);
-                           applyClasses('label', ['fw-bold', 'mb-2']);
-                           applyClasses('.invalid-feedback', ['text-danger']);
-
-                           const submitButton = document.querySelector('button[type="submit"]');
-                           if (submitButton && !submitButton.querySelector('i.fas.fa-save')) {
-                               const icon = document.createElement('i');
-                               icon.classList.add('fas', 'fa-save', 'me-2');
-                               submitButton.prepend(icon);
-                               submitButton.classList.add('btn', 'btn-success', 'me-3');
-                           }
-                       });
-                   </script>
-
-                   <form method="post">
-                       <!-- Ajoute ici ton formulaire (tu peux inclure _form.html.twig) -->
-                       {{ include('produit/_form.html.twig', {'button_label': 'Modifier produit'}) }}
-
-                       <div class="form-group row mt-5">
-                           <div class="col-12 text-center">
-                               <button type="submit" class="btn btn-success me-3">
-                                   <i class="fas fa-save me-2"></i>Modifier stock
-                               </button>
-                               <a href="{{ path('app_produitback_index') }}" class="btn btn-light">
-                                   <i class="fas fa-times me-2"></i> Retour à la liste
-                               </a>
-                           </div>
+                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
+                   
+                   {# Stock #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.stock) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.stock, {'attr': {'class': 'form-select rounded-3'}}) }}
+                           {{ form_errors(form.stock, {'attr': {'class': 'text-danger'}}) }}
                        </div>
-                   </form>
+                   </div>
+
+                   {# Nom #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.nom) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.nom, {'attr': {'class': 'form-control rounded-3'}}) }}
+                           {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Image (optionnelle) #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.image) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.image, {'attr': {'class': 'form-control rounded-3'}}) }}
+                           {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Quantité #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.quantite) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.quantite, {'attr': {'class': 'form-control rounded-3'}}) }}
+                           {{ form_errors(form.quantite, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Prix de vente #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.prix_vente) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.prix_vente, {'attr': {'class': 'form-control rounded-3'}}) }}
+                           {{ form_errors(form.prix_vente, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Statut #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.statut) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.statut, {'attr': {'class': 'form-select rounded-3'}}) }}
+                           {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Description globale #}
+                   <div class="form-group row mb-4">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.description_globale) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.description_globale, {'attr': {'class': 'form-control rounded-3', 'rows': '3'}}) }}
+                           {{ form_errors(form.description_globale, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Description détaillée #}
+                   <div class="form-group row mb-4">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.description_detaille) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.description_detaille, {'attr': {'class': 'form-control rounded-3', 'rows': '5'}}) }}
+                           {{ form_errors(form.description_detaille, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Catégorie #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.categorie) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.categorie, {'attr': {'class': 'form-select rounded-3'}}) }}
+                           {{ form_errors(form.categorie, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# En Promotion #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.enPromotion) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.enPromotion, {'attr': {'class': 'form-check-input ms-2'}}) }}
+                       </div>
+                   </div>
+
+                   {# Pourcentage promo #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.pourcentage_promo) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.pourcentage_promo, {'attr': {'class': 'form-control rounded-3'}}) }}
+                           {{ form_errors(form.pourcentage_promo, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Date début promo #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_debut_promo) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.date_debut_promo, {'attr': {'class': 'form-control rounded-3 flatpickr-input'}}) }}
+                           {{ form_errors(form.date_debut_promo, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Date fin promo #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_fin_promo) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.date_fin_promo, {'attr': {'class': 'form-control rounded-3 flatpickr-input'}}) }}
+                           {{ form_errors(form.date_fin_promo, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-warning me-3">
+                               <i class="fas fa-save me-2"></i>Modifier
+                           </button>
+                           <a href="{{ path('app_produitback_index') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i>Annuler
+                           </a>
+                       </div>
+                   </div>
+
+                   {{ form_end(form) }}
                </div>
            </div>
        </div>
    </div>
 </div>
-
-{% block stylesheets %}
-<style>
-   .card {
-       transition: all 0.3s ease;
-       border: none;
-   }
-
-   .card-header {
-       background-color: #198754 !important;
-       border-bottom: 3px solid #146c43;
-   }
-
-   .form-control:focus, 
-   .form-select:focus {
-       border-color: #198754;
-       box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-   }
-
-   .form-control, 
-   .form-select {
-       height: 45px;
-       border: 1px solid #ddd;
-   }
-
-   .btn {
-       padding: 10px 25px;
-       border-radius: 4px;
-       font-weight: 500;
-       transition: all 0.3s ease;
-       height: 45px;
-       display: inline-flex;
-       align-items: center;
-       justify-content: center;
-   }
-
-   .btn-success {
-       background-color: #198754;
-       border: none;
-       color: white;
-   }
-
-   .btn-success:hover {
-       background-color: #146c43;
-       transform: translateY(-1px);
-   }
-
-   .btn-light {
-       background-color: #f8f9fa;
-       border: 1px solid #ddd;
-       color: #212529;
-   }
-
-   .btn-light:hover {
-       background-color: #e2e6ea;
-       border-color: #ddd;
-   }
-   
-   .form-label {
-       color: #444;
-       font-weight: 500;
-   }
-
-   .card-body {
-       background-color: #fff;
-   }
-
-   .shadow-lg {
-       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-   }
-
-   .text-danger {
-       font-size: 0.875rem;
-       margin-top: 0.25rem;
-   }
-
-   .btn:active {
-       transform: translateY(1px);
-   }
-   
-   .form-group {
-       margin-bottom: 1.5rem;
-   }
-   
-   label {
-       display: block;
-       margin-bottom: 0.5rem;
-   }
-   
-   .form-control,
-   .form-select,
-   .custom-select {
-       height: calc(2.5em + 0.75rem + 2px);
-   }
-
-   textarea.form-control {
-       height: auto;
-       min-height: 100px;
-   }
-</style>
-{% endblock %}
-
 {% endblock %}
