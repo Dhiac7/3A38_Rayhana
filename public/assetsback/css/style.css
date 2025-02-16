@@ -16867,7 +16867,7 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
 
 .text-success {
   --bs-text-opacity: 1;
-  color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important;
+  color: rgba(0, 153, 0, 0.9607843137) !important;
 }
 
 .text-info {
@@ -16970,7 +16970,7 @@ textarea.is-invalid.tt-hint, .select2-container--default .select2-selection--sin
 }
 
 .text-success-emphasis {
-  color: var(--bs-success-text-emphasis) !important;
+  color: rgba(0, 153, 0, 0.9607843137) !important;
 }
 
 .text-info-emphasis {
@@ -26280,7 +26280,7 @@ dl li {
 }
 
 .content-wrapper {
-  background: #f2edf3;
+  background: #F4F4F4;
   padding: 2.75rem 2.25rem;
   width: 100%;
   -webkit-flex-grow: 1;

@@ -120,7 +120,7 @@ Sidebar heading:  22px 'Outfit', sans-serif
      # Reset Browsers
 =================================================================== */
 .text-danger {
-    color: red !important;
+    color: red;
     font-weight: bold;
 } 
 * {
@@ -157,7 +157,7 @@ mark, nav, section, time, audio, video {
 	border: 0;
 	outline: 0;
 }
-ul, li , i {
+ul , i {
     margin: 0;
     padding: 0;
     list-style: none;
