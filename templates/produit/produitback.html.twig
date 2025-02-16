@@ -22,6 +22,7 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr style="background-color: #8FBC8F; color: #2F4F4F;">
+                                 <th>Nom du stock </th>
                                     <th>Nom du produit</th>
                                     <th>Image du produit</th>
                                     <th>Quantité</th>
@@ -35,6 +36,7 @@
                             <tbody>
                                 {% for produit in produits %}
                                 <tr>
+                                 <td>{{ produit.stock.nom }}</td>
                                     <td>{{ produit.nom }}</td>
                                     <td>
                                     {% if produit.image %}

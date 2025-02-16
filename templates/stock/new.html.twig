@@ -8,18 +8,18 @@
        <div class="col-md-10">
            <div class="card shadow-lg border-0 rounded-lg">
                <div class="card-header bg-primary text-white py-3">
-                   <h4 class="card-title mb-0 text-center">Ajouter un nouveau stock</h4>
+                   <h4 class="card-title mb-0 text-center">Formulaire de Stock</h4>
                </div>
                <div class="card-body p-5">
                    {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
                    
                    {# Nom #}
-                   <div class="form-group row mb-4">
+                   <div class="form-group row mb-4 align-items-center">
                        <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.nom) }}</label>
                        <div class="col-sm-9">
                            {{ form_widget(form.nom, {
                                'attr': {
-                                   'class': 'form-control form-control-lg rounded-3',
+                                   'class': 'form-control rounded-3',
                                    'placeholder': 'Entrez le nom du stock'
                                }
                            }) }}
@@ -27,36 +27,36 @@
                        </div>
                    </div>
 
-                   {# Dates #}
-                   <div class="row mb-4">
-                       <div class="col-md-6">
-                           <div class="form-group">
-                               <label class="fw-bold mb-2">{{ form_label(form.date_stock) }}</label>
-                               {{ form_widget(form.date_stock, {
-                                   'attr': {
-                                       'class': 'form-control rounded-3 flatpickr-input',
-                                       'placeholder': 'Sélectionnez une date'
-                                   }
-                               }) }}
-                               {{ form_errors(form.date_stock, {'attr': {'class': 'text-danger'}}) }}
-                           </div>
+                   {# Date stock #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_stock) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.date_stock, {
+                               'attr': {
+                                   'class': 'form-control rounded-3 flatpickr-input',
+                                   'placeholder': 'Sélectionnez une date'
+                               }
+                           }) }}
+                           {{ form_errors(form.date_stock, {'attr': {'class': 'text-danger'}}) }}
                        </div>
-                       <div class="col-md-6">
-                           <div class="form-group">
-                               <label class="fw-bold mb-2">{{ form_label(form.date_expiration) }}</label>
-                               {{ form_widget(form.date_expiration, {
-                                   'attr': {
-                                       'class': 'form-control rounded-3 flatpickr-input',
-                                       'placeholder': 'Sélectionnez une date'
-                                   }
-                               }) }}
-                               {{ form_errors(form.date_expiration, {'attr': {'class': 'text-danger'}}) }}
-                           </div>
+                   </div>
+
+                   {# Date expiration #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_expiration) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.date_expiration, {
+                               'attr': {
+                                   'class': 'form-control rounded-3 flatpickr-input',
+                                   'placeholder': 'Sélectionnez une date'
+                               }
+                           }) }}
+                           {{ form_errors(form.date_expiration, {'attr': {'class': 'text-danger'}}) }}
                        </div>
                    </div>
 
                    {# Lieu #}
-                   <div class="form-group row mb-4">
+                   <div class="form-group row mb-4 align-items-center">
                        <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.lieu) }}</label>
                        <div class="col-sm-9">
                            {{ form_widget(form.lieu, {
@@ -69,32 +69,31 @@
                        </div>
                    </div>
 
-                   {# Condition et Statut #}
-                   <div class="row mb-4">
-                       <div class="col-md-6">
-                           <div class="form-group">
-                               <label class="fw-bold mb-2">{{ form_label(form.conditionn) }}</label>
-                               {{ form_widget(form.conditionn, {
-                                   'attr': {
-                                       'class': 'form-select rounded-3'
-                                   }
-                               }) }}
-                               {{ form_errors(form.conditionn, {'attr': {'class': 'text-danger'}}) }}
-                           </div>
-                       </div>
-                       <div class="col-md-6">
-                           <div class="form-group">
-                               <label class="fw-bold mb-2">{{ form_label(form.statut) }}</label>
-                               {{ form_widget(form.statut, {
-                                   'attr': {
-                                       'class': 'form-select rounded-3'
-                                   }
-                               }) }}
-                               {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
-                           </div>
+                   {# Condition #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.conditionn) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.conditionn, {
+                               'attr': {
+                                   'class': 'form-select rounded-3'
+                               }
+                           }) }}
+                           {{ form_errors(form.conditionn, {'attr': {'class': 'text-danger'}}) }}
                        </div>
                    </div>
 
+                   {# Statut #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.statut) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.statut, {
+                               'attr': {
+                                   'class': 'form-select rounded-3'
+                               }
+                           }) }}
+                           {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
 
                    {# Boutons #}
                    <div class="form-group row mt-5">
@@ -103,7 +102,7 @@
                                <i class="fas fa-save me-2"></i>Ajouter stock
                            </button>
                            <a href="{{ path('app_stock_index') }}" class="btn btn-light">
-                               <i class="fas fa-times me-2"></i> Retour à la liste
+                               <i class="fas fa-times me-2"></i>Retour à la liste
                            </a>
                        </div>
                    </div>
@@ -137,6 +136,10 @@
    .form-select {
        height: 45px;
        border: 1px solid #ddd;
+   }
+
+   .form-control[rows] {
+       height: auto;
    }
 
    .btn {
@@ -190,9 +193,13 @@
        margin-top: 0.25rem;
    }
 
-   /* Animation des boutons */
    .btn:active {
        transform: translateY(1px);
+   }
+
+   .form-check-input {
+       width: 20px;
+       height: 20px;
    }
 </style>
 {% endblock %}
