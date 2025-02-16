@@ -52,7 +52,7 @@ class DechetType extends AbstractType
                 'required' => true,
             ])           
         
-            ->add('date_expiration', DateType::class, [
+            ->add('dateExpiration', DateType::class, [
                 'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date
                 'required' => false,        // Autoriser la valeur vide
                 'empty_data' => null,       // Si la date est vide, la valeur -> null
