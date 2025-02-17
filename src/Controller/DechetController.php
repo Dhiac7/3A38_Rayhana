@@ -13,39 +13,50 @@ use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/dechet')]
 final class DechetController extends AbstractController
 {
     #[Route(name: 'app_dechet_index', methods: ['GET'])]
-    //public function index(DechetRepository $dechetRepository): Response
-    public function index(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator , SessionInterface $session , EntityManagerInterface $entityManager): Response
-    {   $loggedInUserId = $session->get('client_user_id');
-        
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_login');
-        }
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_login');
-        }
-        $query = $dechetRepository->findAll();
-        $pagination = $paginator->paginate(
-            $query, // Donneili bch namlou pagination
-            $request->query->getInt('page', 1), // Num page 
-            4 // nbr element par page 
-        );
-        return $this->render('dechet/indexBack.html.twig', [
-            'pagination' => $pagination,
-            'loggedInUser' => $loggedInUser,
-
-        ]);
-
-        
-        /*return $this->render('dechet/index.html.twig', [
-            'ateliers' => $atelierRepository->findAll(),
-        ]);*/
+public function index(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator, SessionInterface $session, EntityManagerInterface $entityManager): Response
+{
+    $loggedInUserId = $session->get('client_user_id');
+    
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_login');
     }
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_login');
+    }
+    
+    // Récupérer la direction du tri et le champ à trier
+    $sort = $request->query->get('sort', 'asc'); // 'asc' par défaut
+    $field = $request->query->get('field', 'type'); // Tri par type par défaut
+
+    // S'assurer que le tri est 'asc' ou 'desc'
+    if (!in_array($sort, ['asc', 'desc'])) {
+        $sort = 'asc'; // Valeur par défaut si invalidité
+    }
+
+    // Construire la requête pour trier
+    $query = $dechetRepository->createQueryBuilder('d')
+        ->orderBy('d.' . $field, $sort)
+        ->getQuery();
+
+    // Pagination
+    $pagination = $paginator->paginate(
+        $query, // Requête avec tri
+        $request->query->getInt('page', 1), // Page actuelle
+        4 // Nombre d'éléments par page
+    );
+
+    return $this->render('dechet/indexBack.html.twig', [
+        'pagination' => $pagination,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
 
     #[Route('/new', name: 'app_dechet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager , SessionInterface $session ): Response
@@ -123,42 +134,68 @@ final class DechetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_dechet_delete', methods: ['POST'])]
-    public function delete(Request $request, Dechet $dechet, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$dechet->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($dechet);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
+    #[Route('/{id}/delete', name: 'app_dechet_delete', methods: ['POST'])]
+public function delete(Request $request, Dechet $dechet, EntityManagerInterface $entityManager): Response
+{
+    if ($this->isCsrfTokenValid('delete'.$dechet->getId(), $request->request->get('_token'))) {
+        $entityManager->remove($dechet);
+        $entityManager->flush();
     }
 
+    return $this->redirectToRoute('app_dechet_index');
+}
 
-    #[Route('/dechet/list', name: 'dechet_list_ajax')]
-    public function listAteliers(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $sortOrder = $request->query->get('sort', '');
-        $searchQuery = $request->query->get('search', '');
-            $dechetRepository = $entityManager->getRepository(dechet::class);
-        $queryBuilder = $dechetRepository->createQueryBuilder('a');
-    
-        if (!empty($searchQuery)) {
-            $queryBuilder->andWhere('a.nom LIKE :search')
-                         ->setParameter('search', '%' . $searchQuery . '%');
-        }
-    
-        if ($sortOrder === "asc") {
-            $queryBuilder->orderBy('a.nom', 'ASC');
-        } elseif ($sortOrder === "desc") {
-            $queryBuilder->orderBy('a.nom', 'DESC');
-        }
-    
-        $dechet = $queryBuilder->getQuery()->getResult();
-    
-        return $this->render('dechet/_list.html.twig', [
-            'dechet' => $dechet,
-        ]);
+    #[Route('/dechet/delete-ajax', name: 'app_dechet_delete_ajax', methods: ['POST'])]
+public function deleteAjax(Request $request, EntityManagerInterface $entityManager): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    if (!isset($data['id'])) {
+        return new JsonResponse(['success' => false, 'message' => 'ID non fourni'], 400);
     }
+
+    $dechet = $entityManager->getRepository(Dechet::class)->find($data['id']);
+
+    if (!$dechet) {
+        return new JsonResponse(['success' => false, 'message' => 'Déchet introuvable'], 404);
+    }
+
+    $entityManager->remove($dechet);
+    $entityManager->flush();
+
+    return new JsonResponse(['success' => true]);
+}
+
     
+
+
+#[Route('/dechet/list', name: 'dechet_list_ajax', methods: ['GET'])]
+public function listAjax(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator): Response
+{
+    // Récupérer les paramètres de recherche et de tri
+    $sortOrder = $request->query->get('sort', 'asc');
+    $searchQuery = $request->query->get('search', '');
+
+    // Construction de la requête pour récupérer les déchets filtrés et triés
+    $queryBuilder = $dechetRepository->createQueryBuilder('d');
+
+    if ($searchQuery) {
+        $queryBuilder->andWhere('d.type LIKE :search')
+                     ->setParameter('search', '%' . $searchQuery . '%');
+    }
+
+    $queryBuilder->orderBy('d.type', $sortOrder); // Tri par type (ascendant ou descendant)
+
+    $query = $queryBuilder->getQuery();
+    $pagination = $paginator->paginate(
+        $query, 
+        $request->query->getInt('page', 1), 
+        4
+    );
+
+    return $this->render('dechet/_list_dechet.html.twig', [
+        'pagination' => $pagination,
+    ]);
+}
+
 }

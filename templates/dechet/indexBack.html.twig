@@ -36,35 +36,36 @@
 
 <!-- Script AJAX -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    function fetchdechhets(sortOrder = "", searchQuery = "") {
-      let url = "{{ path('dechet_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
+ document.addEventListener("DOMContentLoaded", function () {
+  function fetchdechhets(sortOrder = "", searchQuery = "") {
+    let url = "{{ path('dechet_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
 
-      fetch(url)
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById("dechhet-list").innerHTML = data;
-        });
-    }
+    fetch(url)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("dechhet-list").innerHTML = data;
+      });
+  }
 
-    // Recherche en temps réel
-    document.getElementById("search").addEventListener("input", function () {
-      fetchdechhets("", this.value);
-    });
-
-    // Tri croissant
-    document.getElementById("sortAsc").addEventListener("click", function () {
-      fetchdechhets("asc", document.getElementById("search").value);
-    });
-
-    // Tri décroissant
-    document.getElementById("sortDesc").addEventListener("click", function () {
-      fetchdechhets("desc", document.getElementById("search").value);
-    });
-
-    // Chargement initial des dechhets
-    fetchdechhets();
+  // Recherche en temps réel
+  document.getElementById("search").addEventListener("input", function () {
+    fetchdechhets("", this.value);
   });
+
+  // Tri croissant
+  document.getElementById("sortAsc").addEventListener("click", function () {
+    fetchdechhets("asc", document.getElementById("search").value);
+  });
+
+  // Tri décroissant
+  document.getElementById("sortDesc").addEventListener("click", function () {
+    fetchdechhets("desc", document.getElementById("search").value);
+  });
+
+  // Chargement initial des déchets
+  fetchdechhets();
+});
+
 </script>
 
 {% endblock %}
