@@ -3,98 +3,99 @@
 {% block title %}Gestion des Produits{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-lg border-0 rounded-lg">
-                {# En-tête avec un vert olive naturel #}
-                <div class="card-header py-3" style="background-color: #198754; color: white;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0">Gestion des Produits</h4>
-                        {# Bouton avec couleur terre claire #}
-                        <a href="{{ path('app_produitback_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
-                            <i class="fas fa-plus me-2"></i> Nouveau Produit
-                        </a>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="card-title mb-0">Gestion des Produits</h4>
+                            {# Bouton à droite du titre #}
+                            <a href="{{ path('app_produitback_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
+                                <i class="fas fa-plus me-2"></i> Nouveau Produit
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body p-4" style="background-color: #fff ;">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr style="background-color: #8FBC8F; color: #2F4F4F;">
-                                 <th>Nom du stock </th>
-                                    <th>Nom du produit</th>
-                                    <th>Image du produit</th>
-                                    <th>Quantité</th>
-                                    <th>Prix Vente</th>
-                                    <th>Catégorie</th>
-                                    <th class="text-center">En Promotion</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for produit in produits %}
-                                <tr>
-                                 <td>{{ produit.stock.nom }}</td>
-                                    <td>{{ produit.nom }}</td>
-                                    <td>
-                                    {% if produit.image %}
-                                        <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
-                                    {% else %}
-                                        <span class="text-muted">Aucune image disponible</span>
-                                    {% endif %}
-                                    </td>
-                                    <td>{{ produit.quantite }}</td>
-                                    <td>{{ produit.prixVente }}</td>
-                                    <td>{{ produit.categorie }}</td>
-                                    <td class="text-center">
-                                        {% if produit.enPromotion %}
-                                            <i class="mdi mdi-check-circle" style="color: rgb(52, 199, 52); font-size: 22px;"></i>
+                    <div class="card-body p-4" style="background-color: #fff;">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr style="background-color: #8FBC8F; color: #2F4F4F;">
+                                        <th>Nom du stock </th>
+                                        <th>Nom du produit</th>
+                                        <th>Image du produit</th>
+                                        <th>Quantité</th>
+                                        <th>Prix Vente</th>
+                                        <th>Catégorie</th>
+                                        <th class="text-center">En Promotion</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for produit in produits %}
+                                    <tr>
+                                        <td>{{ produit.stock.nom }}</td>
+                                        <td>{{ produit.nom }}</td>
+                                        <td>
+                                        {% if produit.image %}
+                                            <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                         {% else %}
-                                            <i class="mdi mdi-close-circle" style="color: rgb(211, 54, 54); font-size: 22px;"></i>
+                                            <span class="text-muted">Aucune image disponible</span>
                                         {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if produit.statut == 'Disponible' %}
-                                            <span class="badge" style="background-color:rgb(52, 199, 52);">{{ produit.statut }}</span>
-                                        {% elseif produit.statut == 'En rupture' %}
-                                            <span class="badge" style="background-color:rgb(211, 54, 54);">{{ produit.statut }}</span>
-                                        {% else %}
-                                            <span class="badge" style="background-color: #DAA520;">{{ produit.statut }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ path('app_produitback_show', {'id': produit.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
-                                            <i class="mdi mdi-eye"></i> 
-                                        </a>
-                                        <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
-                                            <i class="mdi mdi-pencil"></i> 
-                                        </a>
-                                        <a href="{{ path('app_vente_new', {'id': produit.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #DAA520;">
-                                            <i class="mdi mdi-cart-plus"></i>
-                                        </a>
+                                        </td>
+                                        <td>{{ produit.quantite }}</td>
+                                        <td>{{ produit.prixVente }}</td>
+                                        <td>{{ produit.categorie }}</td>
+                                        <td class="text-center">
+                                            {% if produit.enPromotion %}
+                                                <i class="mdi mdi-check-circle" style="color: rgb(52, 199, 52); font-size: 22px;"></i>
+                                            {% else %}
+                                                <i class="mdi mdi-close-circle" style="color: rgb(211, 54, 54); font-size: 22px;"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if produit.statut == 'Disponible' %}
+                                                <span class="badge" style="background-color:rgb(52, 199, 52);">{{ produit.statut }}</span>
+                                            {% elseif produit.statut == 'En rupture' %}
+                                                <span class="badge" style="background-color:rgb(211, 54, 54);">{{ produit.statut }}</span>
+                                            {% else %}
+                                                <span class="badge" style="background-color: #DAA520;">{{ produit.statut }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('app_produitback_show', {'id': produit.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
+                                                <i class="mdi mdi-eye"></i> 
+                                            </a>
+                                            <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
+                                                <i class="mdi mdi-pencil"></i> 
+                                            </a>
+                                            <a href="{{ path('app_vente_new', {'id': produit.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #DAA520;">
+                                                <i class="mdi mdi-cart-plus"></i>
+                                            </a>
 
-                                        <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-                                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
-                                                <i class="mdi mdi-delete"></i> 
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% else %}
-                                <tr>
-                                    <td colspan="8" class="text-center py-4">
-                                        <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
-                                            <i class="fas fa-info-circle me-2"></i>
-                                            Aucun produit trouvé
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                            <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                                                <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
+                                                    <i class="mdi mdi-delete"></i> 
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="9" class="text-center py-4">
+                                            <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Aucun produit trouvé
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
