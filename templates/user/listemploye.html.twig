@@ -75,7 +75,7 @@
                     <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
                         <i class="mdi mdi-pencil"></i> 
                     </a>
-                    <form method="post" action="{{ path('app_produit_delete', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?');">
+                    <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employe?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                         <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
                             <i class="mdi mdi-delete"></i> 

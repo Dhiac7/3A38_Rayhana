@@ -3,64 +3,82 @@
 {% block title %}Clients{% endblock %}
 
 {% block body %}
-<div class="main-panel">
-    <div class="content-wrapper">
-        <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Clients</h4>
-
-                        <div class="alert alert-info">
-                            <strong>Debug Info (Clients):</strong><br>
-                            Current Page: {{ pagination.currentPageNumber }}<br>
-                            Total Items: {{ pagination.totalItemCount }}<br>
-                            Items per Page: {{ pagination.itemNumberPerPage }}
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-12">  {# Use col-12 for full width #}
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <h4 class="card-title mb-0">Clients</h4>
+                            </div>
                         </div>
+                        <div class="card-body p-4" style="background-color: #fff;">  {# Added card-body styling #}
 
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nom prenom</th>
-                                    <th>Email</th>
-                                    <th>Tel</th>
-                                    <th>Cin</th>
-                                    <th><center>Actions</center></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in pagination.getItems() %}
-                                    <tr>
-                                        <td>{{ user.id }}</td>
-                                        <td>{{ user.nom }} {{user.prenom}}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.tel }}</td>
-                                        <td>{{ user.cin }}</td>
-                                        <td><center>
-                                            <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Modifier</a>
-                                            <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                            <button class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Supprimer</button>
-                                          </form></center></td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="5">No clients found.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            <div class="alert alert-info">  {# Moved alert inside card-body #}
+                                <strong>Debug Info (Clients):</strong><br>
+                                Current Page: {{ pagination.currentPageNumber }}<br>
+                                Total Items: {{ pagination.totalItemCount }}<br>
+                                Items per Page: {{ pagination.itemNumberPerPage }}
+                            </div>
 
-                        <div class="d-flex justify-content-center">
-                            {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
-                                'pageParameterName': 'page_clients'
-                            }) }}
+                            {{ _self.client_table(pagination) }}  {# Call the macro #}
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
+
+{% macro client_table(pagination) %}
+    <table class="table table-hover">  {# Added table-hover for better UX #}
+        <thead>
+            <tr style="background-color: #8FBC8F; color: #2F4F4F;">  {# Consistent header styling #}
+                <th>ID</th>
+                <th>Nom et Prénom</th>
+                <th>Email</th>
+                <th>Tel</th>
+                <th>Cin</th>
+                <th class="text-center">Actions</th>  {# Use text-center class #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in pagination.getItems() %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.nom }} {{ user.prenom }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.cin }}</td>
+                    <td class="text-center">  {# Center actions #}
+                        <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Modifier
+                        </a>
+                        <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">  {# Consistent button styling #}
+                                <i class="mdi mdi-delete"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center py-4">  {# colspan adjusted #}
+                        <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Aucun client trouvé
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
+            'pageParameterName': 'page_clients'
+        }) }}
+    </div>
+{% endmacro %}

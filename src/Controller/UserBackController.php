@@ -3,6 +3,7 @@
 namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\UserEditType;
 use App\Form\UserAdminType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -266,8 +267,8 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         ]);
     }
     
-   /* #[Route('/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
-    public function deleteback(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
+    public function deletebackemploye(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
@@ -275,7 +276,18 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         }
 
         return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }*/
+    }
+
+    #[Route('/{id}', name: 'app_user_deletebackclient', methods: ['POST'])]
+    public function deletebackclient(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
+    }
 
     /*#[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -333,5 +345,52 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             'loggedInUser' => $loggedInUser,
         ]);
 }
+
+    #[Route('/{id}/editprofiladmin', name: 'app_user_editprofiladmin', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('admin_user_id');
+    
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $form = $this->createForm(UserEditType::class, $user);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Handle Photo Upload
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile instanceof UploadedFile) {
+                $uploadsDirectory = $this->getParameter('uploads_directory'); 
+                $newFilename = uniqid().'.'.$photoFile->guessExtension();
+                $photoFile->move($uploadsDirectory, $newFilename);
+                $user->setPhoto($newFilename);
+            }
+    
+            // Handle Password Change
+            $plainPassword = $form->get('mdp')->getData();
+            if (!empty($plainPassword)) { 
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+            }
+    
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
+        }
+    
+        return $this->render('user/editprofiladmin.html.twig', [
+            'user' => $user,
+            'form' => $form,
+            'loggedInUser' => $loggedInUser,
+        ]);
+    }
+    
 
 }
