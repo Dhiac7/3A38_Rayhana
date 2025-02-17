@@ -3,53 +3,84 @@
 {% block title %}Ventes{% endblock %}
 
 {% block body %}
-<div class="col-lg-12 grid-margin stretch-card">
-  <div class="card">
-    <div class="card-body">
-      <!-- Title with box -->
-      <div class="p-3 mb-4 bg-primary text-white text-center rounded">
-        <h4>Liste des Ventes</h4>
-      </div>
-      <p class="card-description">Liste des transactions enregistrées</p>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th> nom  </th>
-            <th> ID </th>
-            <th> Prix (€) </th>
-            <th> Méthode de paiement </th>
-            <th> Date </th>
-            <th> Quantité </th>
-            <th> Actions </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for vente in pagination %}
-          <tr>
-            <td> {{ vente.nom }} </td>
-            <td> {{ vente.id }} </td>
-            <td> {{ vente.prix }} </td>
-            <td> {{ vente.methodepayement }} </td>
-            <td> {{ vente.date ? vente.date|date('Y-m-d H:i:s') : 'N/A' }} </td>
-            <td> {{ vente.quantite }} </td>
-            <td>
-              <a href="{{ path('app_vente_show', {'id': vente.id}) }}" class="btn btn-info btn-sm">
-                <i class="mdi mdi-eye"></i> Voir
-              </a>
-              <a href="{{ path('app_vente_edit', {'id': vente.id}) }}" class="btn btn-warning btn-sm">
-                <i class="mdi mdi-pencil"></i> Modifier
-              </a>
-              {{ include('vente/_delete_form.html.twig') }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <br>
-      <div class="d-flex justify-content-center">
-        {{ knp_pagination_render(pagination) }}
-      </div>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <h4 class="card-title mb-0">Liste des Ventes</h4>
+                        </div>
+                    </div>
+                    <div class="card-body p-4" style="background-color: #fff;">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr style="background-color: #8FBC8F; color: #2F4F4F;">
+                                        <th>ID</th>
+                                        <th>Image du Produit</th> <!-- Nouvelle colonne pour l'image -->
+                                        <th>Nom</th>
+                                        <th>Prix (€)</th>
+                                        <th>Méthode de paiement</th>
+                                        <th>Date</th>
+                                        <th>Quantité</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vente in pagination %}
+                                        <tr>
+                                            <td>{{ vente.id }}</td>
+                                            <td>
+                                                <!-- Afficher l'image du produit associé à la vente -->
+                                                {% if vente.produit and vente.produit.image %}
+                                                    <img src="{{ asset('img/stock/' ~ vente.produit.image) }}" alt="{{ vente.produit.nom }}" class="img-fluid" style="max-width: 100px;">
+                                                {% else %}
+                                                    <p class="text-danger">Aucune image</p>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ vente.nom }}</td>
+                                            <td>{{ vente.prix }}</td>
+                                            <td>{{ vente.methodepayement }}</td>
+                                            <td>{{ vente.date ? vente.date|date('Y-m-d H:i:s') : 'N/A' }}</td>
+                                            <td>{{ vente.quantite }}</td>
+                                            <td>
+                                                <a href="{{ path('app_vente_show', {'id': vente.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
+                                                    <i class="mdi mdi-eye"></i> Voir
+                                                </a>
+                                                <a href="{{ path('app_vente_edit', {'id': vente.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
+                                                    <i class="mdi mdi-pencil"></i> Modifier
+                                                </a>
+                                                <form method="post" action="{{ path('app_vente_delete', {'id': vente.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette vente?');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ vente.id) }}">
+                                                    <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
+                                                        <i class="mdi mdi-delete"></i> Supprimer
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Aucune vente trouvée
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-center">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}
