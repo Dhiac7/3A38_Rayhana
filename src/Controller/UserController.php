@@ -145,7 +145,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     
 
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    /*#[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -154,7 +154,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         }
 
         return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }
+    }*/
 
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
