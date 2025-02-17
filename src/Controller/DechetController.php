@@ -93,11 +93,10 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
     // Rendre la vue pour afficher le formulaire
     return $this->render('dechet/new.html.twig', [
         'dechet' => $dechet,
-        'form' => $form,
+        'form' => $form->createView(), 
         'loggedInUser' => $loggedInUser,
     ]);
-}
-
+} 
 
     #[Route('/{id}', name: 'app_dechet_show', methods: ['GET'])]
     public function show(Dechet $dechet , SessionInterface $session , EntityManagerInterface $entityManager): Response
