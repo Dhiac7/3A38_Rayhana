@@ -158,6 +158,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
+     * @var Collection<int, Transactionfinancier>
+     */
+    #[ORM\OneToMany(targetEntity: Transactionfinancier::class, mappedBy: 'User')]
+    private Collection $transactionfinanciers;
+
+
+    /**
      * @var Collection<int, Parcelle>
      */
     #[ORM\OneToMany(targetEntity: Parcelle::class, cascade: ['persist', 'remove'], mappedBy: 'id_user')]
@@ -173,14 +180,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $employes;
 
 
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
 
+        $this->transactionfinanciers = new ArrayCollection();
+
+
         $this->parcelles = new ArrayCollection();
 
         $this->employes = new ArrayCollection();
+
 
     }
 
@@ -448,6 +460,24 @@ public function getPassword(): ?string
 
 
     /**
+     * @return Collection<int, Transactionfinancier>
+     */
+    public function getTransactionfinanciers(): Collection
+    {
+        return $this->transactionfinanciers;
+    }
+
+    public function addTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if (!$this->transactionfinanciers->contains($transactionfinancier)) {
+            $this->transactionfinanciers->add($transactionfinancier);
+            $transactionfinancier->setUser($this);
+                  }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Parcelle>
      */
     public function getParcelles(): Collection
@@ -487,11 +517,24 @@ public function getPassword(): ?string
             $this->employes->add($employe);
             $employe->setAgriculteur($this);
 
+
         }
 
         return $this;
     }
 
+          
+    public function removeTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if ($this->transactionfinanciers->removeElement($transactionfinancier)) {
+            // set the owning side to null (unless already changed)
+            if ($transactionfinancier->getUser() === $this) {
+                $transactionfinancier->setUser(null);
+            }
+        }
+
+        return $this;
+    }
     public function removeParcelle(Parcelle $parcelle): static
     {
         if ($this->parcelles->removeElement($parcelle)) {
@@ -509,7 +552,6 @@ public function getPassword(): ?string
             // set the owning side to null (unless already changed)
             if ($employe->getAgriculteur() === $this) {
                 $employe->setAgriculteur(null);
-
             }
         }
 
