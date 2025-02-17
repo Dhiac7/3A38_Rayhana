@@ -30,8 +30,16 @@ final class AvisController extends AbstractController{
     if (!$loggedInUser) {
         return $this->redirectToRoute('app_user_login');
     }
+
+    // Filtrer les ventes pour l'utilisateur connecté
+    $query = $avisRepository->createQueryBuilder('v')
+        ->where('v.client = :client')
+        ->setParameter('client', $loggedInUser)
+        ->getQuery();
+
+
         return $this->render('avis/index.html.twig', [
-            'avis' => $avisRepository->findAll(),
+            'avis' => $query->getResult(), // Utilisation du résultat de la requête filtrée
             'loggedInUser' => $loggedInUser,
         ]);
     }
@@ -55,9 +63,10 @@ final class AvisController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $avi->setClient($loggedInUser);
+
             $entityManager->persist($avi);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -90,7 +99,7 @@ final class AvisController extends AbstractController{
     }
 
     #[Route('/{id}/edit', name: 'app_avis_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Avis $avi, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Avis $avi, EntityManagerInterface $entityManager,SessionInterface $session ): Response
     {
         $loggedInUserId = $session->get('client_user_id');
     

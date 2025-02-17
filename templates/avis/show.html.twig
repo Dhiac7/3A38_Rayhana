@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/client.html.twig' %}
 
 {% block title %}Avis{% endblock %}
 
@@ -11,15 +11,18 @@
                 <th>Id</th>
                 <td>{{ avi.id }}</td>
             </tr>
-           
+           <!--
             <tr>
+            
                 <th>Id_Client</th>
                 <td>{{ avi.idClient }}</td>
             </tr>
+            
             <tr>
                 <th>Id_produit</th>
                 <td>{{ avi.idProduit }}</td>
             </tr>
+            -->
             <tr>
                 <th>Rate</th>
                 <td>{{ avi.rate }}</td>

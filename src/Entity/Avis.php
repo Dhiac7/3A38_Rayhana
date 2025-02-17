@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AvisRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,9 +36,19 @@ class Avis
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?User $client = null;
+
+    /**
+     * @var Collection<int, Inspection>
+     */
+    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis')]
+    private Collection $reponse;
+
     public function __construct()
     {
         $this->date = new \DateTimeImmutable(); // Définit la date et l'heure actuelles automatiquement
+        $this->reponse = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,5 +103,47 @@ class Avis
     public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
+    }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): static
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inspection>
+     */
+    public function getReponse(): Collection
+    {
+        return $this->reponse;
+    }
+
+    public function addReponse(Inspection $reponse): static
+    {
+        if (!$this->reponse->contains($reponse)) {
+            $this->reponse->add($reponse);
+            $reponse->setAvis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReponse(Inspection $reponse): static
+    {
+        if ($this->reponse->removeElement($reponse)) {
+            // set the owning side to null (unless already changed)
+            if ($reponse->getAvis() === $this) {
+                $reponse->setAvis(null);
+            }
+        }
+
+        return $this;
     }
 }

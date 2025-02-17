@@ -12,12 +12,13 @@ class InspectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id_avis')
-            ->add('date_inspection', null, [
+            //->add('id_avis')
+            /*->add('date_inspection', null, [
                 'widget' => 'single_text'
             ])
-            ->add('type_inspection')
-            ->add('inspecteur_id')
+                */
+            //->add('type_inspection')
+            //->add('inspecteur_id')
             ->add('resultat')
             ->add('note')
         ;
