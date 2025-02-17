@@ -35,32 +35,32 @@ final class UserController extends AbstractController
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-    public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {
+public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $error = null;
 
-        $error = null;
+    if ($request->isMethod('POST')) {
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
 
-        if ($request->isMethod('POST')) {
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            $error = 'Invalid email or password';
+        } elseif ($user->getRole() === 'agriculteur') {
+            $error = 'Accès refusé';
+        } else {
+            $session->set('client_user_id', $user->getId());
+            User::setCurrentUser($user);
 
-            if (!$user || !password_verify($password, $user->getPassword())) {
-                $error = 'Invalid email or password';
-            } else {
-                $session->set('client_user_id', $user->getId());
-
-                User::setCurrentUser($user);
-
-                return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
-            }
+            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
         }
-
-        return $this->render('user/login.html.twig', [
-            'error' => $error,
-        ]);
     }
+
+    return $this->render('user/login.html.twig', [
+        'error' => $error,
+    ]);
+}
 
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response

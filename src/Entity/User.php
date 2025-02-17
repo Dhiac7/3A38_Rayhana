@@ -156,10 +156,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $nbrHeuresTravail = null;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'employes')]
+    private ?self $agriculteur = null;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'agriculteur')]
+    private Collection $employes;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
+        $this->employes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -420,6 +430,48 @@ public function getPassword(): ?string
     public function setNbrHeuresTravail(?float $nbrHeuresTravail): static
     {
         $this->nbrHeuresTravail = $nbrHeuresTravail;
+
+        return $this;
+    }
+
+    public function getAgriculteur(): ?self
+    {
+        return $this->agriculteur;
+    }
+
+    public function setAgriculteur(?self $agriculteur): static
+    {
+        $this->agriculteur = $agriculteur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getEmployes(): Collection
+    {
+        return $this->employes;
+    }
+
+    public function addEmploye(self $employe): static
+    {
+        if (!$this->employes->contains($employe)) {
+            $this->employes->add($employe);
+            $employe->setAgriculteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmploye(self $employe): static
+    {
+        if ($this->employes->removeElement($employe)) {
+            // set the owning side to null (unless already changed)
+            if ($employe->getAgriculteur() === $this) {
+                $employe->setAgriculteur(null);
+            }
+        }
 
         return $this;
     }
