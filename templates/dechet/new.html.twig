@@ -10,57 +10,46 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title text-center">Remplissez le formulaire</h4>
-                        {{ form_start(form, {'method': 'POST', 'action': path('app_dechet_new'), 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
-                        {% for error in form.vars.errors %}
-                            <div class="text-danger">{{ error.message }}</div>
-                        {% endfor %}
-                        {% for label, messages in app.flashes %}
-                            {% for message in messages %}
-                                <div class="alert alert-{{ label }}">{{ message }}</div>
-                            {% endfor %}
-                        {% endfor %}
+                        {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}  
 
                         <div class="form-group">
                             {{ form_label(form.type, 'Type du déchet') }}
                             {{ form_widget(form.type, {'attr': {'class': 'form-control', 'placeholder': 'Type du déchet'}}) }}
-                            <div {{ form_errors(form.type) ? 'class="text-danger"' : '' }}>
-                                {{ form_errors(form.type) }}
-                            </div>
+                            {% if form_errors(form.type) %}
+                                <div class="text-danger">{{ form_errors(form.type) }}</div>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
                             {{ form_label(form.quantite, 'Quantité') }}
                             {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'placeholder': 'Quantité'}}) }}
-                            <div {% if form_errors(form.quantite) %}
-    <div class="text-danger">
-        {{ form_errors(form.quantite) }}
-    </div>
-{% endif %}
-                            </div>
+                            {% if form_errors(form.quantite) %}
+                                <div class="text-danger">{{ form_errors(form.quantite) }}</div>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
                             {{ form_label(form.dateProduction, 'Date de production') }}
                             {{ form_widget(form.dateProduction, {'attr': {'class': 'form-control'}}) }}
-                            <div {{ form_errors(form.dateProduction) ? 'class="text-danger"' : '' }}>
-                                {{ form_errors(form.dateProduction) }}
-                            </div>
+                            {% if form_errors(form.dateProduction) %}
+                                <div class="text-danger">{{ form_errors(form.dateProduction) }}</div>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
                             {{ form_label(form.statut, 'Statut') }}
                             {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-                            <div {{ form_errors(form.statut) ? 'class="text-danger"' : '' }}>
-                                {{ form_errors(form.statut) }}
-                            </div>
+                            {% if form_errors(form.statut) %}
+                                <div class="text-danger">{{ form_errors(form.statut) }}</div>
+                            {% endif %}
                         </div>
 
                         <div class="form-group">
                             {{ form_label(form.dateExpiration, 'Date d\'expiration') }}
                             {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
-                            <div {{ form_errors(form.dateExpiration) ? 'class="text-danger"' : '' }}>
-                                {{ form_errors(form.dateExpiration) }}
-                            </div>
+                            {% if form_errors(form.dateExpiration) %}
+                                <div class="text-danger">{{ form_errors(form.dateExpiration) }}</div>
+                            {% endif %}
                         </div>
 
                         <button type="submit" class="btn btn-gradient-primary me-2 w-100">

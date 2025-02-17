@@ -6,5 +6,5 @@ controllers:
 
 app_atelier_delete_ajax:
     path: /atelierBack/atelier/delete
-    controller: App\Controller\AtelierController::deleteAtelierAjax
-    methods: POST
+    controller: App\Controller\AtelierController::delete
+    methods: GET

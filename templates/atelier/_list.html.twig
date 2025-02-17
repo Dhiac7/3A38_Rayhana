@@ -27,7 +27,7 @@
                                   <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
                                   <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
                                   <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-primary">Modifier</a><br>
-                                  <a href="{{ path('app_atelier_delete_ajax', {'id': atelier.id}) }}" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
+                                  <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
                               </div>
                           </div>
                       </div>

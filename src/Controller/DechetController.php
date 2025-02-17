@@ -58,37 +58,50 @@ public function index(Request $request, DechetRepository $dechetRepository, Pagi
     ]);
 }
 
-    #[Route('/new', name: 'app_dechet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager , SessionInterface $session ): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+#[Route('/new', name: 'app_dechet_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    // Récupérer l'ID de l'utilisateur connecté depuis la session
+    $loggedInUserId = $session->get('admin_user_id');
     
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-    
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-        $dechet = new Dechet();
-        $form = $this->createForm(DechetType::class, $dechet);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($dechet);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('dechet/new.html.twig', [
-            'dechet' => $dechet,
-            'form' => $form,
-            'loggedInUser' => $loggedInUser,
-
-        ]);
+    // Vérifier si l'utilisateur est connecté
+    if (!$loggedInUserId) {
+        // Rediriger vers la page de connexion
+        return $this->redirectToRoute('app_user_loginback');
     }
+    
+    // Rechercher l'utilisateur connecté dans la base de données
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+    // Vérifier si l'utilisateur existe
+    if (!$loggedInUser) {
+        // Rediriger vers la page de connexion avec une erreur
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    // Créer un nouvel objet "Dechet"
+    $dechet = new Dechet();
+    $form = $this->createForm(DechetType::class, $dechet);
+    $form->handleRequest($request);
+
+    // Si le formulaire est soumis et valide
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Persister l'objet dans la base de données
+        $entityManager->persist($dechet);
+        $entityManager->flush();
+
+        // Rediriger vers la liste des déchets
+        return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    // Rendre la vue pour afficher le formulaire
+    return $this->render('dechet/new.html.twig', [
+        'dechet' => $dechet,
+        'form' => $form,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
 
     #[Route('/{id}', name: 'app_dechet_show', methods: ['GET'])]
     public function show(Dechet $dechet , SessionInterface $session , EntityManagerInterface $entityManager): Response

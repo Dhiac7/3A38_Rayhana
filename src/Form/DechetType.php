@@ -57,8 +57,8 @@ class DechetType extends AbstractType
                 'required' => false,        // Autoriser la valeur vide
                 'empty_data' => null,       // Si la date est vide, la valeur -> null
                 'attr' => ['placeholder' => 'YYYY-MM-DD']  // Optionnel, pour ajouter un placeholder
-            ]);
-           // ->add('save', SubmitType::class, ['label' => 'Confirmer']);
+            ])
+            ->add('save', SubmitType::class, ['label' => 'Confirmer']);
             
     }
 
