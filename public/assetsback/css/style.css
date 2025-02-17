@@ -22639,7 +22639,7 @@ code {
 }
 
 .btn-gradient-success {
-  background: linear-gradient(to right, #84d9d2, #07cdae);
+  background: #49a760;
   border: 0;
   -webkit-transition: opacity 0.3s ease;
   -moz-transition: opacity 0.3s ease;
@@ -22657,7 +22657,7 @@ code {
   color: #ffffff;
 }
 .btn-gradient-success:not(.btn-gradient-light):hover, .btn-gradient-success:not(.btn-gradient-light):focus, .btn-gradient-success:not(.btn-gradient-light):active {
-  color: #ffffff;
+  color: #49a760;
 }
 
 .btn-gradient-info {
