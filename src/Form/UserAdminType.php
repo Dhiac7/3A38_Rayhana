@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserAdminType extends AbstractType
 {
@@ -34,7 +35,6 @@ class UserAdminType extends AbstractType
         ])
         ->add('role', ChoiceType::class, [
             'choices' => [
-                'agriculteur' => 'agriculteur',
                 'fermier' => 'fermier',
                 'livreur' => 'livreur',
                 'inspecteur' => 'inspecteur',
@@ -42,11 +42,22 @@ class UserAdminType extends AbstractType
             'placeholder' => 'entrez votre role',
             'required' => true,
         ])
-        ->add('mdp', PasswordType::class, [
-            'mapped' => false, // Prevents binding hashed password
-            'required' => false, // Optional, allows keeping the old password
-            'attr' => ['autocomplete' => 'new-password'], // Avoid browser autofill
-        ])
+        ->add('mdp', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'invalid_message' => 'Les mots de passe doivent correspondre.',
+            'options' => [
+                'attr' => ['class' => 'form-control'],
+            ],
+            'required' => true,
+            'first_options'  => [
+                'label' => 'Mot de passe',
+                'attr' => ['placeholder' => 'Mot de passe'],
+            ],
+            'second_options' => [
+                'label' => 'Confirmer le mot de passe',
+                'attr' => ['placeholder' => 'Confirmer le mot de passe'],
+            ],
+        ])        
         ->add('email')
         ->add('tel')
         ->add('salaire')
@@ -79,7 +90,7 @@ class UserAdminType extends AbstractType
             'placeholder' => 'Choisir un gouvernorat',
             'attr' => ['class' => 'form-select']
         ])
-        ->add('save', SubmitType::class, ['label' => 'Confirmer']);
+        ->add('save', SubmitType::class, ['label' => 'Confirmer']);   
         }
 
 
