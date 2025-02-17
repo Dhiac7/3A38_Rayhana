@@ -106,7 +106,6 @@ final class ProduitbackController extends AbstractController
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
     { 
@@ -115,26 +114,37 @@ final class ProduitbackController extends AbstractController
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            // Gestion de l’image
+            $photoFile = $form->get('image')->getData();
+            
+            if ($photoFile instanceof UploadedFile) {
+                $uploadsDirectory = $this->getParameter('image_directory'); 
+                $newFilename = uniqid().'.'.$photoFile->guessExtension();
+                $photoFile->move($uploadsDirectory, $newFilename);
+                $produit->setImage($newFilename);
+            }
+            
             $entityManager->flush();
             return $this->redirectToRoute('app_produitback_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('produit/edit.html.twig', [
             'produit' => $produit,
             'form' => $form,
             'loggedInUser' => $loggedInUser,
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response

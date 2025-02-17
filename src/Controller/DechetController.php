@@ -60,14 +60,16 @@ public function index(Request $request, DechetRepository $dechetRepository, Pagi
 
     #[Route('/new', name: 'app_dechet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager , SessionInterface $session ): Response
-    {$loggedInUserId = $session->get('client_user_id');
-        
+    {$loggedInUserId = $session->get('admin_user_id');
+    
         if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_login');
+            return $this->redirectToRoute('app_user_loginback');
         }
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
         if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_login');
+            return $this->redirectToRoute('app_user_loginback');
         }
         $dechet = new Dechet();
         $form = $this->createForm(DechetType::class, $dechet);
