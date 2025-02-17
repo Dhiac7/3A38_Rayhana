@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réservation{% endblock %}
+
+{% block body %}
+<div class="contact-area contact-page overflow-hidden bg-gray default-padding">
+    <div class="sahpe-right-bottom">
+        <img src="{{ asset('assets/img/shape/16.png') }}" alt="Image Not Found">
+    </div>
+    <div class="container">
+        <div class="row align-center">
+            <div class="col-tact-stye-one col-xl-12 col-lg-12">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="contact-form-style-one mb-md-50">
+                            <h5 class="sub-title">Nouvelle Réservation</h5>
+                            <h2 class="heading">Informations de l'atelier</h2>
+
+                            {# Start Symfony Form #}
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
+
+                                {# Display global form errors #}
+                                {% for error in form.vars.errors %}
+                                    <div class="alert alert-danger">{{ error.message }}</div>
+                                {% endfor %}
+
+                                <div class="row">
+                                    <!-- Nom de l'atelier -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label>Nom de l'atelier</label>
+                                            <input type="text" class="form-control" value="{{ atelier.nom }}" readonly>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Prix (From Réservation) -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            {{ form_label(form.prix, 'Prix Total (€)') }}
+                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'id': 'reservation_prix', 'readonly': true}}) }}
+                                            {{ form_errors(form.prix) }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Prix par place (Hidden) -->
+                                    {{ form_widget(form.prixUnitaire, {'attr': {'id': 'reservation_prixUnitaire'}}) }}
+                                </div>
+
+                            {{ form_end(form) }}
+                            {# End Symfony Form #}
+                        </div>
+                    </div>
+
+                    <!-- Atelier Information -->
+                    <div class="col-lg-6">
+                        <div class="atelier-info">
+                            <h3>Informations de l'Atelier</h3>
+                            {% if atelier is defined %}
+                                <p><strong>Nom de l'atelier:</strong> {{ atelier.nom }}</p>
+                                <p><strong>Date:</strong> {{ atelier.dateAtelier|date('d M Y') }}</p>
+                                <p><strong>Prix par place:</strong> {{ atelier.prix }} €</p>
+                            {% else %}
+                                <p class="text-danger">Aucun atelier sélectionné.</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Illustration -->
+                        <img src="{{ asset('img/illustration/21.png') }}" alt="Image Not Found" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let placesInput = document.getElementById("reservation_nombrePlaces");
+        let prixUnitaireInput = document.getElementById("reservation_prixUnitaire");
+        let prixTotalInput = document.getElementById("reservation_prix");
+        let availablePlaces = {{ atelier.placesDisponibles|default(0) }};
+
+        // Function to update total price
+        function updatePrixTotal() {
+            let places = parseInt(placesInput.value) || 0;
+            let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
+            let prixTotal = places * prixUnitaire;
+            prixTotalInput.value = prixTotal.toFixed(2);
+        }
+
+        // Validate places entered
+        function validatePlaces() {
+            let places = parseInt(placesInput.value) || 0;
+            if (places > availablePlaces) {
+                alert("Le nombre de places ne peut pas être supérieur aux places disponibles !");
+                placesInput.value = availablePlaces;
+                updatePrixTotal();
+            }
+        }
+
+        // Event listeners
+        placesInput.addEventListener("input", function () {
+            updatePrixTotal();
+            validatePlaces();
+        });
+
+        // Initial price update on page load
+        updatePrixTotal();
+    });
+</script>
+{% endblock %}
+{% endblock %}

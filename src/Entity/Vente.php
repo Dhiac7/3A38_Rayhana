@@ -37,8 +37,10 @@ private ?User $user = null;
     #[ORM\OneToOne(targetEntity: Transactionfinancier::class, mappedBy: 'vente', cascade: ['persist'])]
 private ?Transactionfinancier $transaction = null;
 
-    #[ORM\ManyToOne(inversedBy: 'ventes')]
-    private ?Produit $produit = null;
+#[ORM\ManyToOne(inversedBy: 'ventes')]
+#[ORM\JoinColumn(name: "produit_id", referencedColumnName: "id", onDelete: "SET NULL")]
+private ?Produit $produit = null;
+
 
     // Ajoutez cette méthode pour définir la date automatiquement
     #[ORM\PrePersist]
