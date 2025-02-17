@@ -43,8 +43,12 @@
                     {{ form_widget(form.photo, {'attr': {'class': 'form-control', 'placeholder': 'Photo'}}) }}
                   </div>
                   <div class="form-group">
-                   {{ form_errors(form.mdp)}}
-                    {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                   {{ form_errors(form.mdp.first)}}
+                    {{ form_widget(form.mdp.first, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                  </div>
+                  <div class="form-group">
+                   {{ form_errors(form.mdp.second)}}
+                    {{ form_widget(form.mdp.second, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}}) }}
                   </div>
                   <div class="form-group">
                     {{ form_errors(form.email)}}
