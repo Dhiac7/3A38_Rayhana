@@ -27,6 +27,9 @@ class Transactionfinancier
     #[ORM\OneToOne(targetEntity: Vente::class, inversedBy: 'transaction', cascade: ['remove'])]
     #[ORM\JoinColumn(name: "vente_id", referencedColumnName: "id", onDelete: "CASCADE")]
     private ?Vente $vente = null;
+
+    #[ORM\ManyToOne(inversedBy: 'transactionfinanciers')]
+    private ?User $User = null;
     
 
     
@@ -84,6 +87,18 @@ class Transactionfinancier
     public function setVente(?Vente $vente): self
     {
         $this->vente = $vente;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): static
+    {
+        $this->User = $User;
+
         return $this;
     }
    

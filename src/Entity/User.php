@@ -156,10 +156,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $nbrHeuresTravail = null;
 
+    /**
+     * @var Collection<int, Transactionfinancier>
+     */
+    #[ORM\OneToMany(targetEntity: Transactionfinancier::class, mappedBy: 'User')]
+    private Collection $transactionfinanciers;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
+        $this->transactionfinanciers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -420,6 +427,36 @@ public function getPassword(): ?string
     public function setNbrHeuresTravail(?float $nbrHeuresTravail): static
     {
         $this->nbrHeuresTravail = $nbrHeuresTravail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transactionfinancier>
+     */
+    public function getTransactionfinanciers(): Collection
+    {
+        return $this->transactionfinanciers;
+    }
+
+    public function addTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if (!$this->transactionfinanciers->contains($transactionfinancier)) {
+            $this->transactionfinanciers->add($transactionfinancier);
+            $transactionfinancier->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if ($this->transactionfinanciers->removeElement($transactionfinancier)) {
+            // set the owning side to null (unless already changed)
+            if ($transactionfinancier->getUser() === $this) {
+                $transactionfinancier->setUser(null);
+            }
+        }
 
         return $this;
     }

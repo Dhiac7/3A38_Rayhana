@@ -33,17 +33,17 @@
                             {{ form_errors(form.montant) }}
                         </div>
 
-                       
-
                         <div class="form-group">
                             {{ form_label(form.type, 'Type') }}
                             {{ form_widget(form.type, {'attr': {'class': 'form-control', 'placeholder': 'Type'}}) }}
                             {{ form_errors(form.type) }}
                         </div>
 
-                       
-                        
-                       
+                        <div class="form-group">
+                            {{ form_label(form.user, 'Employé') }}
+                            {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.user) }}
+                        </div>
 
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
 
@@ -61,7 +61,31 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('assetsback/vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('assetsback/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('assetsback/js/misc.js') }}"></script>
+    {{ parent() }} {# Conserve les scripts existants #}
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const userSelect = document.getElementById('{{ form.user.vars.id }}'); // Champ de sélection de l'employé
+    const montantInput = document.getElementById('{{ form.montant.vars.id }}'); // Champ montant
+
+    userSelect.addEventListener('change', function () {
+        const userId = this.value; // ID de l'utilisateur sélectionné
+
+        if (userId) {
+            console.log('User ID sélectionné:', userId); // Debug: Afficher l'ID de l'utilisateur
+            fetch(`/user/${userId}/details`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Données reçues:', data); // Debug: Afficher les données reçues
+                    const salaire = data.salaire || 0; // Récupérer le salaire de l'utilisateur
+                    montantInput.value = salaire.toFixed(2); // Remplir le champ "Montant" avec le salaire
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des détails de l\'utilisateur:', error);
+                });
+        } else {
+            montantInput.value = ''; // Réinitialiser le champ "Montant" si aucun utilisateur n'est sélectionné
+        }
+    });
+});
+    </script>
 {% endblock %}
