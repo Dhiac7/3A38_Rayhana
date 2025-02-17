@@ -4,7 +4,6 @@
 
 {% block body %}
    
-
     <!-- Start Shop 
     ============================================= -->
     <div class="validtheme-shop-single-area default-padding">
@@ -19,28 +18,21 @@
                                 <div class="carousel-inner item-box">
                                     <div class="carousel-item active product-item">
                                         <a href="assets/img/melon.jpg" class="item popup-gallery">
-                                           <img src="{{ asset('img/melon.jpg')}}" alt="Thumb">
+                                           <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                         </a>
-                                        <span class="onsale theme">-16%</span>
+                                        {% if produit.enPromotion %}
+                                            <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
+                                        {% endif %}
                                     </div>
                                     <div class="carousel-item product-item">
                                         <a href="assets/img/products/2.png" class="item popup-gallery">
-                                             <img src="{{ asset('img/melon.jpg')}}" alt="Thumb">
+                                             <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                         </a>
-                                        <span class="onsale theme">-25%</span>
+                                        {% if produit.enPromotion %}
+                                            <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
+                                        {% endif %}
                                     </div>
-                                    <div class="carousel-item product-item">
-                                        <a href="assets/img/products/3.png" class="item popup-gallery">
-                                            <img src="{{ asset('img/melon.jpg')}}" alt="Thumb">
-                                        </a>
-                                        <span class="onsale theme">-33%</span>
-                                    </div>
-                                    <div class="carousel-item product-item">
-                                        <a href="assets/img/products/4.png" class="item popup-gallery">
-                                             <img src="{{ asset('img/melon.jpg')}}" alt="Thumb">
-                                        </a>
-                                        <span class="onsale theme">-50%</span>
-                                    </div>
+                                   
                                 </div>
 
                                  <!-- Carousel Indicators -->
@@ -50,25 +42,10 @@
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
                                                 <div class="item active" data-bs-target="#timeline-carousel" data-bs-slide-to="0" aria-current="true">
-                                        <img src="{{ asset('img/melon.jpg') }}" alt="Melon" width="120">
-
+                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                                 </div>
                                             </div>
-                                            <div class="swiper-slide">
-                                                <div class="item" data-bs-target="#timeline-carousel" data-bs-slide-to="1">
-                                                   <img src="{{ asset('img/melon.jpg') }}" alt="Melon" width="120">
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <div class="item" data-bs-target="#timeline-carousel" data-bs-slide-to="2">
-                                                      <img src="{{ asset('img/melon.jpg') }}" alt="Melon" width="120">
-                                                </div>
-                                            </div>
-                                            <div class="swiper-slide">
-                                                <div class="item" data-bs-target="#timeline-carousel" data-bs-slide-to="3">
-                                                       <img src="{{ asset('img/melon.jpg') }}" alt="Melon" width="120">
-                                                </div>
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -84,8 +61,8 @@
                         <div class="single-product-contents">
                             <div class="summary-top-box">
                                 <div class="product-tags">
-                                    <a href="#">Crop</a>
-                                    <a href="#">Organic</a>
+                                    <a href="#">  Quantité disponible: {{produit.quantite}}  </a>
+                                   
                                 </div>
                                 <div class="review-count">
                                     <div class="rating">
@@ -102,18 +79,23 @@
                                 {{ produit.nom  }}  
                             </h2>
                             <div class="price">
-                                <span><del>$8.00</del></span>
-                                <span>{{ produit.prixVente}} DT  </span>
+                                {% if produit.enPromotion %}
+                                    <span><del>{{ produit.prixVente }} DT</del></span>
+                                    {% set prixPromo = produit.prixVente - (produit.prixVente * produit.pourcentagePromo / 100) %}
+                                    <span>{{ prixPromo|number_format(2, '.', '') }} DT</span>
+                                {% else %}
+                                    <span>{{ produit.prixVente }} DT</span>
+                                {% endif %}
                             </div>
                             <div class="product-stock validthemes-in-stock">
                                 <span>In Stock</span>
                             </div>
                             <p>
-                                The Aspire 5 is a compact laptop in a thin case with a metal cover, a high-quality Full HD IPS display and a rich set of interfaces. Thanks to its powerful components, the laptop can handle resource-intensive tasks perfectly and is also suitable for most games. non-characteristic words etc. Susp endisse ultricies nisi vel quam suscipit. Sabertooth peacock flounder
+                                {{ produit.DescriptionGlobale}}
                             </p>
                             <div class="product-purchase-list">
-                                <input type="number" id="quantity" step="1" name="quantity" min="0" placeholder="0">
-                                <a href="#" class="btn secondary btn-theme btn-sm animation">
+                                <a href="#">  Quantité disponible: {{produit.quantite}}  </a>
+                                <a href="app_vente_new" class="btn secondary btn-theme btn-sm animation">
                                     <i class="fas fa-shopping-cart"></i>
                                     Add to cart
                                 </a>
@@ -149,9 +131,7 @@
                                 Description
                             </button>
                             
-                            <button class="nav-link" id="review-tab-control" data-bs-toggle="tab" data-bs-target="#review-tab" type="button" role="tab" aria-controls="review-tab" aria-selected="false">
-                                Review
-                            </button>
+                            
 
                         </div>
                         <!-- End Tab Nav -->
@@ -160,15 +140,10 @@
 
                             <!-- Tab Single -->
                             <div class="tab-pane fade show active" id="description-tab" role="tabpanel" aria-labelledby="description-tab-control">
-                                <p>
-                                    There is immense scope for organic production of vegetable crops in India since the agricultural sector has enormous organic resources like crop residues, livestock and other bio-products from agro industries. Organic farming is growing at a rapid pace among Indian farmers and entrepreneurs, particularly in rainfed and hilly areas where fertilizer consumption is less than 25 kg/ha/year [13].
-                                </p>
+                                
                                 <ul> 
-                                    <li>Status of organic vegetable production</li> 
-                                    <li>Feasibility of organic practices</li> 
-                                    <li>Sustainability of organic farming</li> 
-                                    <li>Organic certification</li> 
-                                    <li>Prospects and constraints of organic vegetable production</li> 
+                                    <p>  {{ produit.DescriptionDetaille}}</p> 
+                                    
                                 </ul>
                             </div>
                             <!-- End Single -->
@@ -180,7 +155,9 @@
             </div>
             <!-- End Product Bottom Info  -->
 
+
             <!-- Related Product     barre loutaaaa -->   
+            
             <div class="related-products carousel-shadow">
                 <div class="row">
                     <div class="col-md-12">
@@ -196,7 +173,7 @@
                                         <div class="product-contents">
                                             <div class="product-image">
                                                 <a href="shop-single.html">
-                                                    <img src="assets/img/melon.jpg" alt="Product">
+                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                                 </a>
                                                 <div class="shop-action">
                                                     <ul>
@@ -213,20 +190,16 @@
                                                 </div>
                                             </div>
                                             <div class="product-caption">
-                                                <div class="product-tags">
-                                                    <a href="#">Crop</a>
-                                                    <a href="#">Organic</a>
-                                                </div>
+                                                
                                                 <h4 class="product-title">
-                                                    <a href="shop-single.html">Strawberry</a>
+                                                    <a href="shop-single.html">{{ produit.nom }}</a>
                                                 </h4>
-                                                <div class="price">
-                                                    <span></span>
+                                                <div class={{ produit.PrixVente }}>
+                                                    <span>{{ produit.PrixVente }}</span>
                                                 </div>
-                                                <a href="#" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
+                                                <a href="app_vente_new" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
                                             </div>
                                         </div>
-                                           </div>
                                     </div>
                                 </div>
                                 
@@ -240,6 +213,7 @@
                 </div>
             </div>
             <!-- End Related Product  -->
+           
         </div>
     </div>
 
