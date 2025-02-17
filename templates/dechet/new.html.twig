@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title text-center">Remplissez le formulaire</h4>
-                        {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}  
+                        {{ form_start(form, {'method': 'POST', 'action': path('app_dechet_new'), 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
 
                         <div class="form-group">
                             {{ form_label(form.type, 'Type du déchet') }}
@@ -52,7 +52,7 @@
                             {% endif %}
                         </div>
 
-                        <button type="submit" class="btn btn-gradient-primary me-2 w-100">
+                        <button type="submit" name="_submit" class="btn btn-gradient-primary me-2 w-100">
                             <i class="mdi mdi-content-save"></i> Enregistrer
                         </button>
                         {{ form_end(form) }}
