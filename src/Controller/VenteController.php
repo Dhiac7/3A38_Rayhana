@@ -57,6 +57,7 @@ public function index(
         'loggedInUser' => $loggedInUser,
     ]);
 }
+
     #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
     public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
