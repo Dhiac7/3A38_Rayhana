@@ -156,10 +156,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $nbrHeuresTravail = null;
 
+    /**
+     * @var Collection<int, Parcelle>
+     */
+    #[ORM\OneToMany(targetEntity: Parcelle::class, cascade: ['persist', 'remove'], mappedBy: 'id_user')]
+    private Collection $parcelles;
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
+        $this->parcelles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -420,6 +427,36 @@ public function getPassword(): ?string
     public function setNbrHeuresTravail(?float $nbrHeuresTravail): static
     {
         $this->nbrHeuresTravail = $nbrHeuresTravail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Parcelle>
+     */
+    public function getParcelles(): Collection
+    {
+        return $this->parcelles;
+    }
+
+    public function addParcelle(Parcelle $parcelle): static
+    {
+        if (!$this->parcelles->contains($parcelle)) {
+            $this->parcelles->add($parcelle);
+            $parcelle->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParcelle(Parcelle $parcelle): static
+    {
+        if ($this->parcelles->removeElement($parcelle)) {
+            // set the owning side to null (unless already changed)
+            if ($parcelle->getIdUser() === $this) {
+                $parcelle->setIdUser(null);
+            }
+        }
 
         return $this;
     }
