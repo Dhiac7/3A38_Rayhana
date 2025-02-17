@@ -23,7 +23,7 @@
                             {# Start Symfony Form #}
                             {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form contact-form'}}) }}
                             {% for error in form.vars.errors %}
-                                <div class="alert alert-danger" style="color: red; font-weight: bold;">{{ error.message }}</div>
+                                <div class="alert-error">{{ error.message }}</div>
                             {% endfor %}
 
                             <div class="row">
@@ -61,8 +61,16 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        {{ form_errors(form.mdp) }} 
-                                        {{ form_widget(form.mdp, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                        {{ form_errors(form.mdp.first) }}
+                                        {{ form_widget(form.mdp.first, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.mdp.second) }}
+                                        {{ form_widget(form.mdp.second, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}}) }}
                                     </div>
                                 </div>
                             </div>

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/client.html.twig' %}
 {% block title %}Atelier index{% endblock %}
 {% block body %}
    <!-- Start Blog ======= -->
@@ -11,17 +11,15 @@
                     <div class="col-xl-4 col-md-6 single-item">
                         <div class="blog-style-one">
                             <div class="thumb">
-                                <img src="{{ asset('img/atelier/' ~ atelier.photo) }}"
-                                </a>
+                                <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" />
                             </div>
-                            <div >
+                            <div>
                                 <div class="meta-title">
-                                 <span class="post-date">
-                                 Date de l'atelier : 
-                                {{ atelier.dateAtelier ? atelier.dateAtelier|date('d M Y') : 'Date non définie' }}
-                                </span>
+                                    <span class="post-date">
+                                        Date de l'atelier : {{ atelier.dateAtelier ? atelier.dateAtelier|date('d M Y') : 'Date non définie' }}
+                                    </span>
                                 </div>
-                            <h3> {{ atelier.nom }}</h3>
+                                <h3>{{ atelier.nom }}</h3>
                             </div>
                             <div class="info">
                                 <div class="meta">
@@ -31,12 +29,21 @@
                                         </li>
                                     </ul>
                                 </div>
-                                  <a href="{{ path('app_vente_new', {'id': atelier.id}) }}"  class="btn">Reserver</a>
+                                <div class="atelier-item">
+                                    <p><strong>Nom:</strong> {{ atelier.nom }}</p>
+                                    <p><strong>Date:</strong> {{ atelier.dateAtelier|date('d M Y') }}</p>
+                                    <p><strong>Prix:</strong> {{ atelier.prix }} €</p>
+                                    <a href="{{ path('app_vente_atelier_new', { 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Réserver</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Single Item -->
                     {% endfor %}
+                    
+                                
+                        </div>
+                    </div>
+                    <!-- Single Item -->
                 </div>
             </div>
         </div>
@@ -45,7 +52,6 @@
     <div class="d-flex justify-content-center">
         {{ knp_pagination_render(pagination) }}
     </div>
-    <a href="{{ path('app_atelier_new') }}">Ajouter un nouveau atelier</a>
     <script>
         // Tri 
         $(document).ready(function () {

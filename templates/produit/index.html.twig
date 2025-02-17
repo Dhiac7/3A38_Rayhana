@@ -5,8 +5,6 @@
 {% block body %}
     
        
-
-
     <!-- Start Breadcrumb 
     ============================================= -->
     <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url(assets/img/2440x1578.png);">
@@ -74,9 +72,6 @@
                         <div class="tab-pane fade show active" id="grid-tab" role="tabpanel" aria-labelledby="grid-tab-control">
                             <ul class="vt-products columns-4">
 
-
-
-
                                {% for produit in produits %}
 
                                 <!-- Single product -->
@@ -84,8 +79,16 @@
                                     <div class="product-contents">
                                         <div class="product-image">
                                             <a href="shop-single.html">
-                                                <img src="{{ asset('img/melon.jpg') }}" alt="Product">
+                                               
+                                                {% if produit.image %}
+                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                                {% else %}
+                                                    <span class="text-muted">Aucune image disponible</span>
+                                                {% endif %}
                                             </a>
+                                            {% if produit.enPromotion %}
+                                               <span class="onsale">Sale!</span>
+                                            {% endif %}
                                             <div class="shop-action">
                                                 <ul>
                                                     <li class="cart">
@@ -101,15 +104,18 @@
                                             </div>
                                         </div>
                                         <div class="product-caption">
-                                            <div class="product-tags">
-                                                <a href="#">Crop</a>
-                                                <a href="#">Organic</a>
-                                            </div>
+                                          
                                             <h4 class="product-title">
                                                 <a href="shop-single.html">{{ produit.nom }}</a>
                                             </h4>
                                             <div class="price">
-                                                <span>{{ produit.prixVente }}  DT </span>
+                                                {% if produit.enPromotion %}
+                                                    <span><del>{{ produit.prixVente }} DT</del></span>
+                                                    {% set prixPromo = produit.prixVente - (produit.prixVente * produit.pourcentagePromo / 100) %}
+                                                    <span>{{ prixPromo|number_format(2, '.', '') }} DT</span>
+                                                {% else %}
+                                                    <span>{{ produit.prixVente }} DT</span>
+                                                {% endif %}
                                             </div>
                                             <a href="{{ path('app_vente_new', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
                                             
@@ -118,9 +124,7 @@
                                 </li>
                                 <!-- Single product -->
 
-                                    {% endfor %}
-
-                               
+                                {% endfor %}
 
                             </ul>
                         </div>
@@ -147,9 +151,5 @@
         </div>
     </div>
     <!-- End Shop -->
-
-   
-
-
 
 {% endblock %}

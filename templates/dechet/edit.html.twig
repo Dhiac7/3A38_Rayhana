@@ -1,33 +1,136 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Modifier dechet{% endblock %}
+{% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-<div class="contact-area contact-page overflow-hidden bg-gray default-padding d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-    {#  classes Flexbox (d-flex justify-content-center align-items-center) pour centrer et min-height: 100vh pour occuper toute la hauteur #}
-    <div class="container">
-        <div class="row align-center justify-content-center">
-            {#  justify-content-center pour centrer horizontalement #}
-            
-            <div class="col-lg-6">
-                <div class="contact-form-style-one mb-md-50 text-center">
-                    {# Ligne modifiée : Centrer le texte avec text-center #}
-                    <h1 class="mb-4">Modifier dechet</h1>
-                    {#  mb-4 pour un espacement sous le titre #}
-                <img src="{{ asset('img/illustration/10.png') }}" alt="Image Not Found" class="mb-4">
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Modifier un dechet</h4>
+          <p class="card-description">Mettez à jour les informations</p>
 
-                    {{ include('dechet/_form.html.twig', {'button_label': 'Modifier'}) }}
+          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
-                    <div class="text-center mt-3">
-                        <a href="{{ path('app_dechet_index') }}" class="btn btn-secondary">
-                            <i class="fa fa-arrow-left"></i> Revenir à la liste
-                        </a>
-                    </div>
+          {% for error in form.vars.errors %}
+              <div class="text-danger">{{ error.message }}</div>
+          {% endfor %}
+          {% for label, messages in app.flashes %}
+              {% for message in messages %}
+                  <div class="alert alert-{{ label }}">{{ message }}</div>
+              {% endfor %}
+          {% endfor %}
 
-                    {{ include('dechet/_delete_form.html.twig') }}
-                </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.type, 'type') }}
+              {{ form_widget(form.type, {'attr': {'class': 'form-select', 'placeholder': 'type de \'dechet'}}) }}
+              {{ form_errors(form.type) }}
             </div>
+            <div class="col-md-6 form-group">
+              {{ form_label(form.quantite, 'quantite') }}
+              {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'placeholder': 'quantite'}}) }}
+              {{ form_errors(form.quantite) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.dateProduction, 'Date de production du l\'dechet') }}
+              {{ form_widget(form.dateProduction, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.dateProduction) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              {{ form_label(form.statut, 'Statut') }}
+              {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+              {{ form_errors(form.statut) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">   
+              {{ form_label(form.dateExpiration, "Date d'expiration du déchet") }}
+              {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
+              {{ form_errors(form.dateExpiration) }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
+              <button type="submit" class="btn btn-gradient-light">Annuler</button>
+            </div>
+          </div>
+          {{ form_end(form) }}
+
         </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<!-- SCRIPT AJAX -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function fetchDechets(sortOrder = "", searchQuery = "") {
+      let url = "{{ path('dechet_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
+
+      fetch(url)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById("dechet-container").innerHTML = data;
+          attachDeleteListeners(); // Réattacher les événements après mise à jour
+        });
+    }
+
+    function attachDeleteListeners() {
+      document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          let dechetId = this.getAttribute("data-id");
+
+          if (confirm("Voulez-vous vraiment supprimer ce déchet ?")) {
+            fetch(`/dechet/delete/${dechetId}`, {
+              method: "DELETE",
+              headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                document.querySelector(`.dechet-card[data-id='${dechetId}']`).remove();
+              } else {
+                alert("Erreur lors de la suppression");
+              }
+            })
+            .catch(error => console.error("Erreur:", error));
+          }
+        });
+      });
+    }
+
+    attachDeleteListeners(); // Initialiser les événements au chargement de la page
+
+    // Recherche en temps réel 
+    document.getElementById("search").addEventListener("input", function () {
+      fetchDechets("", this.value);
+    });
+
+    // Tri croissant
+    document.getElementById("sortAsc").addEventListener("click", function () {
+      fetchDechets("asc", document.getElementById("search").value);
+    });
+
+    // Tri décroissant
+    document.getElementById("sortDesc").addEventListener("click", function () {
+      fetchDechets("desc", document.getElementById("search").value);
+    });
+
+    // Chargement initial des déchets
+    fetchDechets();
+  });
+</script>
+
 {% endblock %}

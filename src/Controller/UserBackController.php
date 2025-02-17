@@ -45,54 +45,61 @@ final class UserBackController extends AbstractController
     }
 
     #[Route('/listemployeback', name: 'app_user_listemploye', methods: ['GET'])]
-    public function listemploye(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
-    {
-        $loggedInUserId = $session->get('admin_user_id');
-        
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
+public function listemploye(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+{
+    $loggedInUserId = $session->get('admin_user_id');
     
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-    
-        $roles = ['livreur', 'inspecteur', 'fermier'];
-        $paginationlivreur = null;
-        $paginationinspecteur = null;
-        $paginationfermier = null;
-    
-        foreach ($roles as $role) {
-            $query = $userRepository->createQueryBuilder('u')
-                ->where('u.role = :role')
-                ->setParameter('role', $role)
-                ->getQuery();
-    
-            $pagination = $paginator->paginate(
-                $query,
-                $request->query->getInt('page_' . $role, 1), 
-                3
-            );
-    
-            if ($role == 'livreur') {
-                $paginationlivreur = $pagination;
-            } elseif ($role == 'inspecteur') {
-                $paginationinspecteur = $pagination;
-            } elseif ($role == 'fermier') {
-                $paginationfermier = $pagination;
-            }
-        }
-    
-        return $this->render('user/listemploye.html.twig', [
-            'paginationlivreur' => $paginationlivreur,
-            'paginationinspecteur' => $paginationinspecteur,
-            'paginationfermier' => $paginationfermier,
-            'loggedInUser' => $loggedInUser,
-        ]);
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
     }
-    
+
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    // Ensure the logged-in user is an agriculteur
+    if ($loggedInUser->getRole() !== 'agriculteur') {
+        throw $this->createAccessDeniedException('You do not have permission to view this page.');
+    }
+
+    $roles = ['livreur', 'inspecteur', 'fermier'];
+    $paginationlivreur = null;
+    $paginationinspecteur = null;
+    $paginationfermier = null;
+
+    foreach ($roles as $role) {
+        $query = $userRepository->createQueryBuilder('u')
+            ->where('u.role = :role')
+            ->andWhere('u.agriculteur = :agriculteur') // Filter by agriculteur
+            ->setParameter('role', $role)
+            ->setParameter('agriculteur', $loggedInUser)
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page_' . $role, 1), 
+            3
+        );
+
+        if ($role == 'livreur') {
+            $paginationlivreur = $pagination;
+        } elseif ($role == 'inspecteur') {
+            $paginationinspecteur = $pagination;
+        } elseif ($role == 'fermier') {
+            $paginationfermier = $pagination;
+        }
+    }
+
+    return $this->render('user/listemploye.html.twig', [
+        'paginationlivreur' => $paginationlivreur,
+        'paginationinspecteur' => $paginationinspecteur,
+        'paginationfermier' => $paginationfermier,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
     
     
 
@@ -259,7 +266,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         ]);
     }
     
-    #[Route('/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
+   /* #[Route('/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
     public function deleteback(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -268,7 +275,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         }
 
         return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }
+    }*/
 
     /*#[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -277,7 +284,54 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             'user' => $user,
         ]);
     }*/
+    #[Route('/newemploye', name: 'app_user_newemploye', methods: ['GET', 'POST'])] // Removed {agriculteurId}
+    public function newemploye(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('admin_user_id');
+    
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $user = new User();
+        $form = $this->createForm(UserAdminType::class, $user);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
 
+        if ($photoFile instanceof UploadedFile) {
+            dump($photoFile); 
+            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $newFilename = uniqid().'.'.$photoFile->guessExtension();
+
+            $photoFile->move($uploadsDirectory, $newFilename);
+
+            $user->setPhoto($newFilename);
+            } else {
+                dump('No file uploaded'); 
+            }
+            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setPassword($hashedPassword);
+            $user->setAgriculteur($loggedInUser);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/add_employe.html.twig', [
+            'user' => $user,
+            'form' => $form,
+            'loggedInUser' => $loggedInUser,
+        ]);
+}
 
 }

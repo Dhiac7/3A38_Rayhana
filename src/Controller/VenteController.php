@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Form\AtelierType; // Importez correctement le formulaire
+use App\Entity\Atelier; // Importez l'entité Atelier
 
 #[Route('/vente')]
 final class VenteController extends AbstractController
@@ -57,6 +59,7 @@ public function index(
         'loggedInUser' => $loggedInUser,
     ]);
 }
+
     #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
     public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
@@ -165,6 +168,7 @@ public function new(
         'loggedInUser' => $loggedInUser,
     ]);
 }
+
     // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Vente $vente, SessionInterface $session,EntityManagerInterface $entityManager): Response
@@ -233,4 +237,74 @@ public function edit(Request $request, Vente $vente, EntityManagerInterface $ent
 
         return $this->redirectToRoute('app_vente_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+    #[Route('/atelier/new', name: 'app_vente_atelier_new', methods: ['GET', 'POST'])]
+public function newVenteAtelier(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $loggedInUserId = $session->get('client_user_id');
+    
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_login');
+    }
+
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_login');
+    }
+
+    $nom = $request->query->get('nom');
+    $prix = $request->query->get('prix');
+    $dateAtelier = $request->query->get('dateAtelier');
+    
+    // Créez une nouvelle vente avec les informations de l'atelier
+    $vente = new Vente();
+    $atelier = new Atelier();
+    $atelier->setNom($nom);
+    $atelier->setPrix($prix);
+    $atelier->setDateAtelier(new \DateTime($dateAtelier));
+
+    // Associer l'atelier à la vente
+    $vente->setNom($atelier->getNom());
+    $vente->setPrix($atelier->getPrix());
+    $vente->setQuantite(1); // Par défaut, mettre une quantité de 1
+
+    // Associer l'utilisateur connecté à la vente
+    $vente->setUser($loggedInUser);
+
+    $form = $this->createForm(VenteType::class, $vente);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Calcul du prix total en fonction de la quantité
+        $quantite = $vente->getQuantite();
+        $prixUnitaire = $atelier->getPrix();
+        $vente->setPrix($quantite * $prixUnitaire);
+
+        // Créer une nouvelle transaction
+        $transaction = new Transactionfinancier();
+        $transaction->setMontant($vente->getPrix());
+        $transaction->setDate(new \DateTime());
+        $transaction->setType('Revenue'); // Type de transaction
+        $transaction->setVente($vente); // Associer la transaction à la vente
+
+        // Associer la transaction à la vente
+        $vente->setTransaction($transaction);
+
+        // Persister la vente et la transaction
+        $entityManager->persist($vente);
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+
+    return $this->render('vente/newatelier.html.twig', [
+        'form' => $form->createView(),
+        'atelier' => $atelier, // Passer l'atelier à la vue si nécessaire
+    ]);
+}
+
 }

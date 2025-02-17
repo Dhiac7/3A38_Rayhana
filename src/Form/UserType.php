@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserType extends AbstractType
 {
@@ -32,7 +33,22 @@ class UserType extends AbstractType
                 ])
             ],
         ])
-        ->add('mdp', PasswordType::class) 
+        ->add('mdp', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'invalid_message' => 'Les mots de passe doivent correspondre.',
+            'options' => [
+                'attr' => ['class' => 'form-control'],
+            ],
+            'required' => true,
+            'first_options'  => [
+                'label' => 'Mot de passe',
+                'attr' => ['placeholder' => 'Mot de passe'],
+            ],
+            'second_options' => [
+                'label' => 'Confirmer le mot de passe',
+                'attr' => ['placeholder' => 'Confirmer le mot de passe'],
+            ],
+        ])        
         ->add('email')
         ->add('tel')
         ->add('adresse', ChoiceType::class, [

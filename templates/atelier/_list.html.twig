@@ -7,7 +7,6 @@
         <div class="card-body">
           <h4 class="card-title text-center">Liste des Ateliers</h4>
           <p class="card-description text-center">Voici tous les ateliers disponibles.</p>
-
           <!-- Conteneur des ateliers -->
           <div id="atelier-container">
               {% for atelier in ateliers %}
@@ -28,7 +27,7 @@
                                   <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
                                   <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
                                   <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-primary">Modifier</a><br>
-                                  <a href="#" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
+                                  <a href="{{ path('app_atelier_delete_ajax', {'id': atelier.id}) }}" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
                               </div>
                           </div>
                       </div>

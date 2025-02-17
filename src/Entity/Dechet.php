@@ -43,10 +43,15 @@ class Dechet
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date expiration ne peut pas être vide.")]
-//#[Assert\Date(message: "La date expiration doit être une date valide.")]
+    //#[Assert\Date(message: "La date expiration doit être une date valide.")]
 
-    private ?\DateTimeInterface $date_expiration = null;
-
+    private ?\DateTimeInterface $dateExpiration= null;
+    #[Assert\NotBlank(message: "La quantité du dechet ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Range(
+        min: 1, 
+        max: 60, 
+        notInRangeMessage: "La quantite doit être comprise entre {{ min }} et {{ max }}."
+    )]
     #[ORM\ManyToOne(inversedBy: 'dechet')]
     private ?Stock $stock = null;
 
@@ -55,10 +60,10 @@ class Dechet
     #[Assert\Callback]
     public function validateDates(ExecutionContextInterface $context): void
     {
-        if ($this->dateProduction && $this->date_expiration) {
-            if ($this->date_expiration <= $this->dateProduction) {
+        if ($this->dateProduction && $this->dateExpiration) {
+            if ($this->dateExpiration <= $this->dateProduction) {
                 $context->buildViolation("La date d'expiration doit être supérieure à la date de production.")
-                    ->atPath('date_expiration')
+                    ->atPath('dateExpiration')
                     ->addViolation();
             }
         }
@@ -123,12 +128,12 @@ class Dechet
 
     public function getDateExpiration(): ?\DateTimeInterface
     {
-        return $this->date_expiration;
+        return $this->dateExpiration;
     }
 
-    public function setDateExpiration(\DateTimeInterface $date_expiration): static
+    public function setDateExpiration(\DateTimeInterface $dateExpiration): static
     {
-        $this->date_expiration = $date_expiration;
+        $this->dateExpiration = $dateExpiration;
 
         return $this;
     }

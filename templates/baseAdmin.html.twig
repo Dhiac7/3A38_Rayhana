@@ -229,6 +229,27 @@
                 </ul>
               </div>
             </li>
+
+
+<li class="nav-item">
+  <a class="nav-link" data-bs-toggle="collapse" href="#stock-menu" aria-expanded="false" aria-controls="stock-menu">
+    <span class="menu-title">Stock & Produits</span>
+    <i class="menu-arrow"></i>
+    <i class="mdi mdi-warehouse menu-icon"></i>
+  </a>
+  <div class="collapse" id="stock-menu">
+    <ul class="nav flex-column sub-menu">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_stock_index') }}">Stock</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_produitback_index') }}">Produit</a>
+      </li>
+    </ul>
+  </div>
+</li>
+
+            
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
                 <span class="menu-title">Atelier</span>
@@ -237,23 +258,26 @@
               <div class="collapse" id="icons">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_atelier_indexBack')}}">Voir les atelier</a>
+                    <a class="nav-link" href="{{ path('app_atelier_indexBack')}}">Ventes</a>
                   </li>
                    <li class="nav-item">
-                    <a class="nav-link" href=" {{ path('app_dechet_index')}}">Voir les dechets</a>
+                    <a class="nav-link" href=" {{ path('app_dechet_index')}}">transaction financier</a>
                   </li>
                 </ul>
               </div>
             </li>
             <li class="nav-item">
               <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="forms">
-                <span class="menu-title">Forms</span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                <span class="menu-title">Finances</span>
+                <i class="mdi mdi-cash menu-icon"></i>
               </a>
               <div class="collapse" id="forms">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/forms/basic_elements.html')}}">Form Elements</a>
+                    <a class="nav-link" href="{{ path('app_vente_indexback')}}">ventes</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_transactionfinancier_index')}}">transaction fiancier</a>
                   </li>
                 </ul>
               </div>
