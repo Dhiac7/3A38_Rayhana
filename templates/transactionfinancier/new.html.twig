@@ -2,38 +2,17 @@
 
 {% block title %}Nouvelle Transaction Financière{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('assetsback/vendors/mdi/css/materialdesignicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assetsback/vendors/ti-icons/css/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assetsback/vendors/css/vendor.bundle.base.css') }}">
-    <link rel="stylesheet" href="{{ asset('assetsback/vendors/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assetsback/css/style.css') }}">
-    <link rel="shortcut icon" href="{{ asset('assetsback/images/favicon.png') }}" />
-{% endblock %}
-
 {% block body %}
-    <div class="contact-area contact-page overflow-hidden bg-gray default-padding">
-        <div class="container">
-            <div class="row align-items-center d-flex justify-content-between">
-                <!-- Formulaire -->
-                <div class="col-md-6">
-                    <div class="contact-form-style-one">
-                        <h5 class="sub-title">Joignez Rayhana?</h5>
-                        <h2 class="heading">Transaction financière</h2>
-
-                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
-                        
-                        {% for error in form.vars.errors %}
-                            <div class="alert alert-danger">{{ error.message }}</div>
-                        {% endfor %}
-
-                        <div class="form-group">
-                            {{ form_label(form.montant, 'Montant') }}
-                            {{ form_widget(form.montant, {'attr': {'class': 'form-control', 'placeholder': 'Montant'}}) }}
-                            {{ form_errors(form.montant) }}
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <h4 class="card-title mb-0">Transaction financière</h4>
+                            </div>
                         </div>
-
-                       
 
                         <div class="form-group">
                             {{ form_label(form.type, 'Type') }}
@@ -41,27 +20,51 @@
                             {{ form_errors(form.type) }}
                         </div>
 
-                       
-                        
-                       
+                        <div class="form-group">
+                            {{ form_label(form.user, 'Employé') }}
+                            {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.user) }}
+                        </div>
 
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
 
                         {{ form_end(form) }}
-                    </div>
-                </div>
 
-                <!-- Image à droite -->
-                <div class="col-md-5 text-center">
-                    <img src="{{ asset('img/illustration/55.png') }}" alt="Image Not Found" class="img-fluid">
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('assetsback/vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('assetsback/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('assetsback/js/misc.js') }}"></script>
+    {{ parent() }} {# Conserve les scripts existants #}
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const userSelect = document.getElementById('{{ form.user.vars.id }}'); // Champ de sélection de l'employé
+    const montantInput = document.getElementById('{{ form.montant.vars.id }}'); // Champ montant
+
+    userSelect.addEventListener('change', function () {
+        const userId = this.value; // ID de l'utilisateur sélectionné
+
+        if (userId) {
+            console.log('User ID sélectionné:', userId); // Debug: Afficher l'ID de l'utilisateur
+            fetch(`/user/${userId}/details`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Données reçues:', data); // Debug: Afficher les données reçues
+                    const salaire = data.salaire || 0; // Récupérer le salaire de l'utilisateur
+                    montantInput.value = salaire.toFixed(2); // Remplir le champ "Montant" avec le salaire
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des détails de l\'utilisateur:', error);
+                });
+        } else {
+            montantInput.value = ''; // Réinitialiser le champ "Montant" si aucun utilisateur n'est sélectionné
+        }
+    });
+});
+    </script>
 {% endblock %}

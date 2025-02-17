@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ParcelleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\User;
 
 
 #[ORM\Entity(repositoryClass: ParcelleRepository::class)]
@@ -52,6 +53,10 @@ class Parcelle
     #[ORM\Column(length: 255)]
     #[Assert\NotNull(message: "Veuillez indiquer si l'irrigation est disponible.")]
     private ?string $irrigationDisponible = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'parcelles')]
+    #[ORM\JoinColumn(nullable: true)] // Makes this relation mandatory
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -118,6 +123,15 @@ class Parcelle
         return $this;
     }
 
+    public function getIdUser(): ?User
+    {
+        return $this->user;
+    }
 
+    public function setIdUser(?User $user): static
+    {
+        $this->user = $user;
+        return $this;
+    }
     
 }

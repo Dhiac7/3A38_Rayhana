@@ -130,6 +130,8 @@ final class ParcelledashboardController extends AbstractController
         }
 
         $parcelle = new Parcelle();
+        $parcelle->setIdUser($loggedInUser); // Associer la parcelle à l'utilisateur connecté
+
         $form = $this->createForm(ParcelleType::class, $parcelle);
         $form->handleRequest($request);
 

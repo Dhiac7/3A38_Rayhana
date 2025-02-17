@@ -1,32 +1,44 @@
-{{ form_start(form,{'attr': {'novalidate': 'novalidate'}}) }}
-<table>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
 
-<tr>
-    <td>{{form_label(form.quantite,"quantite")}}</td>
-    <td>{{form_widget(form.quantite)}}</td>
-    <td>{{form_errors(form.quantite)}}</td>
-</tr>
-<tr>
-    <td>{{form_label(form.dateProduction,"dateProduction")}}</td>
-    <td>{{form_widget(form.dateProduction)}}</td>
-    <td>{{form_errors(form.dateProduction)}}</td>
-</tr>
-<tr>
-    <td>{{form_label(form.statut,"statut")}}</td>
-    <td>{{form_widget(form.statut)}}</td>
-    <td>{{form_errors(form.statut)}}</td>
-</tr>
-<tr>
-    <td>{{form_label(form.dateExpiration,"dateExpiration")}}</td>
-    <td>{{form_widget(form.dateExpiration)}}</td>
-    <td>{{form_errors(form.dateExpiration)}}</td>
-</tr>
-<tr>
-    <td>{{form_label(form.type,"type")}}</td>
-    <td>{{form_widget(form.type)}}</td>
-    <td>{{form_errors(form.type)}}</td>
-</tr>
-</table>
-<br>
-    {{form_widget(form.save)}}
-{{form_end(form)}}
+{% for error in form.vars.errors %}
+    <div class="text-danger">{{ error.message }}</div>
+{% endfor %}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">{{ message }}</div>
+    {% endfor %}
+{% endfor %}
+
+<div class="form-group">
+    {{ form_label(form.type, 'type') }}
+    {{ form_widget(form.type, {'attr': {'class': 'form-select', 'placeholder': 'type du dechet'}}) }}
+    {{ form_errors(form.type) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.quantite, 'quantite') }}
+    {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'placeholder': 'quantite'}}) }}
+    {{ form_errors(form.quantite) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.dateProduction, 'Date de production ') }}
+    {{ form_widget(form.dateProduction, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.dateProduction) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.statut, 'Statut') }}
+    {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.statut) }}
+</div>
+<div class="form-group">
+    {{ form_label(form.dateExpiration, 'date expiration') }}
+    {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control', 'placeholder': 'date expiration'}}) }}
+    {{ form_errors(form.dateExpiration) }}
+</div>
+
+<button type="submit" class="btn btn-gradient-primary w-100">
+    <i class="mdi mdi-content-save"></i> {{ button_label|default('Enregistrer') }}
+</button>
+
+{{ form_end(form) }}

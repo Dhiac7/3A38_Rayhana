@@ -1,187 +1,103 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Clients{% endblock %}
+{% block title %}Gestion des Utilisateurs{% endblock %}
 
 {% block body %}
 <div class="main-panel">
     <div class="content-wrapper">
-        <div class="row">
-            {# Livreur Table #}
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Livreurs</h4>
-
-                        <div class="alert alert-info">
-                            <strong>Debug Info (Livreur):</strong><br>
-                            Current Page: {{ paginationlivreur.currentPageNumber }}<br>
-                            Total Items: {{ paginationlivreur.totalItemCount }}<br>
-                            Items per Page: {{ paginationlivreur.itemNumberPerPage }}
-                        </div>
-
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Nom prenom</th>
-                                    <th>Numéro</th>
-                                    <th>Cin</th>
-                                    <th>Adresse</th>
-                                    <th>Salaire</th>
-                                    <th><center>Actions</center></th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in paginationlivreur.getItems() %}
-                                    <tr>
-                                        <td class="py-1">
-                                            <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo">
-                                        </td>
-                                        <td>{{ user.nom }} {{ user.prenom }}</td>
-                                        <td>{{ user.tel }}</td>
-                                        <td>{{ user.cin }}</td>
-                                        <td>{{ user.adresse }}</td>
-                                        <td>{{ user.salaire }}</td>
-                                        <td><center>
-                                            <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Modifier</a>
-                                            <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                            <button class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Supprimer</button>
-                                          </form></center></td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6">No records found for Livreur.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                      <br><br>
-                        <div class="d-flex justify-content-center">
-                            {{ knp_pagination_render(paginationlivreur, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
-                                'pageParameterName': 'page_livreur'
-                            }) }}
-                        </div>
+            <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                  <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                        <div class="d-flex justify-content-center align-items-center">  <h4 class="card-title mb-0">Employés</h4></div>
                     </div>
-                </div>
-            </div>
+                    <div class="card-body p-4" style="background-color: #fff;">
 
-            {# Inspecteur Table #}
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Inspecteurs</h4>
-
-                        <div class="alert alert-info">
-                            <strong>Debug Info (Inspecteur):</strong><br>
-                            Current Page: {{ paginationinspecteur.currentPageNumber }}<br>
-                            Total Items: {{ paginationinspecteur.totalItemCount }}<br>
-                            Items per Page: {{ paginationinspecteur.itemNumberPerPage }}
+                        <div class="mb-4"> {# Margin bottom for spacing #}
+                            <h4>Livreurs</h4>
+                            <div class="table-responsive">
+                                {{ _self.user_table(paginationlivreur, 'livreur') }}
+                            </div>
+                        </div>
+<br><br>
+                        <div class="mb-4"> {# Margin bottom for spacing #}
+                            <h4>Inspecteurs</h4>
+                            <div class="table-responsive">
+                                {{ _self.user_table(paginationinspecteur, 'inspecteur') }}
+                            </div>
+                        </div>
+<br><br>
+                        <div> {# No margin bottom on the last one #}
+                            <h4>Fermiers</h4>
+                            <div class="table-responsive">
+                                {{ _self.user_table(paginationfermier, 'fermier') }}
+                            </div>
                         </div>
 
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Address</th>
-                                    <th>Salary</th>
-                                    <th><center>Actions</center></th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in paginationinspecteur.getItems() %}
-                                    <tr>
-                                        <td class="py-1">
-                                            <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur">
-                                        </td>
-                                        <td>{{ user.nom }}</td>
-                                        <td>{{ user.prenom }}</td>
-                                        <td>{{ user.adresse }}</td>
-                                        <td>{{ user.salaire }}</td>
-                                        <td><center>
-                                            <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Modifier</a>
-                                            <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                            <button class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Supprimer</button>
-                                          </form></center></td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6">No records found for Inspecteur.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        <div class="d-flex justify-content-center">
-                            {{ knp_pagination_render(paginationinspecteur, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
-                                'pageParameterName': 'page_inspecteur'
-                            }) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {# Fermier Table #}
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Fermiers</h4>
-
-                        <div class="alert alert-info">
-                            <strong>Debug Info (Fermier):</strong><br>
-                            Current Page: {{ paginationfermier.currentPageNumber }}<br>
-                            Total Items: {{ paginationfermier.totalItemCount }}<br>
-                            Items per Page: {{ paginationfermier.itemNumberPerPage }}
-                        </div>
-
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Address</th>
-                                    <th>Salary</th>
-                                    <th><center>Actions</center></th> 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in paginationfermier.getItems() %}
-                                    <tr>
-                                        <td class="py-1">
-                                            <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur">
-                                        </td>
-                                        <td>{{ user.nom }}</td>
-                                        <td>{{ user.prenom }}</td>
-                                        <td>{{ user.adresse }}</td>
-                                        <td>{{ user.salaire }}</td>
-                                        <td><center>
-                                            <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Modifier</a>
-                                            <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                                            <button class="btn btn-outline-success btn-sm btn-fw" style="width: 80px;">Supprimer</button>
-                                          </form></center></td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6">No records found for Fermier.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        <div class="d-flex justify-content-center">
-                            {{ knp_pagination_render(paginationfermier, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
-                                'pageParameterName': 'page_fermier'
-                            }) }}
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+        </div>
+
 {% endblock %}
+
+
+{% macro user_table(pagination, role) %}
+    <table class="table table-hover">
+        <thead>
+            <tr style="background-color: #8FBC8F; color: #2F4F4F;">
+                <th>Photo</th>
+                <th>Nom et Prénom</th>
+                <th>Numéro</th>
+                <th>CIN</th>
+                <th>Adresse</th>
+                <th>Salaire</th>
+                <th class="text-center"><center>Actions</center></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in pagination.getItems() %}
+                <tr>
+                    <td class="py-1">
+                        <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur" style="max-width: 50px; max-height: 50px;">
+                    </td>
+                    <td>{{ user.nom }} {{ user.prenom }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.cin }}</td>
+                    <td>{{ user.adresse }}</td>
+                    <td>{{ user.salaire }}</td>
+                    <td><center>
+                    <a href="{{ path('app_produitback_show', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
+                        <i class="mdi mdi-eye"></i> 
+                    </a>
+                    <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
+                        <i class="mdi mdi-pencil"></i> 
+                    </a>
+                    <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employe?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
+                            <i class="mdi mdi-delete"></i> 
+                        </button>
+                    </form>
+                </center></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="alert" style="background-color: #E8F5E9; color: #2F4F4F; border-color: #A5D6A7;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Aucun {{ role }} trouvé
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig', {
+            'pageParameterName': 'page_' ~ role
+        }) }}
+    </div>
+{% endmacro %}

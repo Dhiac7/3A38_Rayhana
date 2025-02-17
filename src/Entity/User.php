@@ -156,17 +156,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $nbrHeuresTravail = null;
 
+
     /**
      * @var Collection<int, Avis>
      */
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'client')]
     private Collection $avis;
 
+    /**
+     * @var Collection<int, Transactionfinancier>
+     */
+    #[ORM\OneToMany(targetEntity: Transactionfinancier::class, mappedBy: 'User')]
+    private Collection $transactionfinanciers;
+
+
+    /**
+     * @var Collection<int, Parcelle>
+     */
+    #[ORM\OneToMany(targetEntity: Parcelle::class, cascade: ['persist', 'remove'], mappedBy: 'id_user')]
+    private Collection $parcelles;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'employes')]
+    private ?self $agriculteur = null;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'agriculteur')]
+    private Collection $employes;
+
+
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
         $this->avis = new ArrayCollection();
+
+        $this->transactionfinanciers = new ArrayCollection();
+
+
+        $this->parcelles = new ArrayCollection();
+
+        $this->employes = new ArrayCollection();
+
+
     }
 
     public function getId(): ?int
@@ -445,19 +479,110 @@ public function getPassword(): ?string
             $this->avis->add($avi);
             $avi->setClient($this);
         }
+    }
+
+    /**
+     * @return Collection<int, Transactionfinancier>
+     */
+    public function getTransactionfinanciers(): Collection
+    {
+        return $this->transactionfinanciers;
+    }
+
+    public function addTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if (!$this->transactionfinanciers->contains($transactionfinancier)) {
+            $this->transactionfinanciers->add($transactionfinancier);
+            $transactionfinancier->setUser($this);
+                  }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Parcelle>
+     */
+    public function getParcelles(): Collection
+    {
+        return $this->parcelles;
+    }
+
+    public function addParcelle(Parcelle $parcelle): static
+    {
+        if (!$this->parcelles->contains($parcelle)) {
+            $this->parcelles->add($parcelle);
+            $parcelle->setIdUser($this);
+        }
 
         return $this;
     }
 
     public function removeAvi(Avis $avi): static
     {
-        if ($this->avis->removeElement($avi)) {
             // set the owning side to null (unless already changed)
-            if ($avi->getClient() === $this) {
                 $avi->setClient(null);
+    }
+    public function getAgriculteur(): ?self
+    {
+    }
+
+    public function setAgriculteur(?self $agriculteur): static
+    {
+        $this->agriculteur = $agriculteur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getEmployes(): Collection
+    {
+        return $this->employes;
+    }
+
+    public function addEmploye(self $employe): static
+    {
+        if (!$this->employes->contains($employe)) {
+            $this->employes->add($employe);
+            $employe->setAgriculteur($this);
+
+
+        }
+
+        return $this;
+    }
+
+          
+    public function removeTransactionfinancier(Transactionfinancier $transactionfinancier): static
+    {
+        if ($this->transactionfinanciers->removeElement($transactionfinancier)) {
+            // set the owning side to null (unless already changed)
+            if ($transactionfinancier->getUser() === $this) {
+                $transactionfinancier->setUser(null);
             }
         }
 
+        return $this;
+    }
+    public function removeParcelle(Parcelle $parcelle): static
+    {
+        if ($this->parcelles->removeElement($parcelle)) {
+            // set the owning side to null (unless already changed)
+            if ($parcelle->getIdUser() === $this) {
+                $parcelle->setIdUser(null);
+                          }
+        }
+
+        return $this;
+    }
+    public function removeEmploye(self $employe): static
+    {
+        if ($this->employes->removeElement($employe)) {
+            // set the owning side to null (unless already changed)
+                $employe->setAgriculteur(null);
+            }
+        
         return $this;
     }
 }

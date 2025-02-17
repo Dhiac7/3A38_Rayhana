@@ -171,7 +171,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         ]);
     }
 
-    #[Route('/atelier/delete/{id}', name: 'app_atelier_delete', methods: ['POST'])]
+    #[Route('/atelier/delete/{id}', name: 'app_atelier_back_delete', methods: ['GET'])]
     public function delete(Request $request, Atelier $atelier, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {$loggedInUserId = $session->get('admin_user_id');
     
@@ -185,10 +185,9 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
             return $this->redirectToRoute('app_user_loginback');
         }
     
-        if ($this->isCsrfTokenValid('delete'.$atelier->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($atelier);
-            $entityManager->flush();
-        }
+        $entityManager->remove($atelier);
+        $entityManager->flush();
+        
 
         return $this->redirectToRoute('app_atelier_indexBack', [], Response::HTTP_SEE_OTHER);
 

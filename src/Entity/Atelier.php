@@ -18,7 +18,7 @@ class Atelier
 
 
     #[ORM\Column(length: 100)]
-    #[Assert\NotBlank(message: "Le nom de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\NotBlank(message: "Le nom de l'atelier ne peut pas être vide.")]
     #[Assert\Length(
         max: 15, 
         maxMessage: "Le nom de l'atelier ne peut pas dépasser 30 caractères."
@@ -42,7 +42,7 @@ class Atelier
     private ?\DateTimeInterface $date_atelier = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: "La capacite maximal de l'atelier ne peut pas être vide.")]//controle de saisie 
+    #[Assert\NotBlank(message: "La capacite maximal de l'atelier ne peut pas être vide.")]
     #[Assert\Range(
         min: 1, 
         max: 500, 
@@ -51,19 +51,21 @@ class Atelier
     private ?int $capacite_max = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "Le prix ne peut pas être vide.")] 
+    #[Assert\Positive(message: "Le prix doit être strictement positif.")]
     private ?float $prix = null;
 
     #[ORM\Column]
     private ?int $idUser = 0;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\NotBlank(message: "Tu dois choisir une option.")]//controle de saisie 
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]
 
     #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
-    #[Assert\NotBlank(message: "Tu dois choisir une option.")] //controle de saisie 
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")] 
 
     #[Assert\Choice(choices: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
     private ?string $Role = 'client';

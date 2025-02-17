@@ -35,32 +35,32 @@ final class UserController extends AbstractController
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-    public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {
+public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $error = null;
 
-        $error = null;
+    if ($request->isMethod('POST')) {
+        $email = $request->request->get('email');
+        $password = $request->request->get('password');
 
-        if ($request->isMethod('POST')) {
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            $error = 'Invalid email or password';
+        } elseif ($user->getRole() === 'agriculteur') {
+            $error = 'Accès refusé';
+        } else {
+            $session->set('client_user_id', $user->getId());
+            User::setCurrentUser($user);
 
-            if (!$user || !password_verify($password, $user->getPassword())) {
-                $error = 'Invalid email or password';
-            } else {
-                $session->set('client_user_id', $user->getId());
-
-                User::setCurrentUser($user);
-
-                return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
-            }
+            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
         }
-
-        return $this->render('user/login.html.twig', [
-            'error' => $error,
-        ]);
     }
+
+    return $this->render('user/login.html.twig', [
+        'error' => $error,
+    ]);
+}
 
     #[Route('/logout', name: 'app_user_logout')]
     public function logout(SessionInterface $session): Response
@@ -145,7 +145,7 @@ final class UserController extends AbstractController
     
 
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    /*#[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -154,7 +154,7 @@ final class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }
+    }*/
 
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]

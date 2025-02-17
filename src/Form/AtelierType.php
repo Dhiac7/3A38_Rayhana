@@ -52,7 +52,7 @@ class AtelierType extends AbstractType
                     ])
                 ],
             ])
-            ->add('save', SubmitType::class, ['label' => 'Confirmer']);
+            //->add('save', SubmitType::class, ['label' => 'Confirmer']);
 
            /* ->add('Role', ChoiceType::class, [
                 'choices' => [

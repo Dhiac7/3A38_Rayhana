@@ -27,67 +27,65 @@
             <h4 class="card-title">Nouvelle Parcelle</h4>
             <p class="card-description">Créer une nouvelle parcelle</p>
 
-            {{ form_start(form, {'attr': {'class': 'forms-sample' , 'novalidate': 'novalidate'}}) }}  
+            {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}
 
-            <!-- Nom de la parcelle -->
+            <!-- Type -->
             <div class="form-group">
-                {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'placeholder': 'Nom de la parcelle'} }) }}
-                <div {{ form_errors(form.nom) ? 'class="text-danger"' : '' }}>
-                    {{ form_errors(form.nom) }}
-                </div>       
-                <!-- {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }} ne marche pas -->
-     
+                {{ form_label(form.type, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.type, {'attr': {'class': 'form-select', 'placeholder': 'Type de \'dechet'}}) }}
+                <div {{ form_errors(form.type) ? 'class="text-danger"' : '' }}>
+                    {{ form_errors(form.type) }}
+                </div>
             </div>
 
-            <!-- Latitude -->
+            <!-- Quantité -->
             <div class="form-group">
-                {{ form_label(form.latitude, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.latitude, { 'attr': {'class': 'form-control', 'placeholder': 'Latitude'} }) }}
-                <div {{ form_errors(form.latitude) ? 'class="text-danger"' : '' }}>
-                    {{ form_errors(form.latitude) }}
-                </div>    
+                {{ form_label(form.quantite, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'placeholder': 'Quantité'}}) }}
+                <div {{ form_errors(form.quantite) ? 'class="text-danger"' : '' }}>
+                    {{ form_errors(form.quantite) }}
+                </div>
             </div>
 
-            <!-- Longitude -->
+            <!-- Date de production -->
             <div class="form-group">
-                {{ form_label(form.longitude, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.longitude, { 'attr': {'class': 'form-control', 'placeholder': 'Longitude'} }) }}
-                <div {{ form_errors(form.longitude) ? 'class="text-danger"' : '' }}>
-                    {{ form_errors(form.longitude) }}
-                </div>    
+                {{ form_label(form.dateProduction, 'Date de production du déchet', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateProduction, {'attr': {'class': 'form-control'}}) }}
+                <div {{ form_errors(form.dateProduction) ? 'class="text-danger"' : '' }}>
+                    {{ form_errors(form.dateProduction) }}
                 </div>
+            </div>
 
-            <!-- Superficie -->
+            <!-- Statut -->
             <div class="form-group">
-                {{ form_label(form.superficie, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.superficie, { 'attr': {'class': 'form-control', 'placeholder': 'Superficie en hectares'} }) }}
-                <div {{ form_errors(form.superficie) ? 'class="text-danger"' : '' }}>
-                    {{ form_errors(form.superficie) }}
-                </div>    
+                {{ form_label(form.statut, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                <div {{ form_errors(form.statut) ? 'class="text-danger"' : '' }}>
+                    {{ form_errors(form.statut) }}
                 </div>
+            </div>
 
-            <!-- Disponibilité de l'irrigation -->
+            <!-- Date d'expiration -->
             <div class="form-group">
-                {{ form_label(form.irrigationDisponible, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(form.irrigationDisponible, { 'attr': {'class': 'form-select'} }) }}
-                <div {{ form_errors(form.irrigationDisponible) ? 'class="text-danger"' : '' }}>
-                    {{ form_errors(form.irrigationDisponible) }}
-                </div>    
+                {{ form_label(form.dateExpiration, "Date d'expiration du déchet", {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.dateExpiration, {'attr': {'class': 'form-control'}}) }}
+                <div {{ form_errors(form.dateExpiration) ? 'class="text-danger"' : '' }}>
+                    {{ form_errors(form.dateExpiration) }}
                 </div>
+            </div>
 
-            <!-- Boutons -->
-            <button type="submit" class="btn btn-gradient-primary me-2">
-                <a href="{{ path('app_parcelle_dashboard_index') }}" ></a>
-                    <i class="fas fa-save"></i> Enregistrer
-                
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-gradient-primary me-2 w-100">
+                <i class="mdi mdi-content-save"></i> Modifier
             </button>
 
+            <!-- Additional Buttons -->
             <a href="{{ path('app_parcelle_dashboard_index') }}" class="btn btn-light">
                 <i class="fas fa-arrow-left"></i> Retour
             </a>
 
             {{ form_end(form) }}
+
         </div>
     </div>
 </div>
