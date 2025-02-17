@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Inspection{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <!-- Title with box -->
+      <div class="p-3 mb-4 bg-primary text-white text-center rounded">
+        <h4>Liste des Inspections</h4>
+      </div>
+      <p class="card-description">Liste des inspections enregistrées</p>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th> ID </th>
+            <th> Date Inspection </th>
+            <th> Résultat </th>
+            <th> Note </th>
+            <th> Actions </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inspection in inspections %}
+          <tr>
+            <td> {{ inspection.id }} </td>
+            <td> {{ inspection.dateInspection ? inspection.dateInspection|date('d/m/Y H:i:s') : 'N/A' }} </td>
+            <td> {{ inspection.resultat }} </td>
+            <td> {{ inspection.note }} </td>
+            <td>
+              <a href="{{ path('app_inspection_show', {'id': inspection.id}) }}" class="btn btn-info btn-sm">
+                <i class="mdi mdi-eye"></i> Voir
+              </a>
+              <a href="{{ path('app_inspection_edit', {'id': inspection.id}) }}" class="btn btn-warning btn-sm">
+                <i class="mdi mdi-pencil"></i> Modifier
+              </a>
+              {{ include('inspection/_delete_form.html.twig') }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center">Aucune inspection trouvée</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <a href="{{ path('app_inspection_new') }}" class="btn btn-success">
+        <i class="mdi mdi-plus"></i> Ajouter une Inspection
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

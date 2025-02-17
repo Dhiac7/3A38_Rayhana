@@ -192,12 +192,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
         $this->avis = new ArrayCollection();
-
         $this->transactionfinanciers = new ArrayCollection();
-
-
         $this->parcelles = new ArrayCollection();
-
         $this->employes = new ArrayCollection();
 
 
@@ -479,6 +475,7 @@ public function getPassword(): ?string
             $this->avis->add($avi);
             $avi->setClient($this);
         }
+        return $this; // Add the return statement
     }
 
     /**
@@ -494,7 +491,7 @@ public function getPassword(): ?string
         if (!$this->transactionfinanciers->contains($transactionfinancier)) {
             $this->transactionfinanciers->add($transactionfinancier);
             $transactionfinancier->setUser($this);
-                  }
+            }
 
         return $this;
     }
@@ -519,11 +516,15 @@ public function getPassword(): ?string
 
     public function removeAvi(Avis $avi): static
     {
-            // set the owning side to null (unless already changed)
-                $avi->setClient(null);
+        if ($this->avis->removeElement($avi)) { 
+            $avi->setClient(null); 
+        }
+        return $this;
     }
+
     public function getAgriculteur(): ?self
     {
+        return $this->agriculteur;
     }
 
     public function setAgriculteur(?self $agriculteur): static
@@ -553,7 +554,7 @@ public function getPassword(): ?string
         return $this;
     }
 
-          
+    
     public function removeTransactionfinancier(Transactionfinancier $transactionfinancier): static
     {
         if ($this->transactionfinanciers->removeElement($transactionfinancier)) {
@@ -571,7 +572,7 @@ public function getPassword(): ?string
             // set the owning side to null (unless already changed)
             if ($parcelle->getIdUser() === $this) {
                 $parcelle->setIdUser(null);
-                          }
+            }
         }
 
         return $this;

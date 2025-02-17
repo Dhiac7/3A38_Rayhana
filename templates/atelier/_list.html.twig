@@ -13,11 +13,11 @@
                   <div class="card mb-3 atelier-card" data-id="{{ atelier.id }}">
                       <div class="row g-0 align-items-center">
                           <div class="col-md-4">
-                              {% if atelier.photo %}
-                                  <img src="{{ asset('uploads/' ~ atelier.photo) }}" alt="Image de l'atelier" class="img-fluid rounded-start">
-                              {% else %}
-                                  <img src="{{ asset('img/atelier/default.jpg') }}" alt="Image non disponible" class="img-fluid rounded-start">
-                              {% endif %}
+                               {% if atelier.photo %}
+                            <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" alt="Photo de l'atelier" width=90px , height=90px>
+                        {% else %}
+                            <p>Aucune photo disponible.</p>
+                        {% endif %}
                           </div>
                           <div class="col-md-8">
                               <div class="card-body">

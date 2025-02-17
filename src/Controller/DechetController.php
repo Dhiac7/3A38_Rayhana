@@ -21,14 +21,14 @@ final class DechetController extends AbstractController
     #[Route(name: 'app_dechet_index', methods: ['GET'])]
 public function index(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator, SessionInterface $session, EntityManagerInterface $entityManager): Response
 {
-    $loggedInUserId = $session->get('client_user_id');
+    $loggedInUserId = $session->get('admin_user_id');
     
     if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_login');
+        return $this->redirectToRoute('app_user_loginback');
     }
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_login');
+        return $this->redirectToRoute('app_user_loginback');
     }
     
     // Récupérer la direction du tri et le champ à trier
@@ -78,22 +78,18 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
         // Rediriger vers la page de connexion avec une erreur
         return $this->redirectToRoute('app_user_loginback');
     }
-
     // Créer un nouvel objet "Dechet"
     $dechet = new Dechet();
     $form = $this->createForm(DechetType::class, $dechet);
     $form->handleRequest($request);
-
     // Si le formulaire est soumis et valide
     if ($form->isSubmitted() && $form->isValid()) {
         // Persister l'objet dans la base de données
         $entityManager->persist($dechet);
         $entityManager->flush();
-
         // Rediriger vers la liste des déchets
         return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
     }
-
     // Rendre la vue pour afficher le formulaire
     return $this->render('dechet/new.html.twig', [
         'dechet' => $dechet,
