@@ -44,23 +44,26 @@
                                     </ul>
                                 </div>
                                 <h2 class="title">
-                                    <p>
-                                         {{ vente.nom }}
-                                     </p>
+                                    <p>{{ vente.nom }}</p>
                                     <a href="{{ path('app_vente_show', {'id': vente.id}) }}">
                                         Vente de {{ vente.prix }} €
                                     </a>
                                 </h2>
-                                <p>
-                                    {{ vente.methodepayement }}
-                                </p>
                                 
-                                    <p>
-                                        {{ vente.date|date('Y-m-d H:i:s') }} {# Format the date as needed #}
-                                    </p>
-                                    <p>
-                                       Quantite: {{ vente.quantite }}
-                                    </p>
+                                <p>{{ vente.methodepayement }}</p>
+                                
+                                <p>{{ vente.date|date('Y-m-d H:i:s') }}</p>
+                                <p>Quantité: {{ vente.quantite }}</p>
+                        
+                                <!-- Afficher l'image du produit associé à la vente -->
+                                {% if vente.produit and vente.produit.image %}
+                                    <div class="thumb">
+                                        <img src="{{ asset('img/stock/' ~ vente.produit.image) }}" alt="{{ vente.produit.nom }}" class="img-fluid">
+                                    </div>
+                                {% else %}
+                                    <p class="text-danger">Aucune image disponible pour ce produit.</p>
+                                {% endif %}
+                        
                                 <a class="btn mt-10 btn-md btn-theme animation" href="{{ path('app_vente_show', {'id': vente.id}) }}">
                                     Voir les détails
                                 </a>

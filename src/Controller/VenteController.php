@@ -86,88 +86,87 @@ public function index(
 
     }
 
-    // Route pour créer une nouvelle vente (définie avant les routes dynamiques comme /{id})
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
-public function new(
-    Request $request,
-    EntityManagerInterface $entityManager,
-    ProduitRepository $produitRepository,
-    SessionInterface $session
-): Response {
-    $loggedInUserId = $session->get('client_user_id');
-    
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_login');
-    }
-
-    // Récupérer l'utilisateur connecté
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_login');
-    }
-
-    $vente = new Vente();
-    
-    $produitId = $request->query->get('id');
-
-    if (!$produitId) {
-        $this->addFlash('error', 'Aucun produit sélectionné.');
-        return $this->redirectToRoute('app_vente_index');
-    }
-
-    $produit = $produitRepository->find($produitId);
-
-    if (!$produit) {
-        $this->addFlash('error', 'Produit introuvable.');
-        return $this->redirectToRoute('app_vente_index');
-    }
-    
-    // Définir le nom de la vente avec le nom du produit
-    $vente->setNom($produit->getNom());
-    
-    $vente->setProduit($produit);
-    $vente->setPrix($produit->getPrixVente());
-    $vente->setQuantite(1);
-
-    // Associer l'utilisateur connecté à la vente
-    $vente->setUser($loggedInUser);
-
-    $form = $this->createForm(VenteType::class, $vente, [
-        'prix_unitaire' => $produit->getPrixVente(),
-    ]);
-    
-    $form->handleRequest($request);
-    
-    if ($form->isSubmitted() && $form->isValid()) {
-        $quantite = $vente->getQuantite();
-        $prixUnitaire = $produit->getPrixVente();
-        $vente->setPrix($quantite * $prixUnitaire);
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ProduitRepository $produitRepository,
+        SessionInterface $session
+    ): Response {
+        $loggedInUserId = $session->get('client_user_id');
         
-        // Créer une nouvelle transaction financière
-        $transaction = new Transactionfinancier();
-        $transaction->setMontant($vente->getPrix());
-        $transaction->setDate(new \DateTime());
-        $transaction->setType('Revenue'); // Type de transaction
-        $transaction->setVente($vente); // Associer la transaction à la vente
-
-        // Associer la transaction à la vente
-        $vente->setTransaction($transaction);
-
-        // Persister la vente et la transaction
-        $entityManager->persist($vente);
-        $entityManager->persist($transaction);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
-        return $this->redirectToRoute('app_vente_index');
-    }
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_login');
+        }
     
-    return $this->render('vente/new.html.twig', [
-        'form' => $form->createView(),
-        'produit' => $produit,
-        'loggedInUser' => $loggedInUser,
-    ]);
-}
+        // Récupérer l'utilisateur connecté
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_login');
+        }
+    
+        $vente = new Vente();
+        
+        $produitId = $request->query->get('id');
+    
+        if (!$produitId) {
+            $this->addFlash('error', 'Aucun produit sélectionné.');
+            return $this->redirectToRoute('app_vente_index');
+        }
+    
+        $produit = $produitRepository->find($produitId);
+    
+        if (!$produit) {
+            $this->addFlash('error', 'Produit introuvable.');
+            return $this->redirectToRoute('app_vente_index');
+        }
+        
+        // Définir le nom de la vente avec le nom du produit
+        $vente->setNom($produit->getNom());
+        
+        $vente->setProduit($produit);
+        $vente->setPrix($produit->getPrixVente());
+        $vente->setQuantite(1);
+    
+        // Associer l'utilisateur connecté à la vente
+        $vente->setUser($loggedInUser);
+    
+        $form = $this->createForm(VenteType::class, $vente, [
+            'prix_unitaire' => $produit->getPrixVente(),
+        ]);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $quantite = $vente->getQuantite();
+            $prixUnitaire = $produit->getPrixVente();
+            $vente->setPrix($quantite * $prixUnitaire);
+            
+            // Créer une nouvelle transaction financière
+            $transaction = new Transactionfinancier();
+            $transaction->setMontant($vente->getPrix());
+            $transaction->setDate(new \DateTime());
+            $transaction->setType('Revenue'); // Type de transaction
+            $transaction->setVente($vente); // Associer la transaction à la vente
+    
+            // Associer la transaction à la vente
+            $vente->setTransaction($transaction);
+    
+            // Persister la vente et la transaction
+            $entityManager->persist($vente);
+            $entityManager->persist($transaction);
+            $entityManager->flush();
+    
+            $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
+            return $this->redirectToRoute('app_vente_index');
+        }
+        
+        return $this->render('vente/new.html.twig', [
+            'form' => $form->createView(),
+            'produit' => $produit,
+            'loggedInUser' => $loggedInUser,
+        ]);
+    }
 
     // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -240,7 +239,9 @@ public function edit(Request $request, Vente $vente, EntityManagerInterface $ent
 
 
 
-    #[Route('/atelier/new', name: 'app_vente_atelier_new', methods: ['GET', 'POST'])]
+   // src/Controller/VenteController.php
+
+#[Route('/atelier/new', name: 'app_vente_atelier_new', methods: ['GET', 'POST'])]
 public function newVenteAtelier(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
     $loggedInUserId = $session->get('client_user_id');
@@ -273,7 +274,9 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
     // Associer l'utilisateur connecté à la vente
     $vente->setUser($loggedInUser);
 
-    $form = $this->createForm(VenteType::class, $vente);
+    $form = $this->createForm(VenteType::class, $vente, [
+        'prix_unitaire' => $atelier->getPrix(), // Passer le prix unitaire au formulaire
+    ]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -306,5 +309,4 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
         'atelier' => $atelier, // Passer l'atelier à la vue si nécessaire
     ]);
 }
-
 }
