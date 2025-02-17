@@ -9,7 +9,7 @@
           <p class="card-description text-center">Voici tous les dechets disponibles.</p>
           <!-- Conteneur des dechets -->
           <div id="dechet-container">
-              {% for dechet in dechet %}
+              {% for dechet in dechets %}
                   <div class="card mb-3 dechet-card" data-id="{{ dechet.id }}">
                       <div class="row g-0 align-items-center">
                          {# <div class="col-md-4">
@@ -24,8 +24,8 @@
                                   <h5 class="card-title">{{ dechet.type }}</h5>
                                   <p class="card-text">{{ dechet.quantite }}</p>
                                   <p class="card-text"><strong>Date production:</strong> {{ dechet.dateProduction|date("d/m/Y") }}</p>
-                                  <p class="card-text"><strong>statut:</strong> {{ dechet.statut }} TND</p>
-                                    <p class="card-text"><strong>Date d'expiration:</strong> {{ dechet.dateExpiration|date("d/m/Y") }}</p>
+                                <p class="card-text"><strong>Statut:</strong> {{ dechet.statut }}</p>
+<p class="card-text"><strong>Date d'expiration:</strong> {{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</p>
 
                                   <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-primary">Modifier</a><br>
                                   <a href="#" class="btn btn-danger btn-delete" data-id="{{ dechet.id }}">Supprimer</a>

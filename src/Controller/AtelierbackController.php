@@ -108,7 +108,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
     return $this->render('atelier/new.html.twig', [
         'atelier' => $atelier,
-        'form' => $form,
+        'form' => $form->createView(), 
         'loggedInUser' => $loggedInUser,
 
     ]);

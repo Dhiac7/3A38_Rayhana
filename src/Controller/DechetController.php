@@ -169,32 +169,29 @@ public function deleteAjax(Request $request, EntityManagerInterface $entityManag
     
 
 
-#[Route('/dechet/list', name: 'dechet_list_ajax', methods: ['GET'])]
-public function listAjax(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator): Response
+#[Route('/dechet/list', name: 'dechet_list_ajax')]
+public function listdechet(Request $request, EntityManagerInterface $entityManager): Response
 {
-    // Récupérer les paramètres de recherche et de tri
-    $sortOrder = $request->query->get('sort', 'asc');
+    $sortOrder = $request->query->get('sort', '');
     $searchQuery = $request->query->get('search', '');
+        $atelierRepository = $entityManager->getRepository(dechet::class);
+    $queryBuilder = $atelierRepository->createQueryBuilder('a');
 
-    // Construction de la requête pour récupérer les déchets filtrés et triés
-    $queryBuilder = $dechetRepository->createQueryBuilder('d');
-
-    if ($searchQuery) {
-        $queryBuilder->andWhere('d.type LIKE :search')
+    if (!empty($searchQuery)) {
+        $queryBuilder->andWhere('a.type LIKE :search')
                      ->setParameter('search', '%' . $searchQuery . '%');
     }
 
-    $queryBuilder->orderBy('d.type', $sortOrder); // Tri par type (ascendant ou descendant)
+    if ($sortOrder === "asc") {
+        $queryBuilder->orderBy('a.type', 'ASC');
+    } elseif ($sortOrder === "desc") {
+        $queryBuilder->orderBy('a.type', 'DESC');
+    }
 
-    $query = $queryBuilder->getQuery();
-    $pagination = $paginator->paginate(
-        $query, 
-        $request->query->getInt('page', 1), 
-        4
-    );
+    $dechets = $queryBuilder->getQuery()->getResult();
 
     return $this->render('dechet/_list_dechet.html.twig', [
-        'pagination' => $pagination,
+        'dechets' => $dechets,
     ]);
 }
 
