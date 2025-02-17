@@ -43,10 +43,15 @@ class Dechet
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date expiration ne peut pas être vide.")]
-//#[Assert\Date(message: "La date expiration doit être une date valide.")]
+    //#[Assert\Date(message: "La date expiration doit être une date valide.")]
 
     private ?\DateTimeInterface $dateExpiration= null;
-
+    #[Assert\NotBlank(message: "La quantité du dechet ne peut pas être vide.")]//controle de saisie 
+    #[Assert\Range(
+        min: 1, 
+        max: 60, 
+        notInRangeMessage: "La quantite doit être comprise entre {{ min }} et {{ max }}."
+    )]
     #[ORM\ManyToOne(inversedBy: 'dechet')]
     private ?Stock $stock = null;
 
