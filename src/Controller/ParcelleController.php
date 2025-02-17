@@ -40,8 +40,8 @@ final class ParcelleController extends AbstractController
         $limit = 9; // Number of parcelles per page
         $offset = ($page - 1) * $limit;
     
-        // Get the parcelles for the current page
-        $parcelles = $parcelleRepository->findBy([], [], $limit, $offset);
+        // Filtrer les parcelles par utilisateur
+        $parcelles = $parcelleRepository->findAll();
     
         // Get the total number of parcelles for pagination
         $totalParcelles = $parcelleRepository->count([]);
@@ -62,7 +62,7 @@ final class ParcelleController extends AbstractController
     
 
     #[Route('/new', name: 'app_parcelle_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $sessionr): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $loggedInUserId = $session->get('client_user_id');
         
@@ -75,6 +75,9 @@ final class ParcelleController extends AbstractController
         }
 
         $parcelle = new Parcelle();
+        $parcelle->setIdUser($loggedInUser); // Associer la parcelle à l'utilisateur connecté
+
+
         $form = $this->createForm(ParcelleType::class, $parcelle);
         $form->handleRequest($request);
 
@@ -107,6 +110,10 @@ final class ParcelleController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
 
+        if ($parcelle->getUser() !== $loggedInUser) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette parcelle.');
+        }
+
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
         return $this->render('parcelle/show.html.twig', [
@@ -130,6 +137,10 @@ final class ParcelleController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
 
+        if ($parcelle->getUser() !== $loggedInUser) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette parcelle.');
+        }
+
         $form = $this->createForm(ParcelleType::class, $parcelle);
         $form->handleRequest($request);
 
@@ -146,6 +157,10 @@ final class ParcelleController extends AbstractController
 
         ]);
     }
+
+
+
+    //Admin
 
     #[Route('/{id}', name: 'app_parcelle_delete', methods: ['POST'])]
     public function delete(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
@@ -215,43 +230,6 @@ final class ParcelleController extends AbstractController
         ]);
     }
     
-    
-
-    
-
-    
-
-    #[Route('/dashboard/new', name: 'app_parcelle_new2', methods: ['GET', 'POST'])]
-    public function new2(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {
-        $loggedInUserId = $session->get('admin_user_id');
-
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-        $parcelle = new Parcelle();
-        $form = $this->createForm(ParcelleType::class, $parcelle);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($parcelle);
-            $entityManager->flush();
-            //$this->saveSatelliteImage($parcelle);
-
-            return $this->redirectToRoute('app_parcelle_index2', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('parcelle/newAdmin.html.twig', [
-            'parcelle' => $parcelle,
-            'form' => $form,
-            'loggedInUser' => $loggedInUser,
-
-        ]);
-    }
 
     #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
     public function show2(Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response

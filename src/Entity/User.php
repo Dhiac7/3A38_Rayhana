@@ -156,6 +156,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?float $nbrHeuresTravail = null;
 
+
+    /**
+     * @var Collection<int, Parcelle>
+     */
+    #[ORM\OneToMany(targetEntity: Parcelle::class, cascade: ['persist', 'remove'], mappedBy: 'id_user')]
+    private Collection $parcelles;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'employes')]
     private ?self $agriculteur = null;
 
@@ -165,11 +172,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'agriculteur')]
     private Collection $employes;
 
+
     public function __construct()
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
+
+        $this->parcelles = new ArrayCollection();
+
         $this->employes = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -434,6 +446,21 @@ public function getPassword(): ?string
         return $this;
     }
 
+
+    /**
+     * @return Collection<int, Parcelle>
+     */
+    public function getParcelles(): Collection
+    {
+        return $this->parcelles;
+    }
+
+    public function addParcelle(Parcelle $parcelle): static
+    {
+        if (!$this->parcelles->contains($parcelle)) {
+            $this->parcelles->add($parcelle);
+            $parcelle->setIdUser($this);
+
     public function getAgriculteur(): ?self
     {
         return $this->agriculteur;
@@ -459,17 +486,30 @@ public function getPassword(): ?string
         if (!$this->employes->contains($employe)) {
             $this->employes->add($employe);
             $employe->setAgriculteur($this);
+
         }
 
         return $this;
     }
 
+    public function removeParcelle(Parcelle $parcelle): static
+    {
+        if ($this->parcelles->removeElement($parcelle)) {
+            // set the owning side to null (unless already changed)
+            if ($parcelle->getIdUser() === $this) {
+                $parcelle->setIdUser(null);
+                          }
+        }
+
+        return $this;
+    }
     public function removeEmploye(self $employe): static
     {
         if ($this->employes->removeElement($employe)) {
             // set the owning side to null (unless already changed)
             if ($employe->getAgriculteur() === $this) {
                 $employe->setAgriculteur(null);
+
             }
         }
 
