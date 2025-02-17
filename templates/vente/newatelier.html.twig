@@ -75,38 +75,27 @@
 </div>
 
 {% block javascripts %}
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let placesInput = document.getElementById("reservation_nombrePlaces");
-        let prixUnitaireInput = document.getElementById("reservation_prixUnitaire");
-        let prixTotalInput = document.getElementById("reservation_prix");
-        let availablePlaces = {{ atelier.placesDisponibles|default(0) }};
+        const quantiteInput = document.getElementById("vente_quantite"); // Champ quantité
+        const prixUnitaireInput = document.getElementById("vente_prixUnitaire"); // Champ prix unitaire (hidden)
+        const prixTotalInput = document.getElementById("vente_prix"); // Champ prix total
 
-        // Function to update total price
+        // Fonction pour mettre à jour le prix total
         function updatePrixTotal() {
-            let places = parseInt(placesInput.value) || 0;
-            let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
-            let prixTotal = places * prixUnitaire;
-            prixTotalInput.value = prixTotal.toFixed(2);
+            const quantite = parseInt(quantiteInput.value) || 0;
+            const prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
+            const prixTotal = quantite * prixUnitaire;
+            prixTotalInput.value = prixTotal.toFixed(2); // Mettre à jour le champ prix total
         }
 
-        // Validate places entered
-        function validatePlaces() {
-            let places = parseInt(placesInput.value) || 0;
-            if (places > availablePlaces) {
-                alert("Le nombre de places ne peut pas être supérieur aux places disponibles !");
-                placesInput.value = availablePlaces;
-                updatePrixTotal();
-            }
-        }
-
-        // Event listeners
-        placesInput.addEventListener("input", function () {
+        // Écouter les changements dans le champ quantité
+        quantiteInput.addEventListener("input", function () {
             updatePrixTotal();
-            validatePlaces();
         });
 
-        // Initial price update on page load
+        // Mettre à jour le prix total au chargement de la page
         updatePrixTotal();
     });
 </script>

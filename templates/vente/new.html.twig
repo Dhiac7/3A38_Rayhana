@@ -16,16 +16,13 @@
                             <h5 class="sub-title">Nouvelle Vente</h5>
                             <h2 class="heading">Informations de la vente</h2>
 
-                            {# Start Symfony Form #}
                             {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
 
-                                {# Display global form errors #}
                                 {% for error in form.vars.errors %}
                                     <div class="alert alert-danger">{{ error.message }}</div>
                                 {% endfor %}
 
                                 <div class="row">
-                                    <!-- Nom du produit -->
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label>Nom du produit</label>
@@ -33,7 +30,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Quantité (From Vente) -->
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             {{ form_label(form.quantite, 'Quantité') }}
@@ -42,7 +38,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Prix (From Vente) -->
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             {{ form_label(form.prix, 'Prix Total (€)') }}
@@ -51,10 +46,8 @@
                                         </div>
                                     </div>
 
-                                    <!-- Prix Unitaire (Hidden) -->
                                     {{ form_widget(form.prixUnitaire, {'attr': {'id': 'vente_prixUnitaire'}}) }}
 
-                                    <!-- Méthode de Paiement -->
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             {{ form_label(form.methodepayement, 'Méthode de paiement') }}
@@ -64,14 +57,12 @@
                                     </div>
                                 </div>
 
-                                
+                              
 
                             {{ form_end(form) }}
-                            {# End Symfony Form #}
                         </div>
                     </div>
 
-                    <!-- Product Information -->
                     <div class="col-lg-6">
                         <div class="product-info">
                             <h3>Informations du Produit</h3>
@@ -79,13 +70,16 @@
                                 <p><strong>Nom du produit:</strong> {{ produit.nom }}</p>
                                 <p><strong>Quantité Disponible:</strong> {{ produit.quantite }}</p>
                                 <p><strong>Prix de Vente:</strong> {{ produit.prixVente }} €</p>
+                                {% if produit.image %}
+                                <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="{{ produit.nom }}" class="img-fluid">
+                                {% else %}
+                                    <p class="text-danger">Aucune image disponible.</p>
+                                    <p>Valeur de produit.image : {{ produit.image }}</p>
+                                {% endif %}
                             {% else %}
                                 <p class="text-danger">Aucun produit sélectionné.</p>
                             {% endif %}
                         </div>
-
-                        <!-- Illustration -->
-                        <img src="{{ asset('img/illustration/21.png') }}" alt="Image Not Found" class="img-fluid">
                     </div>
                 </div>
             </div>
@@ -99,37 +93,29 @@
         let quantiteInput = document.getElementById("vente_quantite");
         let prixUnitaireInput = document.getElementById("vente_prixUnitaire");
         let prixTotalInput = document.getElementById("vente_prix");
-        let submitButton = document.getElementById("submit-btn");
-        let availableQuantity = {{ produit.quantite|default(0) }};  // Pass the available quantity to JS
+        let availableQuantity = {{ produit.quantite|default(0) }};
 
-        // Function to update total price
         function updatePrixTotal() {
             let quantite = parseInt(quantiteInput.value) || 0;
             let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
             let prixTotal = quantite * prixUnitaire;
-
-            // Update total price field
             prixTotalInput.value = prixTotal.toFixed(2);
         }
 
-        // Validate quantity entered
         function validateQuantity() {
             let quantite = parseInt(quantiteInput.value) || 0;
-
             if (quantite > availableQuantity) {
                 alert("La quantité ne peut pas être supérieure à la quantité disponible !");
-                quantiteInput.value = availableQuantity;  // Reset the quantity input to available quantity
-                updatePrixTotal();  // Recalculate price with the corrected quantity
+                quantiteInput.value = availableQuantity;
+                updatePrixTotal();
             }
         }
 
-        // Event listeners
         quantiteInput.addEventListener("input", function () {
             updatePrixTotal();
-            validateQuantity();  // Validate quantity on input change
+            validateQuantity();
         });
 
-        // Initial price update on page load
         updatePrixTotal();
     });
 </script>
