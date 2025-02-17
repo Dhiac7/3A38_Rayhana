@@ -158,6 +158,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'client')]
+    private Collection $avis;
+
+    /**
      * @var Collection<int, Transactionfinancier>
      */
     #[ORM\OneToMany(targetEntity: Transactionfinancier::class, mappedBy: 'User')]
@@ -185,6 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->ateliers = new ArrayCollection();
         $this->ventes = new ArrayCollection();
+        $this->avis = new ArrayCollection();
 
         $this->transactionfinanciers = new ArrayCollection();
 
@@ -458,6 +465,21 @@ public function getPassword(): ?string
         return $this;
     }
 
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setClient($this);
+        }
+    }
 
     /**
      * @return Collection<int, Transactionfinancier>
@@ -495,9 +517,13 @@ public function getPassword(): ?string
         return $this;
     }
 
+    public function removeAvi(Avis $avi): static
+    {
+            // set the owning side to null (unless already changed)
+                $avi->setClient(null);
+    }
     public function getAgriculteur(): ?self
     {
-        return $this->agriculteur;
     }
 
     public function setAgriculteur(?self $agriculteur): static
@@ -554,11 +580,9 @@ public function getPassword(): ?string
     {
         if ($this->employes->removeElement($employe)) {
             // set the owning side to null (unless already changed)
-            if ($employe->getAgriculteur() === $this) {
                 $employe->setAgriculteur(null);
             }
-        }
-
+        
         return $this;
     }
 }

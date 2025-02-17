@@ -17,8 +17,8 @@ class Inspection
     #[ORM\Column]
     private ?int $id_avis = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_inspection = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $date_inspection = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type_inspection = null;
@@ -31,6 +31,14 @@ class Inspection
 
     #[ORM\Column]
     private ?int $note = null;
+
+    #[ORM\ManyToOne(inversedBy: 'reponse')]
+    private ?Avis $avis = null;
+
+    public function __construct()
+    {
+        $this->date_inspection = new \DateTimeImmutable(); // Définit la date et l'heure actuelles automatiquement
+    }
 
     public function getId(): ?int
     {
@@ -45,19 +53,17 @@ class Inspection
     public function setIdAvis(int $id_avis): static
     {
         $this->id_avis = $id_avis;
-
         return $this;
     }
 
-    public function getDateInspection(): ?\DateTimeInterface
+    public function getDateInspection(): ?\DateTimeImmutable
     {
         return $this->date_inspection;
     }
 
-    public function setDateInspection(\DateTimeInterface $date_inspection): static
+    public function setDateInspection(\DateTimeImmutable $date_inspection): static
     {
         $this->date_inspection = $date_inspection;
-
         return $this;
     }
 
@@ -69,7 +75,6 @@ class Inspection
     public function setTypeInspection(string $type_inspection): static
     {
         $this->type_inspection = $type_inspection;
-
         return $this;
     }
 
@@ -81,7 +86,6 @@ class Inspection
     public function setInspecteurId(int $inspecteur_id): static
     {
         $this->inspecteur_id = $inspecteur_id;
-
         return $this;
     }
 
@@ -93,7 +97,6 @@ class Inspection
     public function setResultat(string $resultat): static
     {
         $this->resultat = $resultat;
-
         return $this;
     }
 
@@ -105,6 +108,17 @@ class Inspection
     public function setNote(int $note): static
     {
         $this->note = $note;
+        return $this;
+    }
+
+    public function getAvis(): ?Avis
+    {
+        return $this->avis;
+    }
+
+    public function setAvis(?Avis $avis): static
+    {
+        $this->avis = $avis;
 
         return $this;
     }

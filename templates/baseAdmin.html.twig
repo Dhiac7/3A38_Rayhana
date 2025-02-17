@@ -296,9 +296,18 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-                <span class="menu-title">Tables</span>
-                <i class="mdi mdi-table-large menu-icon"></i>
+    <a class="nav-link" href="{{ path('app_inspection_index') }}">
+        <span class="menu-title">Inspection</span>
+        <i class="mdi mdi-table-large menu-icon"></i>
+    </a>
+</li>
+
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('assetsback/pages/tables/basic-table.html')}}">Basic table</a>
+                  </li>
               </a>
               <div class="collapse" id="tables">
                 <ul class="nav flex-column sub-menu">

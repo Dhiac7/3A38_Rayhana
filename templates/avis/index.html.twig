@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/client.html.twig' %}
 
 {% block title %}Avis index{% endblock %}
 
@@ -10,7 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>Id_Client</th>
-                <th>Id_produit</th>
+                <!--<th>Id_produit</th>-->
                 <th>Rate</th>
                 <th>Commentaire</th>
                 <th>Date</th>
@@ -22,7 +22,7 @@
             <tr>
                 <td>{{ avi.id }}</td>
                 <td>{{ avi.idClient }}</td>
-                <td>{{ avi.idProduit }}</td>
+                <!--<td>{{ avi.idProduit }}</td>-->
                 <td>{{ avi.rate }}</td>
                 <td>{{ avi.commentaire }}</td>
                 <td>{{ avi.date ? avi.date|date('Y-m-d H:i:s') : '' }}</td>
