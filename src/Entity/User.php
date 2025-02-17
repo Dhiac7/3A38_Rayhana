@@ -490,6 +490,10 @@ public function getPassword(): ?string
         if (!$this->parcelles->contains($parcelle)) {
             $this->parcelles->add($parcelle);
             $parcelle->setIdUser($this);
+        }
+
+        return $this;
+    }
 
     public function getAgriculteur(): ?self
     {
