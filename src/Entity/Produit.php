@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
 #[UniqueEntity('nom', message: 'Ce produit existe déjà .')]
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -43,8 +42,6 @@ class Produit
     #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $date_fin_promo = null;
 
- 
-
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero]
     private ?float $quantite_retourne = null;
@@ -71,7 +68,7 @@ class Produit
     private Collection $ventes;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $nom = null;  // Attribut nom restauré
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
@@ -84,10 +81,6 @@ class Produit
 
     #[ORM\Column(length: 255)]
     private ?string $categorie = null;
-
-
-
-    
 
     public function __construct()
     {
@@ -128,7 +121,7 @@ class Produit
         return $this->quantite_vendues;
     }
 
-    public function setQuantiteVendues(float $quantite_vendues): static
+    public function setQuantiteVendues(?float $quantite_vendues): static
     {
         $this->quantite_vendues = $quantite_vendues;
 
@@ -153,10 +146,10 @@ class Produit
     }
 
     public function setPourcentagePromo(?int $pourcentage_promo): static
-{
-    $this->pourcentage_promo = $pourcentage_promo;
-    return $this;
-}
+    {
+        $this->pourcentage_promo = $pourcentage_promo;
+        return $this;
+    }
 
     public function getDateDebutPromo(): ?\DateTimeInterface
     {
@@ -164,10 +157,10 @@ class Produit
     }
 
     public function setDateDebutPromo(?\DateTimeInterface $date_debut_promo): static
-{
-    $this->date_debut_promo = $date_debut_promo;
-    return $this;
-}
+    {
+        $this->date_debut_promo = $date_debut_promo;
+        return $this;
+    }
 
     public function getDateFinPromo(): ?\DateTimeInterface
     {
@@ -175,10 +168,10 @@ class Produit
     }
 
     public function setDateFinPromo(?\DateTimeInterface $date_fin_promo): static
-{
-    $this->date_fin_promo = $date_fin_promo;
-    return $this;
-}
+    {
+        $this->date_fin_promo = $date_fin_promo;
+        return $this;
+    }
 
     public function getQuantiteRetourne(): ?float
     {
@@ -224,9 +217,9 @@ class Produit
         return $this->raison_retour;
     }
 
-    public function setRaisonRetour(string $raison_retour): self
+    public function setRaisonRetour(?string $raison_retour): self
     {
-        if (!in_array($raison_retour, ['Erreur de livraison', 'Produit endommagé'])) {
+        if ($raison_retour && !in_array($raison_retour, ['Erreur de livraison', 'Produit endommagé'])) {
             throw new \InvalidArgumentException("La raison doit être 'Erreur de livraison' ou 'Produit endommagé'.");
         }
 
@@ -246,47 +239,9 @@ class Produit
         return $this;
     }
 
-   // Pour le nom du produit
-public function getNom(): ?string
-{
-    return $this->nom;
-}
-
-// Pour le nom du stock
-public function getStockNom(): ?string
-{
-    return $this->stock ? $this->stock->getNom() : null;
-}
-
-
-    /**
-     * @return Collection<int, Vente>
-     */
-    public function getVentes(): Collection
+    public function getNom(): ?string
     {
-        return $this->ventes;
-    }
-
-    public function addVente(Vente $vente): static
-    {
-        if (!$this->ventes->contains($vente)) {
-            $this->ventes->add($vente);
-            $vente->setProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVente(Vente $vente): static
-    {
-        if ($this->ventes->removeElement($vente)) {
-            // set the owning side to null (unless already changed)
-            if ($vente->getProduit() === $this) {
-                $vente->setProduit(null);
-            }
-        }
-
-        return $this;
+        return $this->nom;
     }
 
     public function setNom(string $nom): static
@@ -339,14 +294,11 @@ public function getStockNom(): ?string
 
     public function setCategorie(string $categorie): self
     {
-        if(!in_array($categorie,['Fruits','Légumes','Déchets'])){
-            throw new \InvalidArgumentException("la catégorie doit etre 'Fruits','Légumes','Déchets' ");
+        if (!in_array($categorie, ['Fruits', 'Légumes', 'Déchets'])) {
+            throw new \InvalidArgumentException("La catégorie doit être 'Fruits', 'Légumes', ou 'Déchets'.");
         }
         $this->categorie = $categorie;
 
         return $this;
     }
-
-
-    
 }
