@@ -39,6 +39,17 @@
                             <th>Méthode de Paiement</th>
                             <td>{{ vente.methodepayement }}</td>
                         </tr>
+                        <!-- Afficher l'image du produit associé à la vente -->
+                        <tr>
+                            <th>Image du Produit</th>
+                            <td>
+                                {% if vente.produit and vente.produit.image %}
+                                    <img src="{{ asset('img/stock/' ~ vente.produit.image) }}" alt="{{ vente.produit.nom }}" class="img-fluid" style="max-width: 200px;">
+                                {% else %}
+                                    <p class="text-danger">Aucune image disponible pour ce produit.</p>
+                                {% endif %}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <div class="text-center">

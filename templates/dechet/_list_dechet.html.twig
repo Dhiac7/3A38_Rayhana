@@ -21,14 +21,15 @@
                           </div>#}
                           <div class="col-md-8">
                               <div class="card-body">
-                                  <h5 class="card-title">{{ dechet.type }}</h5>
-                                  <p class="card-text">{{ dechet.quantite }}</p>
+                                  <h5 class="card-title"><strong>Type:</strong>{{ dechet.type }}</h5>
+                                  <p class="card-text"><strong>Quantite:</strong>{{ dechet.quantite }}</p>
                                   <p class="card-text"><strong>Date production:</strong> {{ dechet.dateProduction|date("d/m/Y") }}</p>
                                 <p class="card-text"><strong>Statut:</strong> {{ dechet.statut }}</p>
                                 <p class="card-text"><strong>Date d'expiration:</strong> {{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</p>
 
-                                  <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-primary">Modifier</a><br>
-                                  <a href="#" class="btn btn-danger btn-delete" data-id="{{ dechet.id }}">Supprimer</a>
+                                 <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-success me-3">Modifier</a><br>
+                                <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-success me-3" data-id="{{ dechet.id }}">Supprimer</a>
+
                               </div>
                           </div>
                       </div>

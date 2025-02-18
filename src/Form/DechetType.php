@@ -38,11 +38,11 @@ class DechetType extends AbstractType
 
         //controle de saisie sur la date 
         ->add('dateProduction', DateType::class, [
-            'widget' => 'single_text',
-            'required' => true, // Rendre la date obligatoire
-            'attr' => ['placeholder' => 'YYYY-MM-DD']
+            'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date
+            'required' => false,        // Autoriser la valeur vide
+            'empty_data' => null,       // Si la date est vide, la valeur -> null
+            'attr' => ['placeholder' => 'YYYY-MM-DD']  // Optionnel, pour ajouter un placeholder
         ])
-        
             ->add('statut', ChoiceType::class, [
                 'choices' => [
                     'resycler' => 'resycler',
@@ -50,7 +50,9 @@ class DechetType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez statut',
                 'required' => true,
-            ])           
+            ])  
+            
+            
         
             ->add('dateExpiration', DateType::class, [
                 'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date
@@ -58,7 +60,7 @@ class DechetType extends AbstractType
                 'empty_data' => null,       // Si la date est vide, la valeur -> null
                 'attr' => ['placeholder' => 'YYYY-MM-DD']  // Optionnel, pour ajouter un placeholder
             ]);
-            //->add('save', SubmitType::class, ['label' => 'Confirmer']);
+           // ->add('save', SubmitType::class, ['label' => 'Confirmer']);
             
     }
 

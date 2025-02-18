@@ -3,94 +3,111 @@
 {% block title %}Cultures Agricoles{% endblock %}
 
 {% block body %}
-<div class="container">
-    <h2 class="heading">Liste des Cultures Agricoles</h2>
-    <div class="text-right mb-3">
-        <a href="{{ path('app_culture_agricole_dashboard_new') }}" class="btn btn-primary">
-            <i class="fa fa-plus"></i> Ajouter une Culture
-        </a>
-    </div>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-leaf"></i>
+                </span> Cultures Agricoles
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active " aria-current="page">
+                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm align-middle"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
 
-    <table id="cultureTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Superficie</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set start = (currentPage - 1) * 4 %}
-            {% set end = start + 4 %}
-            {% for culture in cultures|slice(start, end) %}
-                <tr>
-                    <td>{{ culture.id }}</td>
-                    <td>{{ culture.nom }}</td>
-                    <td>{{ culture.type }}</td>
-                    <td>{{ culture.superficie }} m²</td>
-                    <td>
-                        <a href="{{ path('app_culture_agricole_dashboard_show', {'id': culture.id}) }}" class="btn btn-info">Voir</a>
-                        <a href="{{ path('app_culture_agricole_dashboard_edit', {'id': culture.id}) }}" class="btn btn-warning">Modifier</a>
-                        {{ include('culture_agricole/_delete_form.html.twig', {'culture_agricole': culture}) }}
-                    </td>
-                </tr>
+        <!-- Cultures Section -->
+        <h4 class="card-title text-center font-bold mb-5">🌱 Liste des Cultures Agricoles</h4>
+
+        <!-- Button to Create New Culture -->
+        <div class="text-center mb-5">
+            <a href="{{ path('app_culture_agricole_dashboard_new') }}" class="btn btn-info text-white px-4 py-2 rounded-lg shadow-md">
+                <i class="fa fa-plus"></i> Ajouter une Culture
+            </a>
+        </div>
+
+        <!-- Liste des cultures -->
+        <div id="cultures-container" class="row">
+            {% if cultures is not empty %}
+                {% for culture in cultures %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card culture-item shadow-md rounded-lg bg-light dark:bg-darkblack-600 transition-all hover:shadow-lg">
+                            <a href="{{ path('app_culture_agricole_dashboard_show', {'id': culture.id}) }}">
+                                <div class="image-container rounded-lg overflow-hidden mb-3">
+                                    <!-- Embed Google Image Search -->
+                                    <img src="{{asset('img/illustration/55.png')}}" alt="h" width="100">
+
+                                </div>
+                            </a>
+                            <div class="card-body">
+                                <p class="font-bold text-lg text-darkgray dark:text-white mb-2">
+                                    {{ culture.nom }}
+                                </p>
+                                <p class="text-muted mt-3">
+                                    Type : <strong>{{ culture.type }}</strong><br>
+                                    Superficie : <strong>{{ culture.superficie }} m²</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">Aucune culture enregistrée.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <nav class="woocommerce-pagination">
-        <ul class="page-numbers">
-            {% if currentPage > 1 %}
-                <li>
-                    <a class="previous page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': currentPage - 1}) }}">
-                        <i class="fas fa-angle-left"></i>
-                    </a>
-                </li>
+                <p class="text-center text-muted mt-5">Aucune culture trouvée.</p>
             {% endif %}
+        </div>
 
-            {% for page in 1..totalPages %}
-                <li>
-                    {% if page == currentPage %}
-                        <span aria-current="page" class="page-numbers current">{{ page }}</span>
-                    {% else %}
-                        <a class="page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': page}) }}">{{ page }}</a>
-                    {% endif %}
-                </li>
-            {% endfor %}
+        <!-- Pagination -->
+        <nav class="woocommerce-pagination">
+            <ul class="page-numbers">
+                {% if currentPage > 1 %}
+                    <li>
+                        <a class="previous page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': currentPage - 1}) }}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
 
-            {% if currentPage < totalPages %}
-                <li>
-                    <a class="next page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': currentPage + 1}) }}">
-                        <i class="fas fa-angle-right"></i>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-    <div>________</div>
+                {% for page in 1..totalPages %}
+                    <li>
+                        {% if page == currentPage %}
+                            <span aria-current="page" class="page-numbers current">{{ page }}</span>
+                        {% else %}
+                            <a class="page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': page}) }}">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+
+                {% if currentPage < totalPages %}
+                    <li>
+                        <a class="next page-numbers" href="{{ path('app_culture_agricole_dashboard_index', {'page': currentPage + 1}) }}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </div>
 
+<script>
+// DataTable for filtering and sorting (if required)
+$(document).ready(function () {
+    $('#cultureTable').DataTable({
+        "ordering": true,
+        "paging": false,
+        "searching": true,
+        "pageLength": 4,
+        "lengthChange": false,
+        "language": {
+            "url": "{{ asset('js/French.json') }}"
+        }
+    });
+});
+</script>
 
-
-  <script>
-//tri 
-        $(document).ready(function () {
-            $('#cultureTable').DataTable({
-                "ordering": true,  // tri 3al colonne
-                "paging": false,    // nactiviw l pagination
-                "searching": true, // nactiviw l recherche
-                "pageLength": 4,   // nbr element par page
-                "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
-                "language": {
-                     "url": "{{ asset('js/French.json') }}"
-                }
-            });
-        });
-    </script>
 {% endblock %}

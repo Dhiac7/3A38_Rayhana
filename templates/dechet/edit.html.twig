@@ -57,12 +57,16 @@
             </div>
           </div>
 
-          <div class="row">
+         {# <div class="row">
             <div class="col-md-6">
               {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
               <button type="submit" class="btn btn-gradient-light">Annuler</button>
             </div>
-          </div>
+          </div>#}
+          
+          <button type="submit" class="btn btn-gradient-primary me-2 w-100">
+              <i class="mdi mdi-content-save"></i> Enregistrer
+          </button> 
           {{ form_end(form) }}
 
         </div>

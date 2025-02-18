@@ -185,6 +185,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'agriculteur')]
     private Collection $employes;
 
+    /**
+     * @var Collection<int, CultureAgricole>
+     */
+    #[ORM\OneToMany(targetEntity: CultureAgricole::class, mappedBy: 'user')]
+    private Collection $cultureAgricoles;
+
 
 
     public function __construct()
@@ -195,6 +201,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->transactionfinanciers = new ArrayCollection();
         $this->parcelles = new ArrayCollection();
         $this->employes = new ArrayCollection();
+        $this->cultureAgricoles = new ArrayCollection();
 
 
     }
@@ -584,6 +591,36 @@ public function getPassword(): ?string
                 $employe->setAgriculteur(null);
             }
         
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CultureAgricole>
+     */
+    public function getCultureAgricoles(): Collection
+    {
+        return $this->cultureAgricoles;
+    }
+
+    public function addCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        if (!$this->cultureAgricoles->contains($cultureAgricole)) {
+            $this->cultureAgricoles->add($cultureAgricole);
+            $cultureAgricole->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        if ($this->cultureAgricoles->removeElement($cultureAgricole)) {
+            // set the owning side to null (unless already changed)
+            if ($cultureAgricole->getUser() === $this) {
+                $cultureAgricole->setUser(null);
+            }
+        }
+
         return $this;
     }
 }

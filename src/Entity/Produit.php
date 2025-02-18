@@ -33,15 +33,17 @@ class Produit
     #[ORM\Column]
     private ?bool $enPromotion = null;
 
-    #[ORM\Column]
-    #[Assert\Range(min: 0, max: 100)]
+    #[ORM\Column(nullable: true)]  // pourcentage_promo nullable
+    #[Assert\Range(min: 0, max: 100, groups: ['Default'])]
     private ?int $pourcentage_promo = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $date_debut_promo = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $date_fin_promo = null;
+
+ 
 
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero]
@@ -150,36 +152,33 @@ class Produit
         return $this->pourcentage_promo;
     }
 
-    public function setPourcentagePromo(int $pourcentage_promo): static
-    {
-        $this->pourcentage_promo = $pourcentage_promo;
-
-        return $this;
-    }
+    public function setPourcentagePromo(?int $pourcentage_promo): static
+{
+    $this->pourcentage_promo = $pourcentage_promo;
+    return $this;
+}
 
     public function getDateDebutPromo(): ?\DateTimeInterface
     {
         return $this->date_debut_promo;
     }
 
-    public function setDateDebutPromo(\DateTimeInterface $date_debut_promo): static
-    {
-        $this->date_debut_promo = $date_debut_promo;
-
-        return $this;
-    }
+    public function setDateDebutPromo(?\DateTimeInterface $date_debut_promo): static
+{
+    $this->date_debut_promo = $date_debut_promo;
+    return $this;
+}
 
     public function getDateFinPromo(): ?\DateTimeInterface
     {
         return $this->date_fin_promo;
     }
 
-    public function setDateFinPromo(\DateTimeInterface $date_fin_promo): static
-    {
-        $this->date_fin_promo = $date_fin_promo;
-
-        return $this;
-    }
+    public function setDateFinPromo(?\DateTimeInterface $date_fin_promo): static
+{
+    $this->date_fin_promo = $date_fin_promo;
+    return $this;
+}
 
     public function getQuantiteRetourne(): ?float
     {

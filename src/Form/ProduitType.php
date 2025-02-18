@@ -15,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\Form\Extension\Core\Type\FileType;  // Importation correcte de FileType
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 
 class ProduitType extends AbstractType
@@ -57,6 +57,7 @@ class ProduitType extends AbstractType
                 'required' => false,
             ])
             ->add('pourcentage_promo', null, [
+                'required' => false,
                 'constraints' => [
                     new Assert\Range([
                         'min' => 0,
@@ -67,26 +68,33 @@ class ProduitType extends AbstractType
             ])
             ->add('date_debut_promo', DateTimeType::class, [
                 'widget' => 'single_text',
+                'required' => false,
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'La date de début de promotion est obligatoire.']),
+                    new Assert\GreaterThanOrEqual([
+                        'value' => 'today',
+                        'message' => 'La date de début de promotion doit être aujourd\'hui ou plus tard.',
+                    ]),
                 ],
             ])
             ->add('date_fin_promo', DateTimeType::class, [
                 'widget' => 'single_text',
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'La date de fin de promotion est obligatoire.']),
-                ],
+                'required' => false,
             ])
             ->add('nom', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le nom du produit est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/^[a-zA-Z]+$/u',
+                        'message' => 'Le nom ne doit contenir que des lettres.',
+                    ]),
                 ],
             ])
             ->add('image', FileType::class, [
                 'label' => 'Téléchargez une photo',
-                'required' => false,
+                'required' => true, // Rend le champ obligatoire dans le formulaire
                 'mapped' => false, 
                 'constraints' => [
+                    new Assert\NotBlank(['message' => 'L\'image est obligatoire.']), // Ajoute la contrainte
                     new File([
                         'maxSize' => '2M',
                         'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
@@ -94,17 +102,25 @@ class ProduitType extends AbstractType
                     ])
                 ],
             ])
+            
             ->add('description_globale', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description globale est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/[a-zA-Z]/',
+                        'message' => 'La description globale doit contenir au moins une lettre.',
+                    ]),
                 ],
             ])
             ->add('description_detaille', TextType::class, [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description détaillée est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/[a-zA-Z]/',
+                        'message' => 'La description détaillée doit contenir au moins une lettre.',
+                    ]),
                 ],
             ])
-            
             ->add('categorie', ChoiceType::class, [
                 'choices' => [
                     'Fruits' => 'Fruits',
@@ -117,7 +133,6 @@ class ProduitType extends AbstractType
                     new Assert\NotBlank(['message' => 'La catégorie est obligatoire.']),
                 ],
             ]);
-            
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -125,20 +140,25 @@ class ProduitType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Produit::class,
             'constraints' => [
-                new Assert\Callback([$this, 'validatePromoDates']),
+                new Assert\Callback([$this, 'validatePromo']),
             ],
         ]);
     }
 
-    public function validatePromoDates(Produit $produit, ExecutionContextInterface $context): void
+    public function validatePromo(Produit $produit, ExecutionContextInterface $context): void
     {
-        $dateDebut = $produit->getDateDebutPromo();
-        $dateFin = $produit->getDateFinPromo();
+        if ($produit->isEnPromotion()) {
+            if (!$produit->getPourcentagePromo() || !$produit->getDateDebutPromo() || !$produit->getDateFinPromo()) {
+                $context->buildViolation('Tous les champs de promotion sont obligatoires si le produit est en promotion.')
+                    ->atPath('enPromotion')
+                    ->addViolation();
+            }
 
-        if ($dateDebut && $dateFin && $dateFin <= $dateDebut) {
-            $context->buildViolation('La date de fin de promotion doit être après la date de début.')
-                ->atPath('date_fin_promo')
-                ->addViolation();
+            if ($produit->getDateDebutPromo() && $produit->getDateFinPromo() && $produit->getDateFinPromo() <= $produit->getDateDebutPromo()) {
+                $context->buildViolation('La date de fin de promotion doit être après la date de début.')
+                    ->atPath('date_fin_promo')
+                    ->addViolation();
+            }
         }
     }
 }

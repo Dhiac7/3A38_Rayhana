@@ -29,6 +29,9 @@ final class AtelierController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
+        if ($loggedInUser->getRole() !== 'agriculteur') {
+            return $this->redirectToRoute('app_dashboard'); 
+        }
         $query = $atelierRepository->findAll();
         $pagination = $paginator->paginate(
             $query, // Donneili bch namlou pagination
