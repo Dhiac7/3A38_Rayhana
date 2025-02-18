@@ -1,68 +1,198 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Détails de la Culture Agricole{% endblock %}
+{% block title %}Culture - {{ culture_agricole.nom }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Détails de la Culture Agricole</h1>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- En-tête conforme à la charte -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-sprout"></i>
+                </span>
+                {{ culture_agricole.nom }}
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Accueil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Détails culture</li>
+                </ol>
+            </nav>
+        </div>
 
-        <div class="card shadow p-4">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>Nom</th>
-                        <td>{{ culture_agricole.nom }}</td>
-                    </tr>
-                    <tr>
-                        <th>Type</th>
-                        <td>{{ culture_agricole.type }}</td>
-                    </tr>
-                    <tr>
-                        <th>Date de Semis</th>
-                        <td>{{ culture_agricole.dateSemi ? culture_agricole.dateSemi|date('d/m/Y') : 'Non défini' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Superficie (ha)</th>
-                        <td>{{ culture_agricole.superficie }}</td>
-                    </tr>
-                    <tr>
-                        <th>Statut</th>
-                        <td>
-                            {% if culture_agricole.statut == 'en croissance' %}
-                                <span class="badge bg-success">En croissance</span>
-                            {% elseif culture_agricole.statut == 'mature' %}
-                                <span class="badge bg-primary">Mature</span>
-                            {% elseif culture_agricole.statut == 'récolté' %}
-                                <span class="badge bg-secondary">Récolté</span>
-                            {% elseif culture_agricole.statut == 'malade' %}
-                                <span class="badge bg-danger">Malade</span>
-                            {% else %}
-                                <span class="badge bg-warning">En attente</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Rendement Estimé</th>
-                        <td>{{ culture_agricole.rendementEstime }} kg/ha</td>
-                    </tr>
-                </tbody>
-            </table>
-                    <nav class="woocommerce-pagination">
-                        <ul class="page-numbers">
-                            <li><a class="previous page-numbers" href="#"><i class="fas fa-angle-left"></i></a></li>
+        <div class="row">
+            <!-- Colonne gauche - Détails techniques -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- Carte Rendement -->
+                    <div class="col-md-6 grid-margin stretch-card">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Rendement Estimé</h4>
+                                        <h2 class="text-primary">{{ culture_agricole.rendementEstime }} <small class="h5">kg/ha</small></h2>
+                                    </div>
+                                    <div class="bg-gradient-primary p-3 rounded">
+                                        <i class="mdi mdi-chart-areaspline text-white h3"></i>
+                                    </div>
+                                </div>
+                                <div class="progress progress-md mt-3">
+                                    <div class="progress-bar bg-gradient-primary" 
+                                         role="progressbar" 
+                                         style="width: {{ culture_agricole.rendementEstime / 10 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                            <li><span aria-current="page" class="page-numbers current">1</span></li>
-                            <li><a class="page-numbers" href="#">2</a></li>
-                            <li><a class="next page-numbers" href="#"><i class="fas fa-angle-right"></i></a></li>
-                        </ul>
-                    </nav>
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-secondary">Retour</a>
+                    <!-- Carte Statut -->
+                    <div class="col-md-6 grid-margin stretch-card">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Statut</h4>
+                                        <span class="badge 
+                                            {% if culture_agricole.statut == 'en croissance' %}bg-success
+                                            {% elseif culture_agricole.statut == 'mature' %}bg-primary
+                                            {% elseif culture_agricole.statut == 'récolté' %}bg-secondary
+                                            {% elseif culture_agricole.statut == 'malade' %}bg-danger
+                                            {% else %}bg-warning{% endif %} h5 p-2">
+                                            {{ culture_agricole.statut|capitalize }}
+                                        </span>
+                                    </div>
+                                    <div class="bg-gradient-warning p-3 rounded">
+                                        <i class="mdi mdi-heart-pulse text-white h3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="col-12 grid-margin">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Chronologie</h4>
+                                <div class="timeline">
+                                    <div class="timeline-item border-start border-primary ps-4 pb-4">
+                                        <div class="timeline-point bg-primary"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="text-primary">Semis</h6>
+                                            <p>{{ culture_agricole.dateSemi|date('d M Y') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item border-start border-warning ps-4 pb-4">
+                                        <div class="timeline-point bg-warning"></div>
+                                        <div class="timeline-content">
+                                            <h6 class="text-warning">Traitement</h6>
+                                            <p>15 Mars 2024</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne droite - Métadonnées -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Caractéristiques</h4>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                        <i class="mdi mdi-seed text-white h4"></i>
+                                    </div>
+                            <div>
+                                <small class="text-muted">Type</small>
+                                <h5 class="mb-0">{{ culture_agricole.type }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                        <i class="mdi mdi-ruler-square text-white h4"></i>
+                                    </div>
+                            <div>
+                                <small class="text-muted">Superficie</small>
+                                <h5 class="mb-0">{{ culture_agricole.superficie }} ha</h5>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                        <i class="mdi mdi-calendar-clock text-white h4"></i>
+                                    </div>
+                            <div>
+                                <small class="text-muted">Âge</small>
+                                <h5 class="mb-0">{{ date().diff(date(culture_agricole.dateSemi)).days }} jours</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Actions -->
+        <div class="mt-4">
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-light">
+                    <i class="mdi mdi-arrow-left me-2"></i>Retour
+                </a>
                 <div>
-                    <a href="{{ path('app_culture_agricole_dashboard_edit', { id: culture_agricole.id }) }}" class="btn btn-primary">Modifier</a>
-                    {{ include('culture_agricole/_delete_form.html.twig') }}
+                    <a href="{{ path('app_culture_agricole_dashboard_edit', { id: culture_agricole.id }) }}" 
+                       class="btn btn-gradient-warning me-2">
+                        <i class="mdi mdi-pencil me-2"></i>Modifier
+                    </a>
+                    <button class="btn btn-gradient-danger" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteModal">
+                        <i class="mdi mdi-delete me-2"></i>Supprimer
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal de Suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-primary text-white">
+                <h5 class="modal-title">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer définitivement "{{ culture_agricole.nom }}" ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="post" action="{{ path('app_culture_agricole_dashboard_delete', {'id': culture_agricole.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture_agricole.id) }}">
+                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+    }
+    .timeline-point {
+        position: absolute;
+        left: -24px;
+        top: 6px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+    }
+</style>
 {% endblock %}

@@ -92,6 +92,17 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/{id}', name: 'app_culture_agricole_dashboard_show', methods: ['GET'])]
     public function show(CultureAgricole $cultureAgricole, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+
+        
         $user = $session->get('user');
 
         return $this->render('culture_agricole_dashboard/show.html.twig', [

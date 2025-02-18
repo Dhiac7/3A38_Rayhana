@@ -14,8 +14,8 @@
             </h3>
             <nav aria-label="breadcrumb">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    <li class="breadcrumb-item active " aria-current="page">
+                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm align-middle "></i>
                     </li>
                 </ul>
             </nav>
@@ -23,19 +23,19 @@
 
 
         <!-- Parcelles Section -->
-        <h4 class="card-title text-center font-bold text-primary mb-5">🌱 Liste des Cultures Parcelles</h4>
+        <h4 class="card-title text-center font-bold mb-5">🌱 Liste des Cultures Parcelles</h4>
 
         <!-- Recherche -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
             <div class="w-100 mb-3 mb-md-0">
                 <input type="text" id="search" class="form-control rounded-lg shadow-sm p-3" placeholder="🔍 Rechercher une parcelle..." value="{{ app.request.query.get('q') }}">
             </div>
-            <button id="search-btn" class="btn btn-primary ms-md-3 px-4 py-2 rounded-lg shadow-md" onclick="searchParcelles()">Rechercher</button>
+            <button id="search-btn" class="btn btn-gradient-dark ms-md-3 px-4 py-2 rounded-lg shadow-md" onclick="searchParcelles()">Rechercher</button>
         </div>
 
         <!-- Link to Create New Parcelle -->
-        <div class="text-center mb-5">
-            <a href="{{ path('app_parcelle_new2') }}" class="btn btn-success text-white px-4 py-2 rounded-lg shadow-md">
+        <div class="text-center mb-5 ">
+            <a href="{{ path('app_parcelle_new2') }}" class="btn btn-info text-white px-4 py-2 rounded-lg shadow-md">
                 <i class="fa fa-plus"></i> Créer une nouvelle parcelle
             </a>
         </div>
