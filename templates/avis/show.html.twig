@@ -1,46 +1,78 @@
 {% extends 'user/client.html.twig' %}
 
-{% block title %}Avis{% endblock %}
+{% block title %}Détails de l'Avis{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/css/style.css') }}">
+{% endblock %}
 
 {% block body %}
-    <h1>Avis</h1>
+<!-- Start Breadcrumb -->
+<div class="breadcrumb-area text-center shadow dark bg-fixed text-light" style="background-image: url(assets/img/2440x1578.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h1>Détails de l'avis</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ path('app_home') }}"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li><a href="{{ path('app_avis_index') }}">Avis</a></li>
+                        <li class="active">Détails</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb -->
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ avi.id }}</td>
-            </tr>
-           <!--
-            <tr>
-            
-                <th>Id_Client</th>
-                <td>{{ avi.idClient }}</td>
-            </tr>
-            
-            <tr>
-                <th>Id_produit</th>
-                <td>{{ avi.idProduit }}</td>
-            </tr>
-            -->
-            <tr>
-                <th>Rate</th>
-                <td>{{ avi.rate }}</td>
-            </tr>
-            <tr>
-                <th>Commentaire</th>
-                <td>{{ avi.commentaire }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{{ avi.date ? avi.date|date('Y-m-d') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+<!-- Start Avis Details -->
+<div class="avis-detail-area default-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="avis-detail-box">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Id</th>
+                                <td>{{ avi.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Rate</th>
+                                <td>{{ avi.rate }}</td>
+                            </tr>
+                            <tr>
+                                <th>Commentaire</th>
+                                <td>{{ avi.commentaire }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date</th>
+                                <td>{{ avi.date ? avi.date|date('Y-m-d') : '' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-    <a href="{{ path('app_avis_index') }}">back to list</a>
+                    <div class="actions">
+                        <a href="{{ path('app_avis_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                        <a href="{{ path('app_avis_edit', {'id': avi.id}) }}" class="btn btn-primary">Éditer</a>
 
-    <a href="{{ path('app_avis_edit', {'id': avi.id}) }}">edit</a>
+                        {{ include('avis/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Avis Details -->
+{% endblock %}
 
-    {{ include('avis/_delete_form.html.twig') }}
+{% block javascripts %}
+    <script src="{{ asset('assetsback/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assetsback/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assetsback/js/misc.js') }}"></script>
 {% endblock %}

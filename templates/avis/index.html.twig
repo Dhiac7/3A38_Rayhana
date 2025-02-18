@@ -3,43 +3,63 @@
 {% block title %}Avis index{% endblock %}
 
 {% block body %}
-    <h1>Avis index</h1>
+  
+<!-- Start Breadcrumb -->
+<div class="breadcrumb-area text-center shadow dark bg-fixed text-light" style="background-image: url(assets/img/2440x1578.png);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <h1>Liste des avis</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li class="active">Avis</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumb -->
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Id_Client</th>
-                <!--<th>Id_produit</th>-->
-                <th>Rate</th>
-                <th>Commentaire</th>
-                <th>Date</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for avi in avis %}
-            <tr>
-                <td>{{ avi.id }}</td>
-                <td>{{ avi.idClient }}</td>
-                <!--<td>{{ avi.idProduit }}</td>-->
-                <td>{{ avi.rate }}</td>
-                <td>{{ avi.commentaire }}</td>
-                <td>{{ avi.date ? avi.date|date('Y-m-d H:i:s') : '' }}</td>
+<!-- Start Avis -->
+<div class="avis-area full-avis default-padding">
+    <div class="container">
+        <div class="avis-items">
+            <div class="row">
+                <div class="avis-content col-md-12 pr-35 pr-md-15 pl-md-15 pr-xs-15 pl-xs-15">
+                    <div class="avis-item-box">
+                        <!-- Single Item -->
+                        {% for avi in avis %}
+                        <div class="item">
+                            <div class="info">
+                                <div class="meta">
+                                    <!--<ul>
+                                        <li>Id Client: {{ avi.idClient }}</li>
+                                        <li>Note: {{ avi.rate }}</li>
+                                    </ul>-->
+                                </div>
+                                <h2 class="title">
+                                    <p>{{ avi.commentaire }}</p>
+                                    <p><strong>Date:</strong> {{ avi.date ? avi.date|date('Y-m-d H:i:s') : '' }}</p>
+                                </h2>
 
-                <td>
-                    <a href="{{ path('app_avis_show', {'id': avi.id}) }}">Show</a>
-                    <a href="{{ path('app_avis_edit', {'id': avi.id}) }}">Edit</a>
-                    {{ include('avis/_delete_form.html.twig') }}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="9">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                                <a class="btn mt-10 btn-md btn-theme animation" href="{{ path('app_avis_show', {'id': avi.id}) }}">
+                                    Voir les détails
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                            <p>Aucun avis disponible.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Avis -->
 
-    <a href="{{ path('app_avis_new') }}">Create new</a>
+<a class="btn btn-primary mt-4" href="{{ path('app_avis_new') }}">Créer un nouvel avis</a>
+
 {% endblock %}
