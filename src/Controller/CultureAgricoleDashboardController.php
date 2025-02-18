@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\CultureAgricole;
+use App\Entity\Parcelle;
+
 use App\Form\CultureAgricoleType;
+use App\Form\AssignParcelleCultureType;
 use App\Repository\CultureAgricoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,7 +72,7 @@ final class CultureAgricoleDashboardController extends AbstractController
 
         $cultureAgricole = new CultureAgricole();
         $cultureAgricole->setUser($loggedInUser);
-        
+
         $form = $this->createForm(CultureAgricoleType::class, $cultureAgricole);
         $form->handleRequest($request);
 
@@ -154,4 +157,57 @@ final class CultureAgricoleDashboardController extends AbstractController
 
         return $this->redirectToRoute('app_culture_agricole_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    
+    #[Route('/{id}/assign-parcelles', name: 'app_culture_agricole_assign_parcelles', methods: ['GET', 'POST'])]
+    public function assignParcelles(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        CultureAgricole $cultureAgricole,
+        SessionInterface $session
+    ): Response {
+        $loggedInUserId = $session->get('admin_user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        
+        // Récupérer toutes les parcelles disponibles
+        $parcelles = $entityManager->getRepository(Parcelle::class)->findAll();
+
+        // Récupérer les parcelles déjà assignées
+        $assignedParcelles = $cultureAgricole->getParcelles();
+
+        // Traiter le formulaire d'assignation
+        if ($request->isMethod('POST')) {
+            $selectedParcelles = $request->request->get('parcelles'); // Liste des parcelles sélectionnées
+
+            // Assigner les parcelles
+            foreach ($selectedParcelles as $parcelleId) {
+                $parcelle = $entityManager->getRepository(Parcelle::class)->find($parcelleId);
+                if ($parcelle && !$assignedParcelles->contains($parcelle)) {
+                    $cultureAgricole->addParcelle($parcelle);
+                }
+            }
+
+            // Sauvegarder les modifications
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_culture_agricole_dashboard_index');
+        }
+
+        return $this->render('culture_agricole_dashboard/assign_parcelle.html.twig', [
+            'culture_agricole' => $cultureAgricole,
+            'parcelles' => $parcelles,
+            'assignedParcelles' => $assignedParcelles,
+            'loggedInUser' => $loggedInUser,
+
+        ]);
+    }
+
 }

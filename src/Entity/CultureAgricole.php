@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\CultureAgricoleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
+
 
 
 #[ORM\Entity(repositoryClass: CultureAgricoleRepository::class)]
@@ -52,9 +56,16 @@ class CultureAgricole
     #[ORM\ManyToOne(inversedBy: 'cultureAgricoles')]
     private ?User $user = null;
 
+    /**
+     * @var Collection<int, Parcelle>
+     */
+    #[ORM\ManyToMany(targetEntity: Parcelle::class, mappedBy: 'cultureAgricoles')]
+    private Collection $parcelles;
+
     public function __construct()
     {
         $this->dateSemi = new \DateTime(); // Définit la date actuelle par défaut
+        $this->parcelles = new ArrayCollection();
     }
 
 
@@ -158,4 +169,27 @@ class CultureAgricole
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Parcelle>
+     */
+    public function getParcelles(): Collection
+    {
+        return $this->parcelles;
+    }
+
+    public function addParcelle(Parcelle $parcelle): self {
+        if (!$this->parcelles->contains($parcelle)) {
+            $this->parcelles[] = $parcelle;
+        }
+        return $this;
+    }
+    
+    public function removeParcelle(Parcelle $parcelle): self {
+        $this->parcelles->removeElement($parcelle);
+        return $this;
+    }
+
+
+
 }

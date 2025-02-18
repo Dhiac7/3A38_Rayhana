@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Parcelle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\CultureAgricole;
+
 
 /**
  * @extends ServiceEntityRepository<Parcelle>
@@ -25,6 +27,7 @@ class ParcelleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    
 
     //    /**
     //     * @return Parcelle[] Returns an array of Parcelle objects

@@ -1,0 +1,49 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Assigner des Parcelles{% endblock %}
+
+{% block body %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-home"></i>
+                </span> Assigner des Parcelles à {{ culture_agricole.nom }}
+            </h3>
+        </div>
+
+        <!-- Formulaire d'assignation -->
+        <div class="card shadow-md rounded-lg p-4">
+            <form method="POST">
+                <h5 class="text-center mb-4">Sélectionnez les parcelles à associer à cette culture agricole</h5>
+
+                <!-- Parcelles List -->
+                <div class="row">
+                    {% for parcell in parcelles %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="form-check d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" name="parcelles[]" value="{{ parcell.id }}"
+                                    {% if parcell in culture_agricole.parcelles %}checked{% endif %}>
+                                <label class="form-check-label ms-2">
+                                    <strong>{{ parcell.nom }}</strong>
+                                    <div class="text-muted">
+                                        Superficie: {{ parcell.superficie }} ha<br>
+                                        Coordonnées: {{ parcell.latitude }}°, {{ parcell.longitude }}°
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-gradient-dark px-4 py-2 rounded-lg shadow-md">Assigner les Parcelles</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

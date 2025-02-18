@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Parcelle;
+use App\Entity\CultureAgricole;
 use App\Form\ParcelleType;
 use App\Repository\ParcelleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -110,9 +111,6 @@ final class ParcelleController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
 
-        if ($parcelle->getUser() !== $loggedInUser) {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette parcelle.');
-        }
 
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
