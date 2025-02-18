@@ -25,10 +25,17 @@
                   <td>{{ dechet.dateProduction|date("d/m/Y") }}</td>
                   <td>{{ dechet.statut }}</td>
                   <td>{{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</td>
-                  <td>
-                    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier</a>
-                    <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-sm" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ dechet.id }}">Supprimer</a>
-                  </td>
+                  <td class="text-center">  {# Center actions #}
+                        <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Modifier
+                        </a>
+                        <form method="get" action="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce dechet?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dechet.id) }}">
+                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">  {# Consistent button styling #}
+                                <i class="mdi mdi-delete"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -41,7 +48,7 @@
         </div>
    
 
-<!-- Script JavaScript pour la suppression AJAX -->
+<!--  suppr AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll('.btn-delete').forEach(function (button) {
