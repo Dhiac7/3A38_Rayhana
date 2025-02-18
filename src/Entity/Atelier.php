@@ -172,7 +172,7 @@ class Atelier
     }
 
     public function setStatut(string $statut): self
-    {
+    {   $statut='ouvert';
         if(!in_array($statut,['ouvert','complet','annulé'])){
             throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
         }
