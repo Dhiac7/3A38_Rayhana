@@ -18,12 +18,21 @@ class UserEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('prenom')
-            ->add('cin')
+            ->add('nom', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('prenom', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('cin', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
             ->add('photo', FileType::class, [
                 'label' => 'Mettre à jour la photo',
-                'required' => false,  // ✅ Photo update is optional
+                'required' => false,  
                 'mapped' => false, 
                 'constraints' => [
                     new File([
@@ -33,8 +42,14 @@ class UserEditType extends AbstractType
                     ])
                 ],
             ])
-            ->add('email')
-            ->add('tel')
+            ->add('email', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('tel', null, [
+            'required' => false,
+            'empty_data' => '',
+            ])
             ->add('adresse', ChoiceType::class, [
                 'choices' => [
                     'Ariana' => 'Ariana',
