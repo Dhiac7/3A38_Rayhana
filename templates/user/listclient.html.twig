@@ -32,32 +32,27 @@
         <thead>
             <tr style="background-color: #8FBC8F; color: #2F4F4F;">  {# Consistent header styling #}
                 <th>ID</th>
+                <th>Photo</th>
                 <th>Nom et Prénom</th>
                 <th>Email</th>
                 <th>Tel</th>
                 <th>Cin</th>
-                <th class="text-center">Actions</th>  {# Use text-center class #}
+                <th>Adresse</th>
+              {#  <th class="text-center">Actions</th> #}
             </tr>
         </thead>
         <tbody>
             {% for user in pagination.getItems() %}
                 <tr>
                     <td>{{ user.id }}</td>
+                    <td class="py-1">
+                        <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur" style="max-width: 50px; max-height: 50px;">
+                    </td>
                     <td>{{ user.nom }} {{ user.prenom }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.tel }}</td>
                     <td>{{ user.cin }}</td>
-                    <td class="text-center">  {# Center actions #}
-                        <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
-                            <i class="mdi mdi-pencil"></i> Modifier
-                        </a>
-                        <form method="post" action="{{ path('app_user_deletebackclient', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">  {# Consistent button styling #}
-                                <i class="mdi mdi-delete"></i> Supprimer
-                            </button>
-                        </form>
-                    </td>
+                    <td>{{ user.adresse }}</td>
                 </tr>
             {% else %}
                 <tr>
