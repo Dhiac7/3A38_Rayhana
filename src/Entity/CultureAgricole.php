@@ -49,6 +49,9 @@ class CultureAgricole
     #[ORM\ManyToOne(inversedBy: 'recolte')]
     private ?Stock $stock = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cultureAgricoles')]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->dateSemi = new \DateTime(); // Définit la date actuelle par défaut
@@ -140,6 +143,18 @@ class CultureAgricole
     public function setStock(?Stock $stock): static
     {
         $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
