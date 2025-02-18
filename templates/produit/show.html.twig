@@ -17,8 +17,8 @@
 
                                 <div class="carousel-inner item-box">
                                     <div class="carousel-item active product-item">
-                                        <a href="assets/img/melon.jpg" class="item popup-gallery">
-                                           <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                        <a  class="item popup-gallery">
+                                           <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit">
                                         </a>
                                         {% if produit.enPromotion %}
                                             <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
@@ -26,7 +26,7 @@
                                     </div>
                                     <div class="carousel-item product-item">
                                         <a href="assets/img/products/2.png" class="item popup-gallery">
-                                             <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                             <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" >
                                         </a>
                                         {% if produit.enPromotion %}
                                             <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
@@ -61,18 +61,11 @@
                         <div class="single-product-contents">
                             <div class="summary-top-box">
                                 <div class="product-tags">
-                                    <a href="#">  Quantité disponible: {{produit.quantite}}  </a>
+                                    
                                    
                                 </div>
                                 <div class="review-count">
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                    <span>(8 Review)</span>
+                                   
                                 </div>
                             </div>
                             <h2 class="product-title">
@@ -87,28 +80,22 @@
                                     <span>{{ produit.prixVente }} DT</span>
                                 {% endif %}
                             </div>
+                           
                             <div class="product-stock validthemes-in-stock">
                                 <span>In Stock</span>
+                                 
                             </div>
+                            
                             <p>
                                 {{ produit.DescriptionGlobale}}
                             </p>
                             <div class="product-purchase-list">
-                                <a href="#">  Quantité disponible: {{produit.quantite}}  </a>
+                               
                                 <a href="app_vente_new" class="btn secondary btn-theme btn-sm animation">
                                     <i class="fas fa-shopping-cart"></i>
                                     Add to cart
                                 </a>
-                                <div class="shop-action">
-                                    <ul>
-                                        <li class="wishlist">
-                                            <a href="#"><span>Add to wishlist</span></a>
-                                        </li>
-                                        <li class="compare">
-                                            <a href="#"><span>Compare</span></a>
-                                        </li>
-                                    </ul>
-                                </div>
+                              
                             </div>
                             <div class="product-estimate-delivary">
                                 <i class="fas fa-box-open"></i>
