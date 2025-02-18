@@ -79,6 +79,12 @@ class ProduitType extends AbstractType
             ->add('date_fin_promo', DateTimeType::class, [
                 'widget' => 'single_text',
                 'required' => false,
+                'constraints' => [
+                    new Assert\GreaterThan([
+                        'propertyPath' => 'parent.all[date_debut_promo].data',
+                        'message' => 'La date de fin de promotion doit être supérieure à la date de début.',
+                    ]),
+                ],
             ])
             ->add('nom', TextType::class, [
                 'constraints' => [
