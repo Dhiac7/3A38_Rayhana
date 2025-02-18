@@ -5,15 +5,16 @@
 {% block body %}
 <div class="main-panel">
     <div class="content-wrapper">
-            <div class="row">
+        <div class="row">
             <div class="col-12">
                 <div class="card shadow-lg border-0 rounded-lg">
                   <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
-    <h4 class="card-title mb-0" style="flex-grow: 1;">Dechet</h4>  {# Title takes up available space #}
-    <a href="{{ path('app_dechet_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
-        <i class="fas fa-plus me-2"></i> Nouveau Dechet
-    </a>
-</div>
+                  <h4 class="card-title mb-0" style="flex-grow: 1;">Dechet</h4>  {# Title takes up available space #}
+                  <a href="{{ path('app_dechet_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
+                      <i class="fas fa-plus me-2"></i> Nouveau Dechet
+                  </a>
+              </div>
+                                  <div class="card-body p-4" style="background-color: #fff;">
           <p class="card-description text-center">Mettez à jour les informations / suppression des déchets</p>
 
           <!-- Zone de recherche et tri -->
@@ -34,7 +35,7 @@
           <div id="dechhet-list">
             <!-- Le contenu de la liste sera mis à jour ici avec AJAX -->
           </div>
-
+        </div>
         </div>
       </div>
     </div>

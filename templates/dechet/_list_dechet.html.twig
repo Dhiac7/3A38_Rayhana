@@ -1,48 +1,49 @@
-
 {% block body %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
         <div class="card-body">
-          <h4 class="card-title text-center">Liste des dechets</h4>
-          <p class="card-description text-center">Voici tous les dechets disponibles.</p>
-          <!-- Conteneur des dechets -->
-          <div id="dechet-container">
-              {% for dechet in dechets %}
-                  <div class="card mb-3 dechet-card" data-id="{{ dechet.id }}">
-                      <div class="row g-0 align-items-center">
-                          <div class="col-md-8">
-                              <div class="card-body">
-                                  <h5 class="card-title"><strong>Type:</strong>{{ dechet.type }}</h5>
-                                  <p class="card-text"><strong>Quantite:</strong>{{ dechet.quantite }}</p>
-                                  <p class="card-text"><strong>Date production:</strong> {{ dechet.dateProduction|date("d/m/Y") }}</p>
-                                <p class="card-text"><strong>Statut:</strong> {{ dechet.statut }}</p>
-                                <p class="card-text"><strong>Date d'expiration:</strong> {{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</p>
+          <h4 class="card-title text-center">Liste des déchets</h4>
+          <p class="card-description text-center">Voici tous les déchets disponibles.</p>
 
-                                 <div class="d-flex" >
-    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-success me-2">Modifier</a>
-    <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-danger btn-delete" data-id="{{ dechet.id }}">Supprimer</a>
-</div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              {% else %}
-                  <p class="text-center">Aucun dechet trouvé.</p>
-              {% endfor %}
+          {% if dechets is not empty %}
+          <!-- Tableau sans bordure -->
+          <div class="table-responsive">
+            <table class="table table-borderless">
+              <thead>
+                <tr class="text-center">
+                  <th>Type</th>
+                  <th>Quantité</th>
+                  <th>Date de production</th>
+                  <th>Statut</th>
+                  <th>Date d'expiration</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for dechet in dechets %}
+                <tr class="align-middle text-center">
+                  <td>{{ dechet.type }}</td>
+                  <td>{{ dechet.quantite }}</td>
+                  <td>{{ dechet.dateProduction|date("d/m/Y") }}</td>
+                  <td>{{ dechet.statut }}</td>
+                  <td>{{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</td>
+                  <td>
+                    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier</a>
+                    <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-sm" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ dechet.id }}">Supprimer</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
+          {% else %}
+          <p class="text-center">Aucun déchet trouvé.</p>
+          {% endif %}
 
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+   
 
 <!-- Script JavaScript pour la suppression AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Supprimer un dechet
     document.querySelectorAll('.btn-delete').forEach(function (button) {
         button.addEventListener('click', function (e) {
             e.preventDefault();
@@ -58,8 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Si la suppression a réussi, tu peux supprimer l'élément de la page
-                    document.querySelector(`[data-id='${dechetId}']`).closest('.dechet-card').remove();
+                    document.querySelector(`[data-id='${dechetId}']`).closest('tr').remove();
                 } else {
                     alert("Erreur lors de la suppression : " + data.message);
                 }
@@ -67,8 +67,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
-
-
 </script>
 {% endblock %}
