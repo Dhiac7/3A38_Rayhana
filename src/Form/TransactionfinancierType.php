@@ -18,14 +18,14 @@ class TransactionfinancierType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('montant', NumberType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Montant',
-                ],
-                'required' => false, // Initialement non requis
-                'disabled' => false, // Désactivé pour empêcher la saisie manuelle
-            ])
+        ->add('montant', NumberType::class, [
+            'attr' => [
+                'class' => 'form-control',
+                'placeholder' => 'Montant',
+            ],
+            'required' => false, // Initialement non requis
+            'disabled' => false, // Désactivé pour empêcher la saisie manuelle
+        ])
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Dépense' => 'Dépense',
