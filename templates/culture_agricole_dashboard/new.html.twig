@@ -3,53 +3,98 @@
 {% block title %}Ajouter une Culture Agricole{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Ajouter une Culture Agricole</h1>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-sprout"></i>
+                </span> Cultures Agricoles
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <span></span>Gestion des cultures <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
 
-        <div class="card shadow p-4">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Nouvelle Culture Agricole</h4>
+                    <p class="card-description">Ajouter une nouvelle culture</p>
 
-            <div class="mb-3">
-                {{ form_label(form.nom) }}
-                {{ form_widget(form.nom, { 'attr': {'class': 'form-control'} }) }}
-                {{ form_errors(form.nom) }}
+                    {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}
+
+                    <!-- Nom -->
+                    <div class="form-group">
+                        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'placeholder': 'Nom de la culture'} }) }}
+                        <div {{ form_errors(form.nom) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.nom) }}
+                        </div>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="form-group">
+                        {{ form_label(form.type, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.type, { 'attr': {'class': 'form-select'} }) }}
+                        <div {{ form_errors(form.type) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.type) }}
+                        </div>
+                    </div>
+
+                    <!-- Date Semi -->
+                    <div class="form-group">
+                        {{ form_label(form.dateSemi, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.dateSemi, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
+                        <div {{ form_errors(form.dateSemi) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.dateSemi) }}
+                        </div>
+                    </div>
+
+                    <!-- Superficie -->
+                    <div class="form-group">
+                        {{ form_label(form.superficie, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.superficie, { 'attr': {'class': 'form-control', 'placeholder': 'Superficie en hectares'} }) }}
+                        <div {{ form_errors(form.superficie) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.superficie) }}
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="form-group">
+                        {{ form_label(form.statut, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.statut, { 'attr': {'class': 'form-select'} }) }}
+                        <div {{ form_errors(form.statut) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.statut) }}
+                        </div>
+                    </div>
+
+                    <!-- Rendement Estimé -->
+                    <div class="form-group">
+                        {{ form_label(form.rendementEstime, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.rendementEstime, { 'attr': {'class': 'form-control', 'placeholder': 'Rendement estimé'} }) }}
+                        <div {{ form_errors(form.rendementEstime) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.rendementEstime) }}
+                        </div>
+                    </div>
+
+                    <!-- Boutons -->
+                    <button type="submit" class="btn btn-gradient-primary me-2">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-light">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
+
+                    {{ form_end(form) }}
+                </div>
             </div>
-
-            <div class="mb-3">
-                {{ form_label(form.type) }}
-                {{ form_widget(form.type, { 'attr': {'class': 'form-select'} }) }}
-                {{ form_errors(form.type) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.dateSemi) }}
-                {{ form_widget(form.dateSemi, { 'attr': {'class': 'form-control', 'type': 'date'} }) }}
-                {{ form_errors(form.dateSemi) }}
-            </div>
-
-
-            <div class="mb-3">
-                {{ form_label(form.superficie) }}
-                {{ form_widget(form.superficie, { 'attr': {'class': 'form-control'} }) }}
-                {{ form_errors(form.superficie) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.statut) }}
-                {{ form_widget(form.statut, { 'attr': {'class': 'form-select'} }) }}
-                {{ form_errors(form.statut) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(form.rendementEstime) }}
-                {{ form_widget(form.rendementEstime, { 'attr': {'class': 'form-control'} }) }}
-                {{ form_errors(form.rendementEstime) }}
-            </div>
-
-            <button class="btn btn-success">Enregistrer</button>
-            <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-secondary">Annuler</a>
-
-            {{ form_end(form) }}
         </div>
     </div>
+</div>
 {% endblock %}

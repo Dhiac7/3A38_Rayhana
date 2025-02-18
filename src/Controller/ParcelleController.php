@@ -222,7 +222,7 @@ final class ParcelleController extends AbstractController
         // Si ce n'est pas une requête AJAX, on rend la vue
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY'];
         
-        return $this->render('parcelle/indexAdmin.html.twig', [
+        return $this->render('parcelle/indexAdmi.html.twig', [
             'parcelles' => $parcelles,
             'MAPBOX_API_KEY' => $mapboxApiKey,
             'query' => $query,

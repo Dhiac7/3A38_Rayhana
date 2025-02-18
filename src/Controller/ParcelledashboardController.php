@@ -35,16 +35,13 @@ final class ParcelledashboardController extends AbstractController
             return $this->redirectToRoute('app_user_loginback');
         }
 
-        $query = $request->query->get('q', '');
-        $parcelles = !empty($query) ? $parcelleRepository->searchByName($query) : $parcelleRepository->findAll();
-        
+        $parcelles = $parcelleRepository->findBy(['user' => $loggedInUser->getId()]);        
         // Si c'est une requête AJAX (XMLHttpRequest)
         if ($request->isXmlHttpRequest()) {
             // Vérifier si les parcelles sont trouvées
             if (empty($parcelles)) {
                 return $this->json([]);
             }
-    
             return $this->json(array_map(function ($parcelle) {
                 return [
                     'id' => $parcelle->getId(),
@@ -63,7 +60,6 @@ final class ParcelledashboardController extends AbstractController
         return $this->render('parcelle/indexAdmin.html.twig', [
             'parcelles' => $parcelles,
             'MAPBOX_API_KEY' => $mapboxApiKey,
-            'query' => $query,
             'loggedInUser' => $loggedInUser,
         ]);
     }
