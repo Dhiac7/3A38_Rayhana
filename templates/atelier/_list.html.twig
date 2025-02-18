@@ -1,9 +1,6 @@
 
 {% block body %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
+
         <div class="card-body">
           <h4 class="card-title text-center">Liste des Ateliers</h4>
           <p class="card-description text-center">Voici tous les ateliers disponibles.</p>
@@ -27,8 +24,8 @@
                                   <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
                                   <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
                                                                      <div class="d-flex" >
-    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-success me-2">Modifier</a>
-    <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
+    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier </a> 
+    <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ atelier.id }}">  Supprimer</a>
 </div>
                               </div>
                           </div>
@@ -40,10 +37,7 @@
           </div>
 
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- Script JavaScript pour la suppression AJAX -->
 <script>
