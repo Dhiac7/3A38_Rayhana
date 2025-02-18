@@ -1,92 +1,75 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Edit Vente{% endblock %}
+{% block title %}Modifier Vente{% endblock %}
 
 {% block body %}
-<div class="contact-area contact-page overflow-hidden bg-gray default-padding">
-    <div class="sahpe-right-bottom">
-        <img src="{{ asset('assets/img/shape/16.png') }}" alt="Image Not Found">
-    </div>
-    <div class="container">
-        <div class="row align-center">
-            <div class="col-tact-stye-one col-xl-12 col-lg-12">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="contact-form-style-one mb-md-50">
-                            <h5 class="sub-title">Modifier la Vente</h5>
-                            <h2 class="heading">Informations de la vente</h2>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-cart"></i>
+                </span> Ventes
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Modifier Vente</h4>
+                    <p class="card-description">Mettre à jour les informations de la vente</p>
 
-                            {# Start Symfony Form #}
-                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form'}}) }}
+                    {{ form_start(form, {'attr': {'class': 'forms-sample', 'novalidate': 'novalidate'}}) }}
 
-                                {# Display global form errors #}
-                                {% for error in form.vars.errors %}
-                                    <div class="alert alert-danger">{{ error.message }}</div>
-                                {% endfor %}
+                    <!-- Nom du produit -->
+                    <div class="form-group">
+                        <label>Nom du produit</label>
+                        <input type="text" class="form-control" value="{{ vente.produit.nom }}" readonly>
+                    </div>
 
-                                <div class="row">
-                                    <!-- Nom du produit via vente -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            <label>Nom du produit</label>
-                                            <input type="text" class="form-control" value="{{ vente.produit.nom }}" readonly>
-                                        </div>
-                                    </div>
-
-                                    <!-- Quantité (From Vente) -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            {{ form_label(form.quantite, 'Quantité') }}
-                                            {{ form_widget(form.quantite, {'attr': {'class': 'form-control', 'id': 'vente_quantite'}}) }}
-                                            {{ form_errors(form.quantite) }}
-                                        </div>
-                                    </div>
-
-                                    <!-- Prix (From Vente) -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            {{ form_label(form.prix, 'Prix Total (€)') }}
-                                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'id': 'vente_prix', 'readonly': true}}) }}
-                                            {{ form_errors(form.prix) }}
-                                        </div>
-                                    </div>
-
-                                    <!-- Prix Unitaire (Hidden) -->
-                                    {{ form_widget(form.prixUnitaire, {'attr': {'id': 'vente_prixUnitaire'}}) }}
-
-                                    <!-- Méthode de Paiement -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group">
-                                            {{ form_label(form.methodepayement, 'Méthode de paiement') }}
-                                            {{ form_widget(form.methodepayement, {'attr': {'class': 'form-control'}}) }}
-                                            {{ form_errors(form.methodepayement) }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                               
-
-                            {{ form_end(form) }}
-                            {# End Symfony Form #}
+                    <!-- Quantité -->
+                    <div class="form-group">
+                        {{ form_label(form.quantite, 'Quantité', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.quantite, { 'attr': {'class': 'form-control', 'id': 'vente_quantite'} }) }}
+                        <div {{ form_errors(form.quantite) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.quantite) }}
                         </div>
                     </div>
 
-                    <!-- Product Information -->
-                    <div class="col-lg-6">
-                        <div class="product-info">
-                            <h3>Informations du Produit</h3>
-                            {% if vente.produit is defined %}
-                                <p><strong>Nom du produit:</strong> {{ vente.produit.nom }}</p>
-                                <p><strong>Quantité Disponible:</strong> {{ vente.produit.quantite }}</p>
-                                <p><strong>Prix de Vente:</strong> {{ vente.produit.prixVente }} €</p>
-                            {% else %}
-                                <p class="text-danger">Aucun produit associé.</p>
-                            {% endif %}
+                    <!-- Prix Total -->
+                    <div class="form-group">
+                        {{ form_label(form.prix, 'Prix Total (€)', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.prix, { 'attr': {'class': 'form-control', 'id': 'vente_prix', 'readonly': true} }) }}
+                        <div {{ form_errors(form.prix) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.prix) }}
                         </div>
-
-                        <!-- Illustration -->
-                        <img src="{{ asset('img/illustration/21.png') }}" alt="Image Not Found" class="img-fluid">
                     </div>
+
+                    <!-- Méthode de Paiement -->
+                    <div class="form-group">
+                        {{ form_label(form.methodepayement, 'Méthode de paiement', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.methodepayement, { 'attr': {'class': 'form-select'} }) }}
+                        <div {{ form_errors(form.methodepayement) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.methodepayement) }}
+                        </div>
+                    </div>
+
+                    <!-- Boutons -->
+                    <button type="submit" class="btn btn-gradient-primary me-2">
+                        <i class="fas fa-save"></i> Mettre à jour
+                    </button>
+                    <a href="{{ path('app_vente_index') }}" class="btn btn-light">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
@@ -97,40 +80,30 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let quantiteInput = document.getElementById("vente_quantite");
-        let prixUnitaireInput = document.getElementById("vente_prixUnitaire");
+        let prixUnitaire = {{ vente.produit.prixVente|default(0) }};
         let prixTotalInput = document.getElementById("vente_prix");
-        let submitButton = document.getElementById("submit-btn");
-        let availableQuantity = {{ vente.produit.quantite|default(0) }};  // Get the available quantity from the product
+        let availableQuantity = {{ vente.produit.quantite|default(0) }};
 
-        // Function to update the total price based on quantity and unit price
         function updatePrixTotal() {
             let quantite = parseInt(quantiteInput.value) || 0;
-            let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
             let prixTotal = quantite * prixUnitaire;
-
-            // Update the total price field
             prixTotalInput.value = prixTotal.toFixed(2);
         }
 
-        // Validate quantity input to ensure it's within the available stock
         function validateQuantity() {
             let quantite = parseInt(quantiteInput.value) || 0;
-
-            // If the entered quantity exceeds the available quantity, show an alert and reset the input
             if (quantite > availableQuantity) {
                 alert("La quantité ne peut pas être supérieure à la quantité disponible !");
-                quantiteInput.value = availableQuantity;  // Reset the quantity to the available stock
-                updatePrixTotal();  // Recalculate the price with the adjusted quantity
+                quantiteInput.value = availableQuantity;
+                updatePrixTotal();
             }
         }
 
-        // Listen for changes in the quantity input field
         quantiteInput.addEventListener("input", function () {
             updatePrixTotal();
-            validateQuantity();  // Validate the quantity as the user types
+            validateQuantity();
         });
 
-        // Initialize total price on page load
         updatePrixTotal();
     });
 </script>
