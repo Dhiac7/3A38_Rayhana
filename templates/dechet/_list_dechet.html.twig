@@ -12,13 +12,6 @@
               {% for dechet in dechets %}
                   <div class="card mb-3 dechet-card" data-id="{{ dechet.id }}">
                       <div class="row g-0 align-items-center">
-                         {# <div class="col-md-4">
-                              {% if dechet.photo %}
-                                  <img src="{{ asset('uploads/' ~ dechet.photo) }}" alt="Image de l'dechet" class="img-fluid rounded-start">
-                              {% else %}
-                                  <img src="{{ asset('img/dechet/default.jpg') }}" alt="Image non disponible" class="img-fluid rounded-start">
-                              {% endif %}
-                          </div>#}
                           <div class="col-md-8">
                               <div class="card-body">
                                   <h5 class="card-title"><strong>Type:</strong>{{ dechet.type }}</h5>
@@ -27,9 +20,10 @@
                                 <p class="card-text"><strong>Statut:</strong> {{ dechet.statut }}</p>
                                 <p class="card-text"><strong>Date d'expiration:</strong> {{ dechet.dateExpiration ? dechet.dateExpiration|date("d/m/Y") : 'Non définie' }}</p>
 
-                                 <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-success me-3">Modifier</a><br>
-                                <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-success me-3" data-id="{{ dechet.id }}">Supprimer</a>
-
+                                 <div class="d-flex" >
+    <a href="{{ path('app_dechet_edit', {'id': dechet.id}) }}" class="btn btn-success me-2">Modifier</a>
+    <a href="{{ path('app_dechet_delete', {'id': dechet.id}) }}" class="btn btn-danger btn-delete" data-id="{{ dechet.id }}">Supprimer</a>
+</div>
                               </div>
                           </div>
                       </div>
