@@ -2,45 +2,69 @@
 
 {% block title %}Inspection{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/ti-icons/css/themify-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/css/vendor.bundle.base.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/vendors/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assetsback/css/style.css') }}">
+{% endblock %}
+
 {% block body %}
-    <h1>Inspection</h1>
+    <div class="container mt-5">
+        <div class="card shadow-lg p-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center">Inspection</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-hover">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ inspection.id }}</td>
+                        </tr>
+                        <!--
+                        <tr>
+                            <th>Id_avis</th>
+                            <td>{{ inspection.idAvis }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date_inspection</th>
+                            <td>{{ inspection.dateInspection ? inspection.dateInspection|date('Y-m-d') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Type_inspection</th>
+                            <td>{{ inspection.typeInspection }}</td>
+                        </tr>
+                        <tr>
+                            <th>Inspecteur_id</th>
+                            <td>{{ inspection.inspecteurId }}</td>
+                        </tr>
+                        -->
+                        <tr>
+                            <th>Resultat</th>
+                            <td>{{ inspection.resultat }}</td>
+                        </tr>
+                        <tr>
+                            <th>Note</th>
+                            <td>{{ inspection.note }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <a href="{{ path('app_inspection_index') }}" class="btn btn-secondary btn-sm">Retour à la liste</a>
+                    <a href="{{ path('app_inspection_edit', {'id': inspection.id}) }}" class="btn btn-warning btn-sm">
+                        <i class="mdi mdi-pencil"></i> Modifier
+                    </a>
+                    {{ include('inspection/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ inspection.id }}</td>
-            </tr>
-            <tr>
-                <th>Id_avis</th>
-                <td>{{ inspection.idAvis }}</td>
-            </tr>
-            <tr>
-                <th>Date_inspection</th>
-                <td>{{ inspection.dateInspection ? inspection.dateInspection|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Type_inspection</th>
-                <td>{{ inspection.typeInspection }}</td>
-            </tr>
-            <tr>
-                <th>Inspecteur_id</th>
-                <td>{{ inspection.inspecteurId }}</td>
-            </tr>
-            <tr>
-                <th>Resultat</th>
-                <td>{{ inspection.resultat }}</td>
-            </tr>
-            <tr>
-                <th>Note</th>
-                <td>{{ inspection.note }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_inspection_index') }}">back to list</a>
-
-    <a href="{{ path('app_inspection_edit', {'id': inspection.id}) }}">edit</a>
-
-    {{ include('inspection/_delete_form.html.twig') }}
+{% block javascripts %}
+    <script src="{{ asset('assetsback/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assetsback/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('assetsback/js/misc.js') }}"></script>
 {% endblock %}
