@@ -5,13 +5,14 @@
 {% block body %}
 <div class="main-panel">
     <div class="content-wrapper">
-        {#<div class="page-header">
-            <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
-                    <i class="mdi mdi-plus"></i>
-                </span> Ajouter un Atelier
-            </h3>
-        </div>#}
+            <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
+    <h4 class="card-title mb-0" style="flex-grow: 1;">Nouveau atelier</h4>  {# Title takes up available space #}
+   
+</div>
+    <div class="mb-4"> {# Margin bottom for spacing #}
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="card">
@@ -81,17 +82,19 @@
                             {{ form_errors(form.photo) }}
                         </div>
 
-                        <button type="submit" class="btn btn-gradient-primary me-2 w-100">
-                            <i class="mdi mdi-content-save"></i> Enregistrer
-                        </button> 
+                        {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-success me-3">
+                               <i class="fas fa-save me-2"></i>Enregistrer
+                           </button>
+                           <a href="{{ path('app_atelier_indexBack') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i>Retour à la liste
+                           </a>
+                       </div>
+                   </div>
 
                         {{ form_end(form) }}
-
-                        <div class="text-center mt-3">
-                            <a href="{{ path('app_atelier_indexBack') }}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -99,3 +102,4 @@
     </div> <!-- content-wrapper -->
 </div> <!-- main-panel -->
 {% endblock %}
+

@@ -6,9 +6,18 @@
 <div class="main-panel">
     <div class="content-wrapper">
         <div class="row">
+             <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
+    <h4 class="card-title mb-0" style="flex-grow: 1;">Nouveau dechet</h4>  {# Title takes up available space #}
+   
+</div>
+    <div class="mb-4"> {# Margin bottom for spacing #}
+        <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
+                    
                         <h4 class="card-title text-center">Remplissez le formulaire</h4>
                         {{ form_start(form, {'method': 'POST', 'action': path('app_dechet_new'), 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
 
@@ -52,16 +61,20 @@
                             {% endif %}
                         </div>
 
-                         <button type="submit" class="btn btn-gradient-primary me-2 w-100">
-        <i class="mdi mdi-content-save"></i> Enregistrer
-    </button>
+                             {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-success me-3">
+                               <i class="fas fa-save me-2"></i>Enregistrer
+                           </button>
+                           <a href="{{ path('app_dechet_index') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i>Retour à la liste
+                           </a>
+                       </div>
+                   </div>
                         {{ form_end(form) }}
 
-                        <div class="text-center mt-3">
-                            <a href="{{ path('app_dechet_index') }}" class="btn btn-secondary">
-                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
-                            </a>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
