@@ -4,28 +4,25 @@
 
 {% block body %}
 <div class="main-panel">
-  <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title text-center">Mes Déchets</h4>
+    <div class="content-wrapper">
+            <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
+    <h4 class="card-title mb-0" style="flex-grow: 1;">Dechet</h4>  {# Title takes up available space #}
+    <a href="{{ path('app_dechet_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
+        <i class="fas fa-plus me-2"></i> Nouveau Dechet
+    </a>
+</div>
           <p class="card-description text-center">Mettez à jour les informations / suppression des déchets</p>
 
           <!-- Zone de recherche et tri -->
           <div class="d-flex justify-content-between mb-3">
             <input type="text" id="search" class="form-control w-50" placeholder="Rechercher un déchet...">
             <div>
-              <button class="btn btn-outline-primary" id="sortAsc">Tri Croissant</button>
-              <button class="btn btn-outline-secondary" id="sortDesc">Tri Décroissant</button>
+              <button class="btn btn-outline-green" id="sortAsc">Tri Croissant</button>
+              <button class="btn btn-outline-green" id="sortDesc">Tri Décroissant</button>
             </div>
-          </div>
-
-          <!-- Bouton "+" pour ajouter un déchet -->
-          <div class="d-flex justify-content-between mb-3">
-            <button class="btn btn-success"><a href="{{ path('app_dechet_new') }}">
-              <i class="fas fa-plus"></i> Ajouter un déchet
-              </a>
-            </button>
           </div>
 
           <!-- Conteneur caché pour afficher le formulaire d'ajout -->
