@@ -18,9 +18,18 @@ class UserAdminEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('prenom')
-            ->add('cin')
+            ->add('nom', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('prenom', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('cin', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
             ->add('photo', FileType::class, [
                 'label' => 'Téléchargez une photo',
                 'required' => false,
@@ -59,9 +68,18 @@ class UserAdminEditType extends AbstractType
                     'attr' => ['placeholder' => 'Confirmer le mot de passe'],
                 ],
             ])
-            ->add('email')
-            ->add('tel')
-            ->add('salaire')
+            ->add('email', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('tel', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
+            ->add('salaire', null, [
+                'required' => false,
+                'empty_data' => '',
+                ])
             ->add('adresse', ChoiceType::class, [
                 'choices' => [
                     'Ariana' => 'Ariana',
@@ -98,7 +116,6 @@ class UserAdminEditType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'is_new' => false, // Default: editing, set to true when creating
         ]);
     }
 }

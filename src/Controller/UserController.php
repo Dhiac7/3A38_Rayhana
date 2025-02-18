@@ -114,6 +114,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
     
+        //dump($form->getErrors(true));
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle Photo Upload
             $photoFile = $form->get('photo')->getData();
@@ -124,7 +125,6 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
                 $user->setPhoto($newFilename);
             }
     
-            // Handle Password Change
             $plainPassword = $form->get('mdp')->getData();
             if (!empty($plainPassword)) { 
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
@@ -145,7 +145,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     
 
 
-    /*#[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -153,8 +153,8 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }*/
+        return $this->redirectToRoute('app_user_logout', [], Response::HTTP_SEE_OTHER);
+    }
 
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
