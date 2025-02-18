@@ -57,7 +57,6 @@ class UserAdminEditType extends AbstractType
             ->add('mdp', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe doivent correspondre.',
-                'required' => $options['is_new'], // Required only for new users
                 'mapped' => false, // Don't map directly to entity
                 'first_options'  => [
                     'label' => 'Mot de passe',
