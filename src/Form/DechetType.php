@@ -50,7 +50,9 @@ class DechetType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez statut',
                 'required' => true,
-            ])           
+            ])  
+            
+            
         
             ->add('dateExpiration', DateType::class, [
                 'widget' => 'single_text',  // ou 'choice' selon la manière dont tu veux afficher la date

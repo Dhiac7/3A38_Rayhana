@@ -36,22 +36,22 @@ class Dechet
 //#[Assert\Date(message: "La date de production doit être une date valide.")]
 
     private ?\DateTimeInterface $dateProduction = null;
+    #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Assert\NotBlank(message: "Tu dois choisir une option.")]
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le statut ne peut pas être vide.")]
+    #[Assert\Choice(choices: ['resycler','eliminer'],message: "le statut doit étre 'resycler','eliminer' ")]
     private ?string $statut = null;
+
+
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank(message: "La date expiration ne peut pas être vide.")]
     //#[Assert\Date(message: "La date expiration doit être une date valide.")]
 
     private ?\DateTimeInterface $dateExpiration= null;
-    #[Assert\NotBlank(message: "La quantité du dechet ne peut pas être vide.")]//controle de saisie 
-    #[Assert\Range(
-        min: 1, 
-        max: 60, 
-        notInRangeMessage: "La quantite doit être comprise entre {{ min }} et {{ max }}."
-    )]
+   // #[Assert\NotBlank(message: "La quantité du dechet ne peut pas être vide.")]//controle de saisie 
+    
+
     #[ORM\ManyToOne(inversedBy: 'dechet')]
     private ?Stock $stock = null;
 

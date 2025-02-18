@@ -115,14 +115,14 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
 
     #[Route('/{id}/edit', name: 'app_dechet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Dechet $dechet, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$loggedInUserId = $session->get('client_user_id');
+    {$loggedInUserId = $session->get('admin_user_id');
         
         if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_login');
+            return $this->redirectToRoute('app_user_loginback');
         }
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_login');
+            return $this->redirectToRoute('app_user_loginback');
         }
         $form = $this->createForm(DechetType::class, $dechet);
         $form->handleRequest($request);
@@ -141,16 +141,28 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_dechet_delete', methods: ['POST'])]
-public function delete(Request $request, Dechet $dechet, EntityManagerInterface $entityManager): Response
-{
-    if ($this->isCsrfTokenValid('delete'.$dechet->getId(), $request->request->get('_token'))) {
+    #[Route('/dechet/delete/{id}', name: 'app_dechet_delete', methods: ['GET'])]
+    public function delete(Request $request, Dechet $dechet, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {$loggedInUserId = $session->get('admin_user_id');
+    
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
         $entityManager->remove($dechet);
         $entityManager->flush();
+        
+
+        return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
+
     }
 
-    return $this->redirectToRoute('app_dechet_index');
-}
 
     #[Route('/dechet/delete-ajax', name: 'app_dechet_delete_ajax', methods: ['POST'])]
 public function deleteAjax(Request $request, EntityManagerInterface $entityManager): JsonResponse
