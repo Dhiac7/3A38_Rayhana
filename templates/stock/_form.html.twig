@@ -1,4 +1,52 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
+
+{% for error in form.vars.errors %}
+    <div class="text-danger">{{ error.message }}</div>
+{% endfor %}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">{{ message }}</div>
+    {% endfor %}
+{% endfor %}
+
+<div class="form-group">
+    {{ form_label(form.nom, 'Nom du produit') }}
+    {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du produit'}}) }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.date_stock, 'Date de stock') }}
+    {{ form_widget(form.date_stock, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.date_stock) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.date_expiration, 'Date d\'expiration') }}
+    {{ form_widget(form.date_expiration, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.date_expiration) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.lieu, 'Lieu de stockage') }}
+    {{ form_widget(form.lieu, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le lieu de stockage'}}) }}
+    {{ form_errors(form.lieu) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.conditionn, 'Condition de stockage') }}
+    {{ form_widget(form.conditionn, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.conditionn) }}
+</div>
+
+<div class="form-group">
+    {{ form_label(form.statut, 'Statut') }}
+    {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+    {{ form_errors(form.statut) }}
+</div>
+
+<button type="submit" class="btn btn-gradient-primary w-100">
+    <i class="mdi mdi-content-save"></i> {{ button_label|default('Enregistrer') }}
+</button>
+
 {{ form_end(form) }}

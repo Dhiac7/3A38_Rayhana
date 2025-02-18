@@ -1,207 +1,78 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Ajouter Stock{% endblock %}
+{% block title %}Ajouter stock{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-   <div class="row justify-content-center">
-       <div class="col-md-10">
-           <div class="card shadow-lg border-0 rounded-lg">
-               <div class="card-header bg-primary text-white py-3">
-                   <h4 class="card-title mb-0 text-center">Formulaire de Stock</h4>
-               </div>
-               <div class="card-body p-5">
-                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
-                   
-                   {# Nom #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.nom) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.nom, {
-                               'attr': {
-                                   'class': 'form-control rounded-3',
-                                   'placeholder': 'Entrez le nom du stock'
-                               }
-                           }) }}
-                           {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center"> Ajouter stock</h4>
+                        {{ form_start(form, {'method': 'POST', 'action': path('app_stock_new'), 'attr': {'novalidate': 'novalidate','class': 'contact-form'}}) }}
+                        
+                        {% for error in form.vars.errors %}
+                            <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                        
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endfor %}
 
-                   {# Date stock #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_stock) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.date_stock, {
-                               'attr': {
-                                   'class': 'form-control rounded-3 flatpickr-input',
-                                   'placeholder': 'Sélectionnez une date'
-                               }
-                           }) }}
-                           {{ form_errors(form.date_stock, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.nom, 'Nom du stock') }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom du produit'}}) }}
+                            <div class="text-danger">{{ form_errors(form.nom) }}</div>
+                        </div>
 
-                   {# Date expiration #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_expiration) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.date_expiration, {
-                               'attr': {
-                                   'class': 'form-control rounded-3 flatpickr-input',
-                                   'placeholder': 'Sélectionnez une date'
-                               }
-                           }) }}
-                           {{ form_errors(form.date_expiration, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.date_stock, 'Date de stock') }}
+                            {{ form_widget(form.date_stock, {'attr': {'class': 'form-control'}}) }}
+                            <div class="text-danger">{{ form_errors(form.date_stock) }}</div>
+                        </div>
 
-                   {# Lieu #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.lieu) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.lieu, {
-                               'attr': {
-                                   'class': 'form-control rounded-3',
-                                   'placeholder': 'Entrez le lieu de stockage'
-                               }
-                           }) }}
-                           {{ form_errors(form.lieu, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.date_expiration, 'Date d\'expiration') }}
+                            {{ form_widget(form.date_expiration, {'attr': {'class': 'form-control'}}) }}
+                            <div class="text-danger">{{ form_errors(form.date_expiration) }}</div>
+                        </div>
 
-                   {# Condition #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.conditionn) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.conditionn, {
-                               'attr': {
-                                   'class': 'form-select rounded-3'
-                               }
-                           }) }}
-                           {{ form_errors(form.conditionn, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.lieu, 'Lieu de stockage') }}
+                            {{ form_widget(form.lieu, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le lieu de stockage'}}) }}
+                            <div class="text-danger">{{ form_errors(form.lieu) }}</div>
+                        </div>
 
-                   {# Statut #}
-                   <div class="form-group row mb-4 align-items-center">
-                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.statut) }}</label>
-                       <div class="col-sm-9">
-                           {{ form_widget(form.statut, {
-                               'attr': {
-                                   'class': 'form-select rounded-3'
-                               }
-                           }) }}
-                           {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.conditionn, 'Condition de stockage') }}
+                            {{ form_widget(form.conditionn, {'attr': {'class': 'form-select'}}) }}
+                            <div class="text-danger">{{ form_errors(form.conditionn) }}</div>
+                        </div>
 
-                   {# Boutons #}
-                   <div class="form-group row mt-5">
-                       <div class="col-12 text-center">
-                           <button type="submit" class="btn btn-success me-3">
-                               <i class="fas fa-save me-2"></i>Ajouter stock
-                           </button>
-                           <a href="{{ path('app_stock_index') }}" class="btn btn-light">
-                               <i class="fas fa-times me-2"></i>Retour à la liste
-                           </a>
-                       </div>
-                   </div>
+                        <div class="form-group">
+                            {{ form_label(form.statut, 'Statut') }}
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                            <div class="text-danger">{{ form_errors(form.statut) }}</div>
+                        </div>
 
-                   {{ form_end(form) }}
-               </div>
-           </div>
-       </div>
-   </div>
-</div>
+                        <button type="submit" class="btn btn-gradient-primary me-2 w-100">
+                            <i class="mdi mdi-content-save"></i> Ajouter stock
+                        </button> 
 
-{% block stylesheets %}
-<style>
-   .card {
-       transition: all 0.3s ease;
-       border: none;
-   }
-   
-   .card-header {
-       background-color:  #49a760 !important;
-       border-bottom: 3px solid #146c43;
-   }
+                        {{ form_end(form) }}
 
-   .form-control:focus, 
-   .form-select:focus {
-       border-color: #198754;
-       box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-   }
-
-   .form-control, 
-   .form-select {
-       height: 45px;
-       border: 1px solid #ddd;
-   }
-
-   .form-control[rows] {
-       height: auto;
-   }
-
-   .btn {
-       padding: 10px 25px;
-       border-radius: 4px;
-       font-weight: 500;
-       transition: all 0.3s ease;
-       height: 45px;
-       display: inline-flex;
-       align-items: center;
-       justify-content: center;
-   }
-
-   .btn-success {
-       background-color:  #49a760;
-       border: none;
-       color: white;
-   }
-
-   .btn-success:hover {
-       background-color: #146c43;
-       transform: translateY(-1px);
-   }
-
-   .btn-light {
-       background-color: #f8f9fa;
-       border: 1px solid #ddd;
-       color: #212529;
-   }
-
-   .btn-light:hover {
-       background-color: #e2e6ea;
-       border-color: #ddd;
-   }
-
-   .form-label {
-       color: #444;
-       font-weight: 500;
-   }
-
-   .card-body {
-       background-color: #fff;
-   }
-
-   .shadow-lg {
-       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-   }
-
-   .text-danger {
-       font-size: 0.875rem;
-       margin-top: 0.25rem;
-   }
-
-   .btn:active {
-       transform: translateY(1px);
-   }
-
-   .form-check-input {
-       width: 20px;
-       height: 20px;
-   }
-</style>
-{% endblock %}
-
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_stock_index') }}" class="btn btn-secondary">
+                                <i class="mdi mdi-arrow-left"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- content-wrapper -->
+</div> <!-- main-panel -->
 {% endblock %}
