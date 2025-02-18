@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParcelleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\User;
@@ -57,6 +59,17 @@ class Parcelle
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'parcelles')]
     #[ORM\JoinColumn(nullable: true)] // Makes this relation mandatory
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, CultureAgricole>
+     */
+    #[ORM\ManyToMany(targetEntity: CultureAgricole::class, inversedBy: 'parcelles')]
+    private Collection $cultureAgricoles;
+
+    public function __construct()
+    {
+        $this->cultureAgricoles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -131,6 +144,30 @@ class Parcelle
     public function setIdUser(?User $user): static
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CultureAgricole>
+     */
+    public function getCultureAgricoles(): Collection
+    {
+        return $this->cultureAgricoles;
+    }
+
+    public function addCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        if (!$this->cultureAgricoles->contains($cultureAgricole)) {
+            $this->cultureAgricoles->add($cultureAgricole);
+        }
+
+        return $this;
+    }
+
+    public function removeCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        $this->cultureAgricoles->removeElement($cultureAgricole);
+
         return $this;
     }
     
