@@ -46,7 +46,7 @@ final class CultureAgricoleDashboardController extends AbstractController
         $totalPages = ceil($totalCultures / $limit);
 
         return $this->render('culture_agricole_dashboard/index.html.twig', [
-            'cultures' => $cultureAgricoleRepository->findAll(),
+            'cultures' => $cultureAgricoleRepository->findBy(['user' => $loggedInUser->getId()]),
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'loggedInUser' => $loggedInUser,
@@ -68,6 +68,8 @@ final class CultureAgricoleDashboardController extends AbstractController
         }
 
         $cultureAgricole = new CultureAgricole();
+        $cultureAgricole->setUser($loggedInUser);
+        
         $form = $this->createForm(CultureAgricoleType::class, $cultureAgricole);
         $form->handleRequest($request);
 
