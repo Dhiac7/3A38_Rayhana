@@ -47,7 +47,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 
         if (!$user || !password_verify($password, $user->getPassword())) {
             $error = 'Invalid email or password';
-        } elseif ($user->getRole() === 'agriculteur') {
+        } elseif ($user->getRole() === 'agriculteur' || $user->getRole() === 'inspecteur') {
             $error = 'Accès refusé';
         } else {
             $session->set('client_user_id', $user->getId());

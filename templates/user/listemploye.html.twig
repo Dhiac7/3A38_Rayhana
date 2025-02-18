@@ -8,12 +8,12 @@
             <div class="row">
             <div class="col-12">
                 <div class="card shadow-lg border-0 rounded-lg">
-                  <div class="card-header py-3" style="background-color: #49a760; color: white;">
-                        <div class="d-flex justify-content-center align-items-center">  <h4 class="card-title mb-0">Employés</h4></div>
-                        <a href="{{ path('app_user_newemploye') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
-                            <i class="fas fa-plus me-2"></i> Nouveau employé
-                        </a>
-                    </div>
+                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
+    <h4 class="card-title mb-0" style="flex-grow: 1;">Employés</h4>  {# Title takes up available space #}
+    <a href="{{ path('app_user_newemploye') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
+        <i class="fas fa-plus me-2"></i> Nouveau employé
+    </a>
+</div>
                     <div class="card-body p-4" style="background-color: #fff;">
 
                         <div class="mb-4"> {# Margin bottom for spacing #}
@@ -71,20 +71,17 @@
                     <td>{{ user.cin }}</td>
                     <td>{{ user.adresse }}</td>
                     <td>{{ user.salaire }}</td>
-                    <td><center>
-                    <a href="{{ path('app_produitback_show', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">
-                        <i class="mdi mdi-eye"></i> 
-                    </a>
-                    <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color:  #fff; color: #2F4F4F;">
-                        <i class="mdi mdi-pencil"></i> 
-                    </a>
-                    <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet employe?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                        <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">
-                            <i class="mdi mdi-delete"></i> 
-                        </button>
-                    </form>
-                </center></td>
+                    <td class="text-center">  {# Center actions #}
+                        <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Modifier
+                        </a>
+                        <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">  {# Consistent button styling #}
+                                <i class="mdi mdi-delete"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             {% else %}
                 <tr>
