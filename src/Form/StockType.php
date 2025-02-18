@@ -8,14 +8,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Validator\Constraints as Assert;// Ajouter cette ligne
-use Symfony\Component\Form\Extension\Core\Type\FileType;  // Importation correcte de FileType
-use Symfony\Component\Validator\Constraints\File;
-
+use Symfony\Component\Validator\Constraints as Assert; // Ajouter cette ligne
 
 class StockType extends AbstractType
 {
@@ -39,19 +34,19 @@ class StockType extends AbstractType
                     ])
                 ],
             ])
-          
-           
             ->add('date_stock', DateType::class, [
                 'label' => 'Date de stock',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'La date de stock est obligatoire'])
+                    new Assert\NotBlank(['message' => 'La date de stock est obligatoire']),
+                    new Assert\GreaterThanOrEqual([
+                        'value' => 'today',
+                        'message' => 'La date de stock doit être aujourd\'hui ou une date ultérieure',
+                    ]),
                 ],
-                'empty_data' => (new \DateTime())->format('Y-m-d'), // Valeur par défaut : aujourd'hui
             ])
-          
-         
+            
             ->add('date_expiration', DateType::class, [
                 'label' => 'Date d\'expiration',
                 'widget' => 'single_text',
@@ -60,11 +55,12 @@ class StockType extends AbstractType
                     new Assert\NotBlank(['message' => 'La date d\'expiration est obligatoire']),
                     new Assert\GreaterThan([
                         'value' => 'today',
-                        'message' => 'La date d\'expiration doit être supérieure à la date actuelle'
-                    ])
+                        'message' => 'La date d\'expiration doit être supérieure à la date actuelle',
+                    ]),
                 ],
-                'empty_data' => (new \DateTime())->modify('+1 day')->format('Y-m-d'), // Valeur par défaut : demain
             ])
+            
+            
             ->add('lieu', TextType::class, [
                 'label' => 'Lieu de stockage',
                 'attr' => ['placeholder' => 'Entrez le lieu de stockage'],
@@ -96,7 +92,6 @@ class StockType extends AbstractType
                     new Assert\NotBlank(['message' => 'Le statut est obligatoire'])
                 ],
             ]);
-          
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -106,6 +101,4 @@ class StockType extends AbstractType
             'attr' => ['novalidate' => 'novalidate'], // Désactive la validation HTML5 pour utiliser Symfony
         ]);
     }
-
-
 }
