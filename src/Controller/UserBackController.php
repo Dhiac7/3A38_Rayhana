@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Form\UserEditType;
+use App\Form\UserAdminEditType;
 use App\Form\UserAdminType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,60 +47,59 @@ final class UserBackController extends AbstractController
     }
 
     #[Route('/listemployeback', name: 'app_user_listemploye', methods: ['GET'])]
-public function listemploye(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
-{
-    $loggedInUserId = $session->get('admin_user_id');
+    public function listemploye(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+    {
+        $loggedInUserId = $session->get('admin_user_id');
     
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    // Ensure the logged-in user is an agriculteur
-    if ($loggedInUser->getRole() !== 'agriculteur') {
-        throw $this->createAccessDeniedException('You do not have permission to view this page.');
-    }
-
-    $roles = ['livreur', 'inspecteur', 'fermier'];
-    $paginationlivreur = null;
-    $paginationinspecteur = null;
-    $paginationfermier = null;
-
-    foreach ($roles as $role) {
-        $query = $userRepository->createQueryBuilder('u')
-            ->where('u.role = :role')
-            ->andWhere('u.agriculteur = :agriculteur') // Filter by agriculteur
-            ->setParameter('role', $role)
-            ->setParameter('agriculteur', $loggedInUser)
-            ->getQuery();
-
-        $pagination = $paginator->paginate(
-            $query,
-            $request->query->getInt('page_' . $role, 1), 
-            3
-        );
-
-        if ($role == 'livreur') {
-            $paginationlivreur = $pagination;
-        } elseif ($role == 'inspecteur') {
-            $paginationinspecteur = $pagination;
-        } elseif ($role == 'fermier') {
-            $paginationfermier = $pagination;
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
         }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        if ($loggedInUser->getRole() !== 'agriculteur') {
+            return $this->redirectToRoute('app_dashboard'); 
+        }
+    
+        $roles = ['livreur', 'inspecteur', 'fermier'];
+        $paginationlivreur = null;
+        $paginationinspecteur = null;
+        $paginationfermier = null;
+    
+        foreach ($roles as $role) {
+            $query = $userRepository->createQueryBuilder('u')
+                ->where('u.role = :role')
+                ->andWhere('u.agriculteur = :agriculteur') // Filter by agriculteur
+                ->setParameter('role', $role)
+                ->setParameter('agriculteur', $loggedInUser)
+                ->getQuery();
+    
+            $pagination = $paginator->paginate(
+                $query,
+                $request->query->getInt('page_' . $role, 1),
+                3
+            );
+    
+            if ($role == 'livreur') {
+                $paginationlivreur = $pagination;
+            } elseif ($role == 'inspecteur') {
+                $paginationinspecteur = $pagination;
+            } elseif ($role == 'fermier') {
+                $paginationfermier = $pagination;
+            }
+        }
+    
+        return $this->render('user/listemploye.html.twig', [
+            'paginationlivreur' => $paginationlivreur,
+            'paginationinspecteur' => $paginationinspecteur,
+            'paginationfermier' => $paginationfermier,
+            'loggedInUser' => $loggedInUser,
+        ]);
     }
-
-    return $this->render('user/listemploye.html.twig', [
-        'paginationlivreur' => $paginationlivreur,
-        'paginationinspecteur' => $paginationinspecteur,
-        'paginationfermier' => $paginationfermier,
-        'loggedInUser' => $loggedInUser,
-    ]);
-}
 
     
     
@@ -117,6 +117,9 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
 
     if (!$loggedInUser) {
         return $this->redirectToRoute('app_user_loginback');
+    }
+    if ($loggedInUser->getRole() !== 'agriculteur') {
+        return $this->redirectToRoute('app_dashboard'); 
     }
 
     $query = $userRepository->createQueryBuilder('u')
@@ -140,6 +143,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $error = null;
+        $allowedRoles = ['agriculteur', 'inspecteur'];
 
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
@@ -150,8 +154,8 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             if (!$user || !password_verify($password, $user->getPassword())) {
                 $error = 'Invalid email or password';
             } else {
-                if ($user->getRole() !== 'agriculteur') {
-                    $error = 'Accès refusé. Seuls les agriculteurs peuvent se connecter.';
+                if (!in_array($user->getRole(), $allowedRoles)) {
+                    $error = 'Accès refusé. Seuls les utilisateurs avec les rôles suivants peuvent se connecter : ' . implode(', ', $allowedRoles) . '.';
                 } else {
                     $session->set('admin_user_id', $user->getId());
 
@@ -236,7 +240,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             return $this->redirectToRoute('app_user_logoutback');
         }
     
-        $form = $this->createForm(UserAdminType::class, $user);
+        $form = $this->createForm(UserAdminEditType::class, $user);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
@@ -267,7 +271,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         ]);
     }
     
-    #[Route('/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
+    #[Route('/deleteemploye/{id}', name: 'app_user_deletebackemploye', methods: ['POST'])]
     public function deletebackemploye(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -278,7 +282,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_user_deletebackclient', methods: ['POST'])]
+    #[Route('/deleteclient/{id}', name: 'app_user_deletebackclient', methods: ['POST'])]
     public function deletebackclient(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -286,8 +290,10 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_user_listclient', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 
     /*#[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
@@ -382,7 +388,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     
             $entityManager->flush();
     
-            return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('user/editprofiladmin.html.twig', [

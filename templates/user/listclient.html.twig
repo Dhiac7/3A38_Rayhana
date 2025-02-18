@@ -15,12 +15,7 @@
                         </div>
                         <div class="card-body p-4" style="background-color: #fff;">  {# Added card-body styling #}
 
-                            <div class="alert alert-info">  {# Moved alert inside card-body #}
-                                <strong>Debug Info (Clients):</strong><br>
-                                Current Page: {{ pagination.currentPageNumber }}<br>
-                                Total Items: {{ pagination.totalItemCount }}<br>
-                                Items per Page: {{ pagination.itemNumberPerPage }}
-                            </div>
+                            
 
                             {{ _self.client_table(pagination) }}  {# Call the macro #}
 
@@ -56,7 +51,7 @@
                         <a href="{{ path('app_user_editback', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
                             <i class="mdi mdi-pencil"></i> Modifier
                         </a>
-                        <form method="post" action="{{ path('app_user_deletebackemploye', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client?');">
+                        <form method="post" action="{{ path('app_user_deletebackclient', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce client?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                             <button type="submit" class="btn btn-sm" style="background-color: #fff; color: rgb(211, 54, 54);">  {# Consistent button styling #}
                                 <i class="mdi mdi-delete"></i> Supprimer
