@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250218082117 extends AbstractMigration
+final class Version20250220182026 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,8 +20,7 @@ final class Version20250218082117 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE atelier (id INT AUTO_INCREMENT NOT NULL, nom VARCHAR(100) NOT NULL, description VARCHAR(255) NOT NULL, date_atelier DATE NOT NULL, capacite_max INT NOT NULL, prix DOUBLE PRECISION NOT NULL, id_user INT NOT NULL, statut VARCHAR(100) NOT NULL, role VARCHAR(100) NOT NULL, photo VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE atelier_user (atelier_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_4D145FAA82E2CF35 (atelier_id), INDEX IDX_4D145FAAA76ED395 (user_id), PRIMARY KEY(atelier_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE atelier (id INT AUTO_INCREMENT NOT NULL, nbrplacedispo INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE avis (id INT AUTO_INCREMENT NOT NULL, client_id INT DEFAULT NULL, id_client INT NOT NULL, id_produit INT NOT NULL, rate DOUBLE PRECISION NOT NULL, commentaire VARCHAR(255) NOT NULL, date DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_8F91ABF019EB6921 (client_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE culture_agricole (id INT AUTO_INCREMENT NOT NULL, stock_id INT DEFAULT NULL, user_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, date_semi DATETIME DEFAULT NULL, superficie DOUBLE PRECISION NOT NULL, statut VARCHAR(255) NOT NULL, rendement_estime DOUBLE PRECISION NOT NULL, INDEX IDX_8B1E4C60DCD6110 (stock_id), INDEX IDX_8B1E4C60A76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE dechet (id INT AUTO_INCREMENT NOT NULL, stock_id INT DEFAULT NULL, stock_id_id INT DEFAULT NULL, type VARCHAR(100) NOT NULL, quantite INT NOT NULL, date_production DATE NOT NULL, statut VARCHAR(100) NOT NULL, date_expiration DATE NOT NULL, INDEX IDX_53C0FC60DCD6110 (stock_id), INDEX IDX_53C0FC60E35482A6 (stock_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -35,8 +34,6 @@ final class Version20250218082117 extends AbstractMigration
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, agriculteur_id INT DEFAULT NULL, nom VARCHAR(100) NOT NULL, prenom VARCHAR(100) NOT NULL, cin VARCHAR(8) NOT NULL, photo VARCHAR(255) DEFAULT NULL, role VARCHAR(100) NOT NULL, mdp VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, tel VARCHAR(20) NOT NULL, token VARCHAR(255) DEFAULT NULL, statut VARCHAR(255) DEFAULT NULL, adresse VARCHAR(255) DEFAULT NULL, salaire DOUBLE PRECISION DEFAULT NULL, nbr_heures_travail DOUBLE PRECISION DEFAULT NULL, INDEX IDX_8D93D6497EBB810E (agriculteur_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE vente (id INT AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, produit_id INT DEFAULT NULL, date DATETIME NOT NULL, prix DOUBLE PRECISION NOT NULL, methodepayement VARCHAR(255) NOT NULL, quantite DOUBLE PRECISION NOT NULL, nom VARCHAR(255) NOT NULL, INDEX IDX_888A2A4CA76ED395 (user_id), INDEX IDX_888A2A4CF347EFB (produit_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE messenger_messages (id BIGINT AUTO_INCREMENT NOT NULL, body LONGTEXT NOT NULL, headers LONGTEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', available_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', delivered_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_75EA56E0FB7336F0 (queue_name), INDEX IDX_75EA56E0E3BD61CE (available_at), INDEX IDX_75EA56E016BA31DB (delivered_at), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE atelier_user ADD CONSTRAINT FK_4D145FAA82E2CF35 FOREIGN KEY (atelier_id) REFERENCES atelier (id) ON DELETE CASCADE');
-        $this->addSql('ALTER TABLE atelier_user ADD CONSTRAINT FK_4D145FAAA76ED395 FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE avis ADD CONSTRAINT FK_8F91ABF019EB6921 FOREIGN KEY (client_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE culture_agricole ADD CONSTRAINT FK_8B1E4C60DCD6110 FOREIGN KEY (stock_id) REFERENCES stock (id)');
         $this->addSql('ALTER TABLE culture_agricole ADD CONSTRAINT FK_8B1E4C60A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
@@ -57,8 +54,6 @@ final class Version20250218082117 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE atelier_user DROP FOREIGN KEY FK_4D145FAA82E2CF35');
-        $this->addSql('ALTER TABLE atelier_user DROP FOREIGN KEY FK_4D145FAAA76ED395');
         $this->addSql('ALTER TABLE avis DROP FOREIGN KEY FK_8F91ABF019EB6921');
         $this->addSql('ALTER TABLE culture_agricole DROP FOREIGN KEY FK_8B1E4C60DCD6110');
         $this->addSql('ALTER TABLE culture_agricole DROP FOREIGN KEY FK_8B1E4C60A76ED395');
@@ -75,7 +70,6 @@ final class Version20250218082117 extends AbstractMigration
         $this->addSql('ALTER TABLE vente DROP FOREIGN KEY FK_888A2A4CA76ED395');
         $this->addSql('ALTER TABLE vente DROP FOREIGN KEY FK_888A2A4CF347EFB');
         $this->addSql('DROP TABLE atelier');
-        $this->addSql('DROP TABLE atelier_user');
         $this->addSql('DROP TABLE avis');
         $this->addSql('DROP TABLE culture_agricole');
         $this->addSql('DROP TABLE dechet');
