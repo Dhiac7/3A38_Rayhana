@@ -99,6 +99,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         } else {
             dump('No file uploaded'); 
         }
+        $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
 
         // Sauvegarde de l’atelier en base de données
         $em->persist($atelier);
