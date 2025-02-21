@@ -6,7 +6,7 @@
           <p class="card-description text-center">Voici tous les ateliers disponibles.</p>
           <!-- Conteneur des ateliers -->
           <div id="atelier-container">
-              {% for atelier in ateliers %}
+              {% for atelier in pagination %}
                   <div class="card mb-3 atelier-card" data-id="{{ atelier.id }}">
                       <div class="row g-0 align-items-center">
                           <div class="col-md-4">
@@ -37,7 +37,9 @@
           </div>
 
         </div>
-
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(pagination) }}
+    </div>
 
 <!-- Script JavaScript pour la suppression AJAX -->
 <script>
