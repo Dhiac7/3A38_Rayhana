@@ -121,6 +121,22 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
+                                        {{ form_errors(form.genre) }}
+                                        {{ form_widget(form.genre, {'attr': {'class': 'form-select', 'placeholder': 'Genre'}}) }}
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.AnneeNaissance) }}
+                                        {{ form_widget(form.AnneeNaissance, {'attr': {'class': 'form-select', 'placeholder': 'AnneeNaissance'}}) }}
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
                                         {{ form_errors(form.adresse) }}
                                         {{ form_widget(form.adresse, {'attr': {'class': 'form-select', 'placeholder': 'Adresse'}}) }}
                                     </div>

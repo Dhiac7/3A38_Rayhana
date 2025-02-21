@@ -15,8 +15,13 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserType extends AbstractType
 {
+   
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $years = [];
+        for ($i = 1990; $i <= date("Y"); $i++) {
+            $years[$i] = $i;
+        }
         $builder
         ->add('nom')
         ->add('prenom')
@@ -78,6 +83,19 @@ class UserType extends AbstractType
                 'Zaghouan' => 'Zaghouan'
             ],
             'placeholder' => 'Choisir un gouvernorat',
+            'attr' => ['class' => 'form-select']
+        ])
+        ->add('genre', ChoiceType::class, [
+            'choices' => [
+                'Homme' => 'Homme',
+                'Femme' => 'Femme',
+            ],
+            'placeholder' => 'Choisir un genre',
+            'attr' => ['class' => 'form-select']
+        ])
+        ->add('AnneeNaissance', ChoiceType::class, [
+            'choices' => $years,
+            'placeholder' => 'Choisir une année de naissance',
             'attr' => ['class' => 'form-select']
         ])
         ->add('save', SubmitType::class, ['label' => 'Confirmer']);
