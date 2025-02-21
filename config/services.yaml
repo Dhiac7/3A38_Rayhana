@@ -9,6 +9,8 @@ parameters:
     uploads_directory: '%kernel.project_dir%/public/img/users'
     image_directory: '%kernel.project_dir%/public/img/stock'
     atelier_directory: '%kernel.project_dir%/public/img/atelier'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+
 
     
 

@@ -5,6 +5,9 @@ use App\Entity\User;
 use App\Entity\Vente;
 use App\Entity\Produit;
 use App\Form\VenteType;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\Transactionfinancier;
 use App\Repository\VenteRepository;
 use App\Repository\ProduitRepository;
@@ -86,6 +89,7 @@ public function index(
 
     }
 
+
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
@@ -94,79 +98,122 @@ public function index(
         SessionInterface $session
     ): Response {
         $loggedInUserId = $session->get('client_user_id');
-        
+
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
         }
-    
-        // Récupérer l'utilisateur connecté
+
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
-    
+
         $vente = new Vente();
-        
         $produitId = $request->query->get('id');
-    
+
         if (!$produitId) {
             $this->addFlash('error', 'Aucun produit sélectionné.');
             return $this->redirectToRoute('app_vente_index');
         }
-    
+
         $produit = $produitRepository->find($produitId);
-    
+
         if (!$produit) {
             $this->addFlash('error', 'Produit introuvable.');
             return $this->redirectToRoute('app_vente_index');
         }
-        
-        // Définir le nom de la vente avec le nom du produit
+
+        // Définir le nom et autres informations de la vente
         $vente->setNom($produit->getNom());
-        
         $vente->setProduit($produit);
         $vente->setPrix($produit->getPrixVente());
         $vente->setQuantite(1);
-    
-        // Associer l'utilisateur connecté à la vente
         $vente->setUser($loggedInUser);
-    
+
         $form = $this->createForm(VenteType::class, $vente, [
             'prix_unitaire' => $produit->getPrixVente(),
         ]);
-        
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = $vente->getQuantite();
             $prixUnitaire = $produit->getPrixVente();
             $vente->setPrix($quantite * $prixUnitaire);
-            
-            // Créer une nouvelle transaction financière
-            $transaction = new Transactionfinancier();
-            $transaction->setMontant($vente->getPrix());
-            $transaction->setDate(new \DateTime());
-            $transaction->setType('Revenue'); // Type de transaction
-            $transaction->setVente($vente); // Associer la transaction à la vente
-    
-            // Associer la transaction à la vente
-            $vente->setTransaction($transaction);
-    
-            // Persister la vente et la transaction
-            $entityManager->persist($vente);
-            $entityManager->persist($transaction);
-            $entityManager->flush();
-    
-            $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
-            return $this->redirectToRoute('app_vente_index');
+
+            // Récupérer la méthode de paiement choisie
+            $paymentMethod = $form->get('methodepayement')->getData();
+
+            if ($paymentMethod === 'carte_bancaire') {
+                // Intégration du paiement par carte bancaire avec Stripe
+                Stripe::setApiKey($this->getParameter('stripe_secret_key'));
+
+                $sessionStripe = StripeSession::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price_data' => [
+                            'currency' => 'eur',
+                            'unit_amount' => $prixUnitaire * 100, // montant en centimes
+                            'product_data' => [
+                                'name' => $produit->getNom(),
+                            ],
+                        ],
+                        'quantity' => $quantite,
+                    ]],
+                    'mode' => 'payment',
+                    'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'cancel_url' => $this->generateUrl('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                ]);
+
+                // Optionnel : stockez l'ID de session Stripe dans la vente pour suivi
+                // $vente->setTransactionId($sessionStripe->id);
+
+                $entityManager->persist($vente);
+                $entityManager->flush();
+
+                // Redirige vers la page de paiement Stripe
+                return $this->redirect($sessionStripe->url);
+            } else {
+                // Traitement pour les autres méthodes de paiement (espèces, chèque, virement, etc.)
+                $transaction = new Transactionfinancier();
+                $transaction->setMontant($vente->getPrix());
+                $transaction->setDate(new \DateTime());
+                $transaction->setType('Revenue');
+                $transaction->setVente($vente);
+
+                $vente->setTransaction($transaction);
+
+                $entityManager->persist($vente);
+                $entityManager->persist($transaction);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
+                return $this->redirectToRoute('app_vente_index');
+            }
         }
-        
+
         return $this->render('vente/new.html.twig', [
             'form' => $form->createView(),
             'produit' => $produit,
             'loggedInUser' => $loggedInUser,
         ]);
     }
+
+    #[Route('/payment/success', name: 'payment_success')]
+    public function paymentSuccess(Request $request): Response
+    {
+        // Mettez à jour le statut de la vente si besoin
+        $this->addFlash('success', 'Paiement effectué avec succès.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+
+    #[Route('/payment/cancel', name: 'payment_cancel')]
+    public function paymentCancel(): Response
+    {
+        $this->addFlash('error', 'Paiement annulé.');
+        return $this->redirectToRoute('app_vente_index');
+    }
+
+
 
     // Route pour afficher une vente spécifique (avec contrainte sur l'ID)
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
