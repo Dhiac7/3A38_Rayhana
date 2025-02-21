@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AtelierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -59,7 +59,7 @@ class Atelier
     #[Assert\NotBlank(message: "Tu dois choisir une option.")]
 
     #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
-    private ?string $statut = null;
+    private ?string $statut = 'ouvert';
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank(message: "Tu dois choisir une option.")] 
@@ -87,6 +87,7 @@ class Atelier
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->nbrplacedispo = $this->capacite_max; 
     }
 
 
@@ -139,7 +140,7 @@ class Atelier
     public function setCapaciteMax(int $capacite_max): static
     {
         $this->capacite_max = $capacite_max;
-
+        $this->nbrplacedispo = $capacite_max; 
         return $this;
     }
 
@@ -196,14 +197,17 @@ class Atelier
         if (!$this->users->contains($user)) {
             $this->users->add($user);
         }
-
+    
         return $this;
     }
+    
 
     public function removeUser(User $user): static
     {
         $this->users->removeElement($user);
-
+    
+        // Incrémente la place disponible si nécessaire
+        $this->nbrplacedispo++;
         return $this;
     }
 
@@ -230,4 +234,20 @@ class Atelier
 
         return $this;
     }
+    public function reserverAtelier(int $atelierId, User $user, EntityManagerInterface $entityManager)
+    {
+        $atelier = $entityManager->getRepository(Atelier::class)->find($atelierId);
+    
+        if (!$atelier) {
+            throw new \Exception("L'atelier n'existe pas.");
+        }
+            if ($atelier->getNbrplacedispo() <= 0) {
+            throw new \Exception("Cet atelier est complet, il n'y a plus de place..");
+        }
+        $atelier->addUser($user);
+        $atelier->setNbrplacedispo($atelier->getNbrplacedispo() - 1);
+        $entityManager->persist($atelier);
+            $entityManager->flush();
+    }
+
 }

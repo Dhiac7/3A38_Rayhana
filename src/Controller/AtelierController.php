@@ -36,8 +36,11 @@ final class AtelierController extends AbstractController
             $request->query->getInt('page', 1), // Num page 
             6 // nbr element par page 
         );
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+
         return $this->render('atelier/index.html.twig', [
             'pagination' => $pagination,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
             'loggedInUser' => $loggedInUser,
 
         ]);
@@ -48,9 +51,12 @@ final class AtelierController extends AbstractController
    
     #[Route('/{id}', name: 'app_atelier_show', methods: ['GET'])]
     public function show(Atelier $atelier): Response
-    {
+    {        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+
         return $this->render('atelier/show.html.twig', [
             'atelier' => $atelier,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+
         ]);
     }
 
@@ -87,9 +93,12 @@ final class AtelierController extends AbstractController
         }
     
         $ateliers = $queryBuilder->getQuery()->getResult();
-    
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+
         return $this->render('atelier/_list.html.twig', [
             'ateliers' => $ateliers,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+
         ]);
     }
     
