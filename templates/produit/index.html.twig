@@ -126,7 +126,7 @@
                                 <!-- Single product -->
 
                                 {% endfor %}
-
+  
                             </ul>
                         </div>
                         <!-- End Product List Vies -->
@@ -137,16 +137,38 @@
 
                     
 
-                    <!-- Pgination -->
-                    <nav class="woocommerce-pagination">
-                        <ul class="page-numbers">
-                            <li><a class="previous page-numbers" href="#"><i class="fas fa-angle-left"></i></a></li>
+                  
+                 <!-- Pgination -->
+<nav class="woocommerce-pagination">
+    <ul class="page-numbers">
+        {# Bouton Précédent #}
+        <li>
+            <a class="previous page-numbers {{ pager.currentPage == 1 ? 'disabled' : '' }}" 
+               href="{{ pager.currentPage > 1 ? path('app_produit_index', {'page': pager.currentPage - 1}) : '#' }}">
+                <i class="fas fa-angle-left"></i>
+            </a>
+        </li>
 
-                            <li><span aria-current="page" class="page-numbers current">1</span></li>
-                            <li><a class="page-numbers" href="#">2</a></li>
-                            <li><a class="next page-numbers" href="#"><i class="fas fa-angle-right"></i></a></li>
-                        </ul>
-                    </nav>
+        {# Affichage des numéros de page #}
+        {% for page in 1..pager.nbPages %}
+            <li>
+                {% if page == pager.currentPage %}
+                    <span aria-current="page" class="page-numbers current">{{ page }}</span>
+                {% else %}
+                    <a class="page-numbers" href="{{ path('app_produit_index', {'page': page}) }}">{{ page }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {# Bouton Suivant #}
+        <li>
+            <a class="next page-numbers {{ pager.currentPage == pager.nbPages ? 'disabled' : '' }}" 
+               href="{{ pager.currentPage < pager.nbPages ? path('app_produit_index', {'page': pager.currentPage + 1}) : '#' }}">
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
                 </div>
             </div>
         </div>
