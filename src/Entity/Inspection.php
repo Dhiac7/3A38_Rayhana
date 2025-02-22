@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\InspectionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InspectionRepository::class)]
 class Inspection
@@ -14,26 +15,27 @@ class Inspection
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $id_avis = null;
+    
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $date_inspection = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $type_inspection = null;
 
-    #[ORM\Column]
-    private ?int $inspecteur_id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Le commentaire ne peut pas être vide.')]
     private ?string $resultat = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'La note ne peut pas être vide.')]
+    #[Assert\Range(min: 0, max: 10, notInRangeMessage: 'La note doit être entre 0 et 10.')]
     private ?int $note = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reponse')]
+    #[ORM\ManyToOne(inversedBy: 'inspections')]
     private ?Avis $avis = null;
+
 
     public function __construct()
     {
@@ -45,16 +47,7 @@ class Inspection
         return $this->id;
     }
 
-    public function getIdAvis(): ?int
-    {
-        return $this->id_avis;
-    }
-
-    public function setIdAvis(int $id_avis): static
-    {
-        $this->id_avis = $id_avis;
-        return $this;
-    }
+    
 
     public function getDateInspection(): ?\DateTimeImmutable
     {
@@ -78,16 +71,7 @@ class Inspection
         return $this;
     }
 
-    public function getInspecteurId(): ?int
-    {
-        return $this->inspecteur_id;
-    }
 
-    public function setInspecteurId(int $inspecteur_id): static
-    {
-        $this->inspecteur_id = $inspecteur_id;
-        return $this;
-    }
 
     public function getResultat(): ?string
     {
@@ -122,4 +106,5 @@ class Inspection
 
         return $this;
     }
+
 }
