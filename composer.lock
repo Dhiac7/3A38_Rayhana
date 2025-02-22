@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e24e7706cf2f35d0a579a3acb78a468",
-    "content-hash": "a0a6a4c9a8f2c9b1d76a128786d7a33c",
+    "content-hash": "9fb265d23ed383dcc8a35a4c69def29b",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2381,10 +2380,47 @@
             },
             "type": "symfony-bundle",
             "extra": {
-             "branch-alias": {
-             "dev-main": "1.x-dev"
-             }
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
             },
+            "autoload": {
+                "psr-4": {
+                    "Stof\\DoctrineExtensionsBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                }
+            ],
+            "description": "Integration of the gedmo/doctrine-extensions with Symfony",
+            "homepage": "https://github.com/stof/StofDoctrineExtensionsBundle",
+            "keywords": [
+                "behaviors",
+                "doctrine2",
+                "extensions",
+                "gedmo",
+                "loggable",
+                "nestedset",
+                "sluggable",
+                "sortable",
+                "timestampable",
+                "translatable",
+                "tree"
+            ],
+            "support": {
+                "issues": "https://github.com/stof/StofDoctrineExtensionsBundle/issues",
+                "source": "https://github.com/stof/StofDoctrineExtensionsBundle/tree/v1.13.0"
+            },
+            "time": "2025-01-07T08:10:54+00:00"
+        },
+        {
             "name": "stripe/stripe-php",
             "version": "v16.5.1",
             "source": {
@@ -2417,7 +2453,6 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Stof\\DoctrineExtensionsBundle\\": "src",
                     "Stripe\\": "lib/"
                 }
             },
@@ -2427,49 +2462,23 @@
             ],
             "authors": [
                 {
-                    "name": "Christophe Coevoet",
-                    "email": "stof@notk.org"
+                    "name": "Stripe and contributors",
+                    "homepage": "https://github.com/stripe/stripe-php/contributors"
                 }
             ],
-            "description": "Integration of the gedmo/doctrine-extensions with Symfony",
-            "homepage": "https://github.com/stof/StofDoctrineExtensionsBundle",
+            "description": "Stripe PHP Library",
+            "homepage": "https://stripe.com/",
             "keywords": [
-                "behaviors",
-                "doctrine2",
-                "extensions",
-                "gedmo",
-                "loggable",
-                "nestedset",
-                "sluggable",
-                "sortable",
-                "timestampable",
-                "translatable",
-                "tree"
+                "api",
+                "payment processing",
+                "stripe"
             ],
-       "support": {
-    "issues": "https://github.com/stof/StofDoctrineExtensionsBundle/issues",
-    "source": "https://github.com/stof/StofDoctrineExtensionsBundle/tree/v1.13.0"
-},
-"time": "2025-01-07T08:10:54+00:00"
-},
-{
-    "name": "stripe/stripe-php",
-    "version": "v16.5.1",
-    "homepage": "https://stripe.com/",
-    "description": "Stripe PHP Library",
-    "keywords": [
-        "api",
-        "payment processing",
-        "stripe"
-    ],
-    "support": {
-        "issues": "https://github.com/stripe/stripe-php/issues",
-        "source": "https://github.com/stripe/stripe-php/tree/v16.5.1"
-    },
-    "time": "2025-02-07T21:24:29+00:00"
-},
-
-    
+            "support": {
+                "issues": "https://github.com/stripe/stripe-php/issues",
+                "source": "https://github.com/stripe/stripe-php/tree/v16.5.1"
+            },
+            "time": "2025-02-07T21:24:29+00:00"
+        },
         {
             "name": "symfony/asset",
             "version": "v6.4.13",
@@ -10022,54 +10031,51 @@
                 "branch-alias": {
                     "dev-main": "1.x-dev"
                 }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Bundle\\MakerBundle\\": "src/"
                 }
             },
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Symfony\\Bundle\\MakerBundle\\": "src/"
-                    }
-                },
-                "notification-url": "https://packagist.org/downloads/",
-                "license": [
-                    "MIT"
-                ],
-                "authors": [
-                    {
-                        "name": "Symfony Community",
-                        "homepage": "https://symfony.com/contributors"
-                    }
-                ],
-                "description": "Symfony Maker helps you create empty commands, controllers, form classes, tests and more so you can forget about writing boilerplate code.",
-                "homepage": "https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html",
-                "keywords": [
-                    "code generator",
-                    "dev",
-                    "generator",
-                    "scaffold",
-                    "scaffolding"
-                ],
-                "support": {
-                    "issues": "https://github.com/symfony/maker-bundle/issues",
-                    "source": "https://github.com/symfony/maker-bundle/tree/v1.62.1"
-                },
-                "funding": [
-                    {
-                        "url": "https://symfony.com/sponsor",
-                        "type": "custom"
-                    },
-                    {
-                        "url": "https://github.com/fabpot",
-                        "type": "github"
-                    },
-                    {
-                        "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                        "type": "tidelift"
-                    }
-                ],
-                "time": "2025-01-15T00:21:40+00:00"
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Maker helps you create empty commands, controllers, form classes, tests and more so you can forget about writing boilerplate code.",
+            "homepage": "https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html",
+            "keywords": [
+                "code generator",
+                "dev",
+                "generator",
+                "scaffold",
+                "scaffolding"
+            ],
+            "support": {
+                "issues": "https://github.com/symfony/maker-bundle/issues",
+                "source": "https://github.com/symfony/maker-bundle/tree/v1.62.1"
             },
-            
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-01-15T00:21:40+00:00"
+        },
         {
             "name": "symfony/phpunit-bridge",
             "version": "v7.2.0",
