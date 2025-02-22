@@ -80,25 +80,26 @@
                                         <div class="product-image">
                                             <a href="shop-single.html">
                                                
-                                                {% if produit.image %}
-                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                                {% if produit.image %} <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                                   
                                                 {% else %}
                                                     <span class="text-muted">Aucune image disponible</span>
                                                 {% endif %}
                                             </a>
                                             {% if produit.enPromotion %}
-                                               <span class="onsale">Sale!</span>
+                                               <span class="onsale">promo !</span>
                                             {% endif %}
                                             <div class="shop-action">
                                                 <ul>
                                                     <li class="cart">
-                                                       <a href="{{ path('app_vente_new', {'id': produit.id}) }}">buy</a>
+                                                       <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">buy</a>
                                                     </li>
                                                     <li class="wishlist">
                                                         <a href="#"><span>Add to wishlist</span></a>
                                                     </li>
                                                     <li class="quick-view">
-                                                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" ><span>Quick view</span></a>
+                                                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" ><span> Détail</span></a>
+                                                        
                                                     </li>
                                                 </ul>
                                             </div>
@@ -117,7 +118,7 @@
                                                     <span>{{ produit.prixVente }} DT</span>
                                                 {% endif %}
                                             </div>
-                                            <a href="{{ path('app_vente_new', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
+                                            <a href="{{ path('panier_ajouter1', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
                                             
                                         </div>
                                     </div>

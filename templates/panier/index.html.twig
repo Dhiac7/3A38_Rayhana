@@ -1,0 +1,239 @@
+{% extends 'user/client.html.twig' %}
+
+{% block title %}Produits{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier d'achat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f8f0; /* Légèrement vert pour correspondre à la navbar */
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .cart-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cart-table th, .cart-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .cart-table th {
+            background-color: #fff; /* Vert clair pour les en-têtes */
+            font-weight: 600;
+            color: black; /* Texte vert foncé */
+            text-transform: uppercase;
+        }
+        .cart-table td {
+            vertical-align: middle;
+        }
+        .product-name {
+            font-weight: 600;
+            color:rgb(23, 131, 48); /* Texte vert foncé */
+            font-size: 18px;
+        }
+        .quantity {
+            font-size: 16px;
+            color: #6c757d;
+        }
+        .unit-price, .total-price {
+            font-size: 16px;
+            color: black; /* Texte vert foncé */
+        }
+        .actions a {
+            margin: 0 5px;
+            color: #dc3545; /* Rouge pour les actions */
+            font-size: 18px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .actions a:hover {
+            color: #c82333; /* Rouge foncé au survol */
+        }
+        .actions span {
+            color: #6c757d;
+            font-size: 16px;
+        }
+        .cart-total {
+            background-color: #fff; /* Vert clair pour le total */
+            padding: 20px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 20px;
+            color: black; /* Texte vert foncé */
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ced4da;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .quantity-btn:hover {
+            background: #f1f1f1;
+        }
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-weight: 500;
+            padding: 5px;
+        }
+        .btn {
+            display: inline-block;
+            font-weight: 400;
+            color: #fff;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            background-color: #28a745; /* Vert pour les boutons */
+            border: 1px solid transparent;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .btn-success {
+            color: #fff;
+            background-color: #28a745; /* Vert pour les boutons */
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            color: #fff;
+            background-color: #218838; /* Vert foncé au survol */
+            border-color: #218838;
+        }
+        .btn-outline-secondary {
+            color: #6c757d;
+            background-color: transparent;
+            border-color: #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .cart-table th, .cart-table td {
+                padding: 15px;
+                font-size: 14px;
+            }
+            .product-name {
+                font-size: 16px;
+            }
+            .quantity, .unit-price, .total-price {
+                font-size: 14px;
+            }
+            .actions a {
+                font-size: 16px;
+            }
+            .cart-total {
+                font-size: 18px;
+            }
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-container .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Image du produit</th>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>Prix total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in panier %}
+                    <tr>
+                        <td>
+                            <img src="{{ asset('img/stock/' ~ item.produit.image) }}" alt="Image du produit"
+                                 style="width: 80px; height: 80px; object-fit: cover;" class="rounded">
+                        </td>
+                        <td>
+                            {% if item.produit is defined and item.produit is not null %}
+                                <span class="product-name">{{ item.produit.nom }}</span>
+                            {% else %}
+                                <span class="product-name">Produit non trouvé</span>
+                            {% endif %}
+                        </td>
+                        <td class="quantity">
+                            <div class="quantity-control">
+                                <a href="{{ path('panier_diminuer', {'id': item.produit.id}) }}" class="quantity-btn">−</a>
+                                <input type="text" class="quantity-input" value="{{ item.quantite }}" readonly>
+                                <a href="{{ path('panier_ajouter', {'id': item.produit.id}) }}" class="quantity-btn">+</a>
+                            </div>
+                        </td>
+                        <td class="unit-price">{{ item.prixVente }} €</td>
+                        <td class="total-price">{{ item.prixTotalProduit }} €</td>
+                        <td class="actions">
+                            {% if item.produit is defined and item.produit is not null %}
+                                <a href="{{ path('panier_supprimer', {'id': item.produit.id}) }}">❌</a>
+                            {% else %}
+                                <span>Actions non disponibles</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total du panier</strong></td>
+                    <td colspan="2" class="cart-total"><strong>{{ totalPanier }} €</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="btn-container">
+            <a href="#" class="btn btn-success py-2">Passer au paiement</a>
+            <a href="{{ path('app_produit_index') }}" class="btn btn-outline-secondary py-2">Retour</a>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
