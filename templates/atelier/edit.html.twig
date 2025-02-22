@@ -9,7 +9,7 @@
           <h4 class="card-title">Modifier un Atelier</h4>
           <p class="card-description">Mettez à jour les informations</p>
 
-         {{ form_start(form, {'method': 'POST', 'action': path('app_atelier_new'), 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
+         {{ form_start(form, { 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
                         {% for error in form.vars.errors %}
 
                          <div class="text-danger">{{ error.message }}</div>

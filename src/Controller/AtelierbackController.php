@@ -24,7 +24,7 @@ final class AtelierbackController extends AbstractController
     // public function index(AtelierRepository $atelierRepository): Response
     public function indexBack(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator , SessionInterface $session,EntityManagerInterface $entityManager): Response
      {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -55,7 +55,7 @@ final class AtelierbackController extends AbstractController
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $em, SessionInterface $session , EntityManagerInterface $entityManager): Response
-{    $loggedInUserId = $session->get('admin_user_id');
+{    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -79,10 +79,10 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
             'date_atelier' => $atelier->getDateAtelier()
         ]);
 
-        if ($existingAtelier) {
+       /* if ($existingAtelier) {
             $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d') . " avec le nom : " . $existingAtelier->getNom());
             return $this->redirectToRoute('app_atelier_new');
-        }
+        }*/
 
         // Gestion de l'upload de la photo
         $photoFile = $form->get('photo')->getData();
@@ -123,7 +123,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
       
     #[Route('/{id}', name: 'app_atelier_show', methods: ['GET'])]
     public function show(Atelier $atelier,  EntityManagerInterface $entityManager, SessionInterface $session ): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -146,7 +146,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
     #[Route('/{id}/edit', name: 'app_atelier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Atelier $atelier, EntityManagerInterface $entityManager ,SessionInterface $session): Response
-    {   $loggedInUserId = $session->get('admin_user_id');
+    {   $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -185,7 +185,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
     #[Route('/atelier/delete/{id}', name: 'app_atelier_back_delete', methods: ['GET'])]
     public function delete(Request $request, Atelier $atelier, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -246,7 +246,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
     {   
         // Vérification de la session de l'utilisateur
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
             
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -298,7 +298,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
 
 public function deleteAtelierAjax(Request $request , AtelierRepository $atelierRepository , EntityManagerInterface $entityManager , SessionInterface $session): JsonResponse
-    {   $loggedInUserId = $session->get('admin_user_id');
+    {   $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
