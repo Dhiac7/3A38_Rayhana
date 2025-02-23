@@ -15,7 +15,7 @@ final class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
 public function index(SessionInterface $session, EntityManagerInterface $entityManager): Response 
 {
-    $userId = $session->get('admin_user_id');
+    $userId = $session->get('user_id');
 
     if (!$userId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -24,7 +24,7 @@ public function index(SessionInterface $session, EntityManagerInterface $entityM
     $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
 
     if (!$loggedInUser) {
-        $session->remove('admin_user_id');
+        $session->remove('user_id');
         return $this->redirectToRoute('app_user_loginback');
     }
 

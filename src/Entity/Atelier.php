@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AtelierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -55,20 +55,21 @@ class Atelier
     #[Assert\Positive(message: "Le prix doit être strictement positif.")]
     private ?float $prix = null;
 
-    #[ORM\Column]
-    private ?int $idUser = 0;
-
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank(message: "Tu dois choisir une option.")]
 
     #[Assert\Choice(choices: ['ouvert','complet','annulé'],message: "le statut doit étre 'ouvert','complet','annulé' ")]
-    private ?string $statut = null;
+    private ?string $statut = 'ouvert';
 
     #[ORM\Column(type: Types::STRING, length: 100)]
     #[Assert\NotBlank(message: "Tu dois choisir une option.")] 
 
     #[Assert\Choice(choices: ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
     private ?string $Role = 'client';
+
+
+    #[ORM\Column (nullable:true)]
+    private ?int $nbrplacedispo = null;
 
     /**
      * @var Collection<int, User>
@@ -86,6 +87,7 @@ class Atelier
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->nbrplacedispo = $this->capacite_max; 
     }
 
 
@@ -138,7 +140,7 @@ class Atelier
     public function setCapaciteMax(int $capacite_max): static
     {
         $this->capacite_max = $capacite_max;
-
+        $this->nbrplacedispo = $capacite_max; 
         return $this;
     }
 
@@ -154,25 +156,13 @@ class Atelier
         return $this;
     }
 
-    public function getIdUser(): ?int
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(int $idUser): static
-    { $idUser=0;
-        $this->idUser = $idUser;
-
-        return $this;
-    }
-
-    public function getStatut(): ?string
+       public function getStatut(): ?string
     {
         return $this->statut;
     }
 
     public function setStatut(string $statut): self
-    {
+    {   $statut='ouvert';
         if(!in_array($statut,['ouvert','complet','annulé'])){
             throw new \InvalidArgumentException("le statut doit etre 'ouvert','complet','annulé' ");
         }
@@ -207,14 +197,17 @@ class Atelier
         if (!$this->users->contains($user)) {
             $this->users->add($user);
         }
-
+    
         return $this;
     }
+    
 
     public function removeUser(User $user): static
     {
         $this->users->removeElement($user);
-
+    
+        // Incrémente la place disponible si nécessaire
+        $this->nbrplacedispo++;
         return $this;
     }
 
@@ -229,4 +222,32 @@ class Atelier
 
         return $this;
     }
+
+    public function getNbrplacedispo(): ?int
+    {
+        return $this->nbrplacedispo;
+    }
+
+    public function setNbrplacedispo(int $nbrplacedispo): static
+    {
+        $this->nbrplacedispo = $nbrplacedispo;
+
+        return $this;
+    }
+    public function reserverAtelier(int $atelierId, User $user, EntityManagerInterface $entityManager)
+    {
+        $atelier = $entityManager->getRepository(Atelier::class)->find($atelierId);
+    
+        if (!$atelier) {
+            throw new \Exception("L'atelier n'existe pas.");
+        }
+            if ($atelier->getNbrplacedispo() <= 0) {
+            throw new \Exception("Cet atelier est complet, il n'y a plus de place..");
+        }
+        $atelier->addUser($user);
+        $atelier->setNbrplacedispo($atelier->getNbrplacedispo() - 1);
+        $entityManager->persist($atelier);
+            $entityManager->flush();
+    }
+
 }

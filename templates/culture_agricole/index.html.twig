@@ -5,42 +5,25 @@
 {% block body %}
 <div class="container">
     <h2 class="heading">Liste des Cultures Agricoles</h2>
-    <div class="text-right mb-3">
-        <a href="{{ path('app_culture_agricole_new') }}" class="btn btn-primary">
-            <i class="fa fa-plus"></i> Ajouter une Culture
-        </a>
+    
+    <div class="row">
+        {% set start = (currentPage - 1) * 4 %}
+        {% set end = start + 4 %}
+        {% for culture in cultures|slice(start, end) %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ culture.nom }}</h5>
+                        <p class="card-text"><strong>Type:</strong> {{ culture.type }}</p>
+                        <p class="card-text"><strong>Superficie:</strong> {{ culture.superficie }} m²</p>
+                        <a href="{{ path('app_culture_agricole_show', {'id': culture.id}) }}" class="btn btn-primary">Voir</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="text-center">Aucune culture enregistrée.</p>
+        {% endfor %}
     </div>
-
-    <table id="cultureTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Superficie</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set start = (currentPage - 1) * 4 %}
-            {% set end = start + 4 %}
-            {% for culture in cultures|slice(start, end) %}
-                <tr>
-                    <td>{{ culture.id }}</td>
-                    <td>{{ culture.nom }}</td>
-                    <td>{{ culture.type }}</td>
-                    <td>{{ culture.superficie }} m²</td>
-                    <td>
-                        <a href="{{ path('app_culture_agricole_show', {'id': culture.id}) }}" class="btn btn-info">Voir</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">Aucune culture enregistrée.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
     <nav class="woocommerce-pagination">
         <ul class="page-numbers">
@@ -71,24 +54,5 @@
             {% endif %}
         </ul>
     </nav>
-    <div>________</div>
 </div>
-
-
-
-  <script>
-//tri 
-        $(document).ready(function () {
-            $('#cultureTable').DataTable({
-                "ordering": true,  // tri 3al colonne
-                "paging": false,    // nactiviw l pagination
-                "searching": true, // nactiviw l recherche
-                "pageLength": 4,   // nbr element par page
-                "lengthChange": false, // deactiv ll menu pour modif le nbr d'éléments par page
-                "language": {
-                     "url": "{{ asset('js/French.json') }}"
-                }
-            });
-        });
-    </script>
 {% endblock %}

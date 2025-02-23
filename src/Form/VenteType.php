@@ -1,6 +1,4 @@
 <?php
-
-
 // src/Form/VenteType.php
 
 namespace App\Form;
@@ -25,20 +23,20 @@ class VenteType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 1,
-                    'id' => 'vente_quantite', // Ajouter un ID pour JavaScript
+                    'id' => 'vente_quantite',
                 ],
             ])
             ->add('prix', MoneyType::class, [
                 'label' => 'Prix Total (€)',
                 'attr' => [
                     'class' => 'form-control',
-                    'readonly' => true, // Champ en lecture seule
-                    'id' => 'vente_prix', // ID pour JavaScript
+                    'readonly' => true,
+                    'id' => 'vente_prix',
                 ],
             ])
             ->add('prixUnitaire', HiddenType::class, [
-                'mapped' => false, // Ce champ n'est pas mappé à l'entité
-                'data' => $options['prix_unitaire'], // Utilisation de l'option passée
+                'mapped' => false,
+                'data' => $options['prix_unitaire'],
                 'attr' => ['id' => 'vente_prixUnitaire'],
             ])
             ->add('methodepayement', ChoiceType::class, [
@@ -61,7 +59,7 @@ class VenteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Vente::class,
-            'prix_unitaire' => null, // Définition de l'option personnalisée
+            'prix_unitaire' => null,
         ]);
     }
 }

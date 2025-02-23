@@ -9,6 +9,8 @@ parameters:
     uploads_directory: '%kernel.project_dir%/public/img/users'
     image_directory: '%kernel.project_dir%/public/img/stock'
     atelier_directory: '%kernel.project_dir%/public/img/atelier'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+
 
     
 
@@ -26,7 +28,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\EmailMessageHandler:
+        arguments:
+            $mailer: '@Symfony\Component\Mailer\MailerInterface'
+        tags: ['messenger.message_handler']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
 

@@ -1,65 +1,87 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de la Culture Agricole{% endblock %}
+{% block title %}Culture Agricole - {{ culture_agricole.nom }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1 class="mb-4">Détails de la Culture Agricole</h1>
+    <!-- 🟢 Breadcrumb -->
+    <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" 
+         style="background-image: url(assets/img/agriculture-banner.jpg); padding: 80px 0;">
+        <div class="container">
+            <h1 class="fw-bold">{{ culture_agricole.nom }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_home') }}"><i class="fas fa-home"></i> Accueil</a>
+                    </li>
+                    <li class="breadcrumb-item active">Détails de la Culture</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
 
-        <div class="card shadow p-4">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <th>Nom</th>
-                        <td>{{ culture_agricole.nom }}</td>
-                    </tr>
-                    <tr>
-                        <th>Type</th>
-                        <td>{{ culture_agricole.type }}</td>
-                    </tr>
-                    <tr>
-                        <th>Date de Semis</th>
-                        <td>{{ culture_agricole.dateSemi ? culture_agricole.dateSemi|date('d/m/Y') : 'Non défini' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Superficie (ha)</th>
-                        <td>{{ culture_agricole.superficie }}</td>
-                    </tr>
-                    <tr>
-                        <th>Statut</th>
-                        <td>
-                            {% if culture_agricole.statut == 'en croissance' %}
-                                <span class="badge bg-success">En croissance</span>
-                            {% elseif culture_agricole.statut == 'mature' %}
-                                <span class="badge bg-primary">Mature</span>
-                            {% elseif culture_agricole.statut == 'récolté' %}
-                                <span class="badge bg-secondary">Récolté</span>
-                            {% elseif culture_agricole.statut == 'malade' %}
-                                <span class="badge bg-danger">Malade</span>
-                            {% else %}
-                                <span class="badge bg-warning">En attente</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Rendement Estimé</th>
-                        <td>{{ culture_agricole.rendementEstime }} kg/ha</td>
-                    </tr>
-                </tbody>
-            </table>
-                    <nav class="woocommerce-pagination">
-                        <ul class="page-numbers">
-                            <li><a class="previous page-numbers" href="#"><i class="fas fa-angle-left"></i></a></li>
-
-                            <li><span aria-current="page" class="page-numbers current">1</span></li>
-                            <li><a class="page-numbers" href="#">2</a></li>
-                            <li><a class="next page-numbers" href="#"><i class="fas fa-angle-right"></i></a></li>
+    <!-- 🌾 Détails Culture -->
+    <div class="project-details-style-one default-padding">
+        <div class="container">
+            <div class="row">
+                <!-- 📋 Informations Culture -->
+                <div class="col-lg-4">
+                    <div class="card bg-dark text-light p-4 rounded">
+                        <h4 class="text-center mb-4">🌱 Informations</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>📌 Nom :</strong> {{ culture_agricole.nom }}
+                            </li>
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>🌿 Type :</strong> {{ culture_agricole.type }}
+                            </li>
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>📅 Date de semis :</strong> 
+                                {{ culture_agricole.dateSemi ? culture_agricole.dateSemi|date('d/m/Y') : 'Non défini' }}
+                            </li>
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>📏 Superficie :</strong> {{ culture_agricole.superficie }} ha
+                            </li>
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>📊 Rendement Estimé :</strong> {{ culture_agricole.rendementEstime }} kg/ha
+                            </li>
+                            <li class="list-group-item bg-transparent text-light">
+                                <strong>🔍 Statut :</strong> 
+                                {% if culture_agricole.statut == 'en croissance' %}
+                                    <span class="badge bg-success">En croissance</span>
+                                {% elseif culture_agricole.statut == 'mature' %}
+                                    <span class="badge bg-primary">Mature</span>
+                                {% elseif culture_agricole.statut == 'récolté' %}
+                                    <span class="badge bg-secondary">Récolté</span>
+                                {% elseif culture_agricole.statut == 'malade' %}
+                                    <span class="badge bg-danger">Malade</span>
+                                {% else %}
+                                    <span class="badge bg-warning">En attente</span>
+                                {% endif %}
+                            </li>
                         </ul>
-                    </nav>
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ path('app_culture_agricole_index') }}" class="btn btn-secondary">Retour</a>
-
+                    </div>
+                </div>
+                
+                <!-- 📝 Description -->
+                <div class="col-lg-8 ps-lg-5 mt-4 mt-lg-0">
+                    <h3 class="mb-3">📖 Description</h3>
+                    <p>
+                        Voici les détails de votre culture agricole. Vous pouvez suivre son évolution, son rendement
+                        et son statut en temps réel.
+                    </p>
+                    <p>
+                        Assurez-vous de surveiller son état de santé et d'optimiser les conditions de croissance
+                        pour un meilleur rendement.
+                    </p>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- 🎯 Actions -->
+    <div class="container text-center mt-4">
+        <a href="{{ path('app_culture_agricole_index') }}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
     </div>
 {% endblock %}

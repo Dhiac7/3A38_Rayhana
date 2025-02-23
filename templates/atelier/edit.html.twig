@@ -9,73 +9,84 @@
           <h4 class="card-title">Modifier un Atelier</h4>
           <p class="card-description">Mettez à jour les informations</p>
 
-          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
+         {{ form_start(form, { 'attr': {'novalidate': 'novalidate','class': 'contact-form contact-form'}}) }}
+                        {% for error in form.vars.errors %}
 
-          {% for error in form.vars.errors %}
-              <div class="text-danger">{{ error.message }}</div>
-          {% endfor %}
-          {% for label, messages in app.flashes %}
-              {% for message in messages %}
-                  <div class="alert alert-{{ label }}">{{ message }}</div>
-              {% endfor %}
-          {% endfor %}
+                         <div class="text-danger">{{ error.message }}</div>
+                        {% endfor %}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endfor %}
 
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.nom, 'Nom') }}
-              {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
-              {{ form_errors(form.nom) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.description, 'Description') }}
-              {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
-              {{ form_errors(form.description) }}
-            </div>
-          </div>
+                        <div class="form-group">
+                            {{ form_label(form.nom, 'Nom') }}
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de l\'atelier'}}) }}
+                        <div {{ form_errors(form.nom) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.nom) }}{#error rouge b div #}
+                         </div>     
+                        </div>
 
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
-              {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
-              {{ form_errors(form.date_atelier) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.capacite_max, 'Capacité max') }}
-              {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
-              {{ form_errors(form.capacite_max) }}
-            </div>
-          </div>
+                        <div class="form-group">
+                            {{ form_label(form.description, 'Description') }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Description'}}) }}
+                        <div {{ form_errors(form.description) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.description) }}{#error rouge b div #}
+                        </div> 
+                        </div>
 
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.prix, 'Prix') }}
-              {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
-              {{ form_errors(form.prix) }}
-            </div>
-            <div class="col-md-6 form-group">
-              {{ form_label(form.statut, 'Statut') }}
-              {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-              {{ form_errors(form.statut) }}
-            </div>
-          </div>
+                        <div class="form-group">
+                            {{ form_label(form.date_atelier, 'Date de l\'atelier') }}
+                            {{ form_widget(form.date_atelier, {'attr': {'class': 'form-control'}}) }}
+                        <div {{ form_errors(form.date_atelier) ? 'class="text-danger"' : '' }}>
+                              {{ form_errors(form.date_atelier) }}{#error rouge b div #}
+                         </div> 
+                                </div>
 
-          <div class="row">
-            <div class="col-md-6 form-group">
-              {{ form_label(form.photo, "Photo de l'atelier") }}
-              {{ form_widget(form.photo, {'attr': {'class': 'form-control-file'}}) }}
-              {{ form_errors(form.photo) }}
+                        <div class="form-group">
+                            {{ form_label(form.capacite_max, 'Capacité max') }}
+                            {{ form_widget(form.capacite_max, {'attr': {'class': 'form-control', 'placeholder': 'Capacité max'}}) }}
+                        <div {{ form_errors(form.capacite_max) ? 'class="text-danger"' : '' }}>
+                             {{ form_errors(form.capacite_max) }}{#error rouge b div #}
+                         </div> 
+                                </div>
 
-              {% if form.vars.value.photo %}
-                <p>Image actuelle :</p>
-                <img src="{{ asset('uploads/' ~ form.vars.value.photo) }}" alt="Photo actuelle" class="img-thumbnail" width="200">
-              {% endif %}
-            </div>
-          </div>
+                        <div class="form-group">
+                            {{ form_label(form.prix, 'Prix') }}
+                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'placeholder': 'Prix en TND'}}) }}
+                        <div {{ form_errors(form.prix) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.prix) }}{#error rouge b div #}
+                             </div> 
+                                </div>
 
-          <button type="submit" class="btn btn-gradient-primary me-2 w-100">
-              <i class="mdi mdi-content-save"></i> Enregistrer
-          </button> 
-          {{ form_end(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.statut, 'Statut') }}
+                            {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                        <div {{ form_errors(form.statut) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.statut) }}{#error rouge b div #}
+                         </div> 
+                                </div>
+                        <div class="form-group">
+                            {{ form_label(form.photo,  "Photo de l'atelier") }}
+                            {{ form_widget(form.photo, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.photo) }}
+                        </div>
+                     
+
+                        {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-success me-3">
+                               <i class="fas fa-save me-2"></i>Enregistrer
+                           </button>
+                           <a href="{{ path('app_atelier_indexBack') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i>Retour à la liste
+                           </a>
+                       </div>
+                   </div>
+
+                        {{ form_end(form) }}
 
         </div>
       </div>

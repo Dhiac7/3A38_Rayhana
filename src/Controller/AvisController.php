@@ -90,7 +90,7 @@ final class AvisController extends AbstractController{
     // Récupérer l'utilisateur connecté
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_login');
+        return $this->redirectToRoute('gi');
     }
         return $this->render('avis/show.html.twig', [
             'avi' => $avi,
