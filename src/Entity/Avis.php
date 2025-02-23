@@ -17,12 +17,7 @@ class Avis
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    //#[Assert\NotBlank(message: 'L\'ID client ne peut pas être vide.')]
-    private ?int $id_Client = null;
 
-    #[ORM\Column]
-    private ?int $id_produit = null;
 
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La note ne peut pas être vide.')]
@@ -45,10 +40,17 @@ class Avis
     #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis')]
     private Collection $reponse;
 
+    /**
+     * @var Collection<int, Inspection>
+     */
+    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis')]
+    private Collection $inspections;
+
     public function __construct()
     {
         $this->date = new \DateTimeImmutable(); // Définit la date et l'heure actuelles automatiquement
         $this->reponse = new ArrayCollection();
+        $this->inspections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,27 +58,9 @@ class Avis
         return $this->id;
     }
 
-    public function getIdClient(): ?int
-    {
-        return $this->id_Client;
-    }
 
-    public function setIdClient(int $id_Client): static
-    {
-        $this->id_Client = $id_Client;
-        return $this;
-    }
 
-    public function getIdProduit(): ?int
-    {
-        return $this->id_produit;
-    }
 
-    public function setIdProduit(int $id_produit): static
-    {
-        $this->id_produit = $id_produit;
-        return $this;
-    }
 
     public function getRate(): ?float
     {
@@ -141,6 +125,36 @@ class Avis
             // set the owning side to null (unless already changed)
             if ($reponse->getAvis() === $this) {
                 $reponse->setAvis(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inspection>
+     */
+    public function getInspections(): Collection
+    {
+        return $this->inspections;
+    }
+
+    public function addInspection(Inspection $inspection): static
+    {
+        if (!$this->inspections->contains($inspection)) {
+            $this->inspections->add($inspection);
+            $inspection->setAvis($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInspection(Inspection $inspection): static
+    {
+        if ($this->inspections->removeElement($inspection)) {
+            // set the owning side to null (unless already changed)
+            if ($inspection->getAvis() === $this) {
+                $inspection->setAvis(null);
             }
         }
 

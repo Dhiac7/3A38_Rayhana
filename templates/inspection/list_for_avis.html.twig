@@ -1,0 +1,54 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Inspections pour Avis #{{ avis.id }}{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <div class="p-3 mb-4 bg-primary text-white text-center rounded">
+        <h4>Inspections pour l'avis #{{ avis.id }}</h4>
+      </div>
+      <p class="card-description">Liste des inspections liées à cet avis</p>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th> ID </th>
+            <th>Détails</th>
+            <th>note</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inspection in inspections %}
+          <tr>
+            <td>{{ inspection.id }}</td>
+            <td> {{ inspection.resultat }} </td>
+            <td> {{ inspection.note }} </td>
+            <td> {{ inspection.dateInspection ? inspection.dateInspection|date('d/m/Y H:i:s') : 'N/A' }} </td>
+            <td>
+              <a href="{{ path('app_inspection_show', {'id': inspection.id}) }}" class="btn btn-info btn-sm">
+                Voir
+              </a>
+              {# Ajoutez d'autres boutons (éditer, supprimer) si nécessaire #}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center">Aucune inspection trouvée pour cet avis.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <a href="{{ path('app_inspection_new') }}" class="btn btn-success">
+        <i class="mdi mdi-plus"></i> Ajouter une inspection
+      </a>
+      <a href="{{ path('app_avisback_index') }}" class="btn btn-secondary">
+        <i class="mdi mdi-arrow-left"></i> Retour aux avis
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
