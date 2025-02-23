@@ -84,10 +84,17 @@ class Atelier
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
 
+    /**
+     * @var Collection<int, Dechet>
+     */
+    #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'dechet')]
+    private Collection $dechet;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->nbrplacedispo = $this->capacite_max; 
+        $this->nbrplacedispo = $this->capacite_max;
+        $this->dechet = new ArrayCollection(); 
     }
 
 
@@ -248,6 +255,36 @@ class Atelier
         $atelier->setNbrplacedispo($atelier->getNbrplacedispo() - 1);
         $entityManager->persist($atelier);
             $entityManager->flush();
+    }
+
+    /**
+     * @return Collection<int, Dechet>
+     */
+    public function getDechet(): Collection
+    {
+        return $this->dechet;
+    }
+
+    public function addDechet(Dechet $dechet): static
+    {
+        if (!$this->dechet->contains($dechet)) {
+            $this->dechet->add($dechet);
+            $dechet->setDechet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDechet(Dechet $dechet): static
+    {
+        if ($this->dechet->removeElement($dechet)) {
+            // set the owning side to null (unless already changed)
+            if ($dechet->getDechet() === $this) {
+                $dechet->setDechet(null);
+            }
+        }
+
+        return $this;
     }
 
 }
