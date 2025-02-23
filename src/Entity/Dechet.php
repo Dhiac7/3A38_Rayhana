@@ -57,6 +57,9 @@ class Dechet
 
     #[ORM\ManyToOne(inversedBy: 'dechets')]
     private ?Stock $stock_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'dechet')]
+    private ?Atelier $dechet = null;
     #[Assert\Callback]
     public function validateDates(ExecutionContextInterface $context): void
     {
@@ -158,6 +161,18 @@ class Dechet
     public function setStockId(?Stock $stock_id): static
     {
         $this->stock_id = $stock_id;
+
+        return $this;
+    }
+
+    public function getDechet(): ?Atelier
+    {
+        return $this->dechet;
+    }
+
+    public function setDechet(?Atelier $dechet): static
+    {
+        $this->dechet = $dechet;
 
         return $this;
     }
