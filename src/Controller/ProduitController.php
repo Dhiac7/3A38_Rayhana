@@ -13,13 +13,27 @@ use Symfony\Component\Routing\Attribute\Route;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\View\TwitterBootstrap5View;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
 {
     #[Route(name: 'app_produit_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository, Request $request): Response
+    public function index(ProduitRepository $produitRepository, Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        $loggedInUserId = $session->get('user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_login');
+        }
+
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_login');
+        }
         // Créez une requête pour récupérer tous les produits
         $queryBuilder = $produitRepository->createQueryBuilder('p');
 
@@ -45,14 +59,27 @@ final class ProduitController extends AbstractController
             'produits' => $pagerfanta->getCurrentPageResults(),
             'pager' => $pagerfanta,
             'pagination' => $paginationHtml,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
-    public function show(Produit $produit): Response
+    public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        $loggedInUserId = $session->get('user_id');
+
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_login');
+        }
+
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_login');
+        }
         return $this->render('produit/show.html.twig', [
             'produit' => $produit,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
 }
