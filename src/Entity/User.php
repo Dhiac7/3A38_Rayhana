@@ -185,6 +185,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'agriculteur')]
     private Collection $employes;
 
+    /**
+     * @var Collection<int, CultureAgricole>
+     */
+    #[ORM\OneToMany(targetEntity: CultureAgricole::class, mappedBy: 'user')]
+    private Collection $cultureAgricoles;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\NotBlank(message: "Le genre est obligatoire.")]
+    //#[Assert\Choice(choices: ["homme", "femme"], message: "Le genre doit être 'homme' ou 'femme'.")]
+    private ?string $genre = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank(message: "L'année de naissance est obligatoire.")]
+    #[Assert\Range(
+        min: 1990,
+        max: 2025,
+        notInRangeMessage: "L'année de naissance doit être entre {{ min }} et {{ max }}."
+    )]
+    private ?int $AnneeNaissance = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $slug = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'users')]
+    private ?self $createdBy = null;
+
+    /**
+     * @var Collection<int, self>
+     */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'createdBy')]
+    private Collection $users;
+
 
 
     public function __construct()
@@ -195,6 +230,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->transactionfinanciers = new ArrayCollection();
         $this->parcelles = new ArrayCollection();
         $this->employes = new ArrayCollection();
+        $this->cultureAgricoles = new ArrayCollection();
+        $this->users = new ArrayCollection();
 
 
     }
@@ -584,6 +621,135 @@ public function getPassword(): ?string
                 $employe->setAgriculteur(null);
             }
         
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CultureAgricole>
+     */
+    public function getCultureAgricoles(): Collection
+    {
+        return $this->cultureAgricoles;
+    }
+
+    public function addCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        if (!$this->cultureAgricoles->contains($cultureAgricole)) {
+            $this->cultureAgricoles->add($cultureAgricole);
+            $cultureAgricole->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCultureAgricole(CultureAgricole $cultureAgricole): static
+    {
+        if ($this->cultureAgricoles->removeElement($cultureAgricole)) {
+            // set the owning side to null (unless already changed)
+            if ($cultureAgricole->getUser() === $this) {
+                $cultureAgricole->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getGenre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(?string $genre): static
+    {
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    public function getAnneeNaissance(): ?int
+    {
+        return $this->AnneeNaissance;
+    }
+
+    public function setAnneeNaissance(?int $AnneeNaissance): static
+    {
+        $this->AnneeNaissance = $AnneeNaissance;
+
+        return $this;
+    }
+    // Calculate the age based on the birth year
+    public function getAge(): ?int
+    {
+        if ($this->AnneeNaissance) {
+            $currentYear = (int) date("Y");
+            return $currentYear - $this->AnneeNaissance;
+        }
+        return null;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?self
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?self $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(self $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(self $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCreatedBy() === $this) {
+                $user->setCreatedBy(null);
+            }
+        }
+
         return $this;
     }
 }

@@ -14,11 +14,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
+    private SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(Request $request,UserRepository $userRepository, SessionInterface $session, PaginatorInterface $paginator): Response
     {
@@ -47,11 +55,15 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 
         if (!$user || !password_verify($password, $user->getPassword())) {
             $error = 'Invalid email or password';
-        } elseif ($user->getRole() === 'agriculteur') {
+        } elseif ($user->getRole() === 'agriculteur' || $user->getRole() === 'inspecteur') {
             $error = 'Accès refusé';
+        } elseif ($user->getStatut() === 'banni') {
+            $error = 'Vous avez un ban , Accès refusé';
         } else {
-            $session->set('client_user_id', $user->getId());
+            $session->set('user_id', $user->getId());
             User::setCurrentUser($user);
+            $user->setStatut('actif');
+
 
             return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
         }
@@ -63,22 +75,30 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 }
 
     #[Route('/logout', name: 'app_user_logout')]
-    public function logout(SessionInterface $session): Response
+    public function logout(SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
+        $loggedInUserId = $session->get('user_id');
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        $loggedInUser->setStatut('inactif');
         $session->clear();
         return $this->redirectToRoute('app_home');
     }
 
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger): Response
+{
+    $user = new User();
+    $form = $this->createForm(UserType::class, $user);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $photoFile = $form->get('photo')->getData();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $photoFile = $form->get('photo')->getData();
 
         if ($photoFile instanceof UploadedFile) {
             dump($photoFile); 
@@ -88,25 +108,36 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             $photoFile->move($uploadsDirectory, $newFilename);
 
             $user->setPhoto($newFilename);
-            } else {
-                dump('No file uploaded'); 
-            }
-
-            $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
-            $user->setRole('client');
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
+        } else {
+            dump('No file uploaded'); 
         }
 
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
+        $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+        $user->setPassword($hashedPassword);
+
+        $user->setRole('client');
+
+        $slug = $slugger->slug($user->getNom() . ' ' . $user->getPrenom())->lower();
+        $user->setSlug($slug);
+
+        $user->setCreatedAt(new \DateTime());
+
+    
+      /*  $currentUser = $this->getUser();  
+        if ($currentUser) {
+            $user->setCreatedBy($currentUser);  
+        }*/
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('user/new.html.twig', [
+        'user' => $user,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
@@ -114,6 +145,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
     
+        //dump($form->getErrors(true));
         if ($form->isSubmitted() && $form->isValid()) {
             // Handle Photo Upload
             $photoFile = $form->get('photo')->getData();
@@ -124,7 +156,6 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
                 $user->setPhoto($newFilename);
             }
     
-            // Handle Password Change
             $plainPassword = $form->get('mdp')->getData();
             if (!empty($plainPassword)) { 
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
@@ -145,7 +176,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     
 
 
-    /*#[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
@@ -153,8 +184,8 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_user_listemploye', [], Response::HTTP_SEE_OTHER);
-    }*/
+        return $this->redirectToRoute('app_user_logout', [], Response::HTTP_SEE_OTHER);
+    }
 
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]

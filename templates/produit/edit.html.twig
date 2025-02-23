@@ -7,12 +7,12 @@
    <div class="row justify-content-center">
        <div class="col-md-10">
            <div class="card shadow-lg border-0 rounded-lg">
-               <div class="card-header bg-warning text-white py-3">
+               <div class="card-header text-white py-3" style="background-color: #49a760;">
                    <h4 class="card-title mb-0 text-center">Modifier le Produit</h4>
                </div>
                <div class="card-body p-5">
                    {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
-                   
+
                    {# Stock #}
                    <div class="form-group row mb-4 align-items-center">
                        <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.stock) }}</label>
@@ -132,7 +132,7 @@
                    {# Boutons #}
                    <div class="form-group row mt-5">
                        <div class="col-12 text-center">
-                           <button type="submit" class="btn btn-warning me-3">
+                           <button type="submit" class="btn me-3" style="background-color: #49a760; color: white; border: none;">
                                <i class="fas fa-save me-2"></i>Modifier
                            </button>
                            <a href="{{ path('app_produitback_index') }}" class="btn btn-light">

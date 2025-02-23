@@ -1,133 +1,181 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}Détails du Stock{% endblock %}
-
-{% block stylesheets %}
-{{ parent() }}
-<style>
-    .stock-container {
-        max-width: 800px;
-        margin: 4rem auto;
-        padding: 3rem;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .stock-header {
-        margin-bottom: 3rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 2px solid #f0f0f0;
-        text-align: center;
-    }
-
-    .stock-title {
-        color: #2c3e50;
-        font-size: 2rem;
-        font-weight: 600;
-        margin-bottom: 2rem;
-    }
-
-    .stock-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 1.5rem;
-        margin: 0 auto;
-    }
-
-    .stock-table tr {
-        margin-bottom: 1rem;
-    }
-
-    .stock-table th {
-        text-align: right;
-        padding: 1.5rem;
-        background-color: #f8f9fa;
-        color: #6c757d;
-        font-weight: 600;
-        border-radius: 4px 0 0 4px;
-        width: 40%;
-    }
-
-    .stock-table td {
-        padding: 1.5rem;
-        background-color: #f8f9fa;
-        border-radius: 0 4px 4px 0;
-        text-align: left;
-    }
-
-    .stock-actions {
-        margin-top: 3rem;
-        display: flex;
-        gap: 2rem;
-        justify-content: center;
-    }
-
-    .btn {
-        padding: 1rem 2rem;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background-color: #a855f7;
-        color: white;
-    }
-
-    .btn-secondary {
-        background-color: #9ca3af;
-        color: white;
-    }
-
-    .btn:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-</style>
-{% endblock %}
+{% block title %}Stock - {{ stock.nom }}{% endblock %}
 
 {% block body %}
-<div class="stock-container">
-    <div class="stock-header">
-        <h1 class="stock-title">Détails du Stock - {{ stock.nom }}</h1>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- En-tête conforme à la charte -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-package-variant-closed"></i>
+                </span>
+                {{ stock.nom }}
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Accueil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Détails stock</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="row">
+            <!-- Colonne gauche - Détails techniques -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- Carte Date de stockage -->
+                    <div class="col-md-6 grid-margin stretch-card">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Date de stockage</h4>
+                                        <h2 class="text-primary">{{ stock.dateStock ? stock.dateStock|date('d M Y') : 'Non définie' }}</h2>
+                                    </div>
+                                    <div class="bg-gradient-primary p-3 rounded">
+                                        <i class="mdi mdi-calendar-check text-white h3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Date d'expiration -->
+                    <div class="col-md-6 grid-margin stretch-card">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Date d'expiration</h4>
+                                        {% if stock.dateExpiration %}
+                                            {% set daysUntilExpiration = date().diff(date(stock.dateExpiration)).days %}
+                                            {% set badgeClass = daysUntilExpiration < 30 ? 'bg-danger' : 
+                                                              daysUntilExpiration < 90 ? 'bg-warning' : 'bg-success' %}
+                                            <span class="badge {{ badgeClass }} h5 p-2">
+                                                {{ stock.dateExpiration|date('d M Y') }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary h5 p-2">Non définie</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="bg-gradient-warning p-3 rounded">
+                                        <i class="mdi mdi-calendar-alert text-white h3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Détails complets -->
+                    <div class="col-12 grid-margin">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Informations détaillées</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <th class="text-muted">Identifiant</th>
+                                                <td>{{ stock.id }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted">Lieu de stockage</th>
+                                                <td>{{ stock.lieu }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-muted">Conditionnement</th>
+                                                <td>{{ stock.conditionn }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne droite - Métadonnées -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Caractéristiques</h4>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                <i class="mdi mdi-domain text-white h4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Stockage</small>
+                                <h5 class="mb-0">{{ stock.lieu }}</h5>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                <i class="mdi mdi-package text-white h4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Conditionnement</small>
+                                <h5 class="mb-0">{{ stock.conditionn }}</h5>
+                            </div>
+                        </div>
+
+                        {% if stock.dateStock and stock.dateExpiration %}
+                        <div class="d-flex align-items-center">
+                            <div class="bg-gradient-primary p-3 rounded me-3">
+                                <i class="mdi mdi-calendar-clock text-white h4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted">Durée de conservation</small>
+                                <h5 class="mb-0">{{ date(stock.dateExpiration).diff(date(stock.dateStock)).days }} jours</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Actions -->
+        <div class="mt-4">
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('app_stock_index') }}" class="btn btn-light">
+                    <i class="mdi mdi-arrow-left me-2"></i>Retour
+                </a>
+                <div>
+                    <a href="{{ path('app_stock_edit', { id: stock.id }) }}" 
+                       class="btn btn-gradient-warning me-2">
+                        <i class="mdi mdi-pencil me-2"></i>Modifier
+                    </a>
+                   
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <table class="stock-table">
-        <tbody>
-            <tr>
-                <th>Nom du produit</th>
-                <td>{{ stock.nom }}</td>
-            </tr>
-            <tr>
-                <th>Identifiant</th>
-                <td>{{ stock.id }}</td>
-            </tr>
-            <tr>
-                <th>Date de stock</th>
-                <td>{{ stock.dateStock ? stock.dateStock|date('d/m/Y') : 'Non définie' }}</td>
-            </tr>
-            <tr>
-                <th>Date d'expiration</th>
-                <td>{{ stock.dateExpiration ? stock.dateExpiration|date('d/m/Y') : 'Non définie' }}</td>
-            </tr>
-            <tr>
-                <th>Lieu de stockage</th>
-                <td>{{ stock.lieu }}</td>
-            </tr>
-            <tr>
-                <th>Conditionnement</th>
-                <td>{{ stock.conditionn }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="stock-actions">
-        <a href="{{ path('app_stock_index') }}" class="btn btn-secondary">Retour à la liste</a>
-        <a href="{{ path('app_stock_edit', {'id': stock.id}) }}" class="btn btn-primary">Modifier</a>
+<!-- Modal de Suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-primary text-white">
+                <h5 class="modal-title">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer définitivement "{{ stock.nom }}" ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="post" action="{{ path('app_stock_delete', {'id': stock.id}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ stock.id) }}">
+                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

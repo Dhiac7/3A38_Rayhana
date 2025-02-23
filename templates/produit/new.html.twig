@@ -7,11 +7,11 @@
    <div class="row justify-content-center">
        <div class="col-md-10">
            <div class="card shadow-lg border-0 rounded-lg">
-               <div class="card-header bg-primary text-white py-3">
-                   <h4 class="card-title mb-0 text-center">Formulaire de Produit</h4>
+               <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                   <h4 class="card-title mb-0 text-center">Ajouter un produit</h4>
                </div>
                <div class="card-body p-5">
-                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation'}}) }}
+                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation', 'novalidate': 'novalidate'}}) }}
                    
                    {# Stock #}
                    <div class="form-group row mb-4 align-items-center">
@@ -19,22 +19,23 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.stock, {
                                'attr': {
-                                   'class': 'form-select rounded-3'
+                                   'class': 'form-select rounded-3',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.stock, {'attr': {'class': 'text-danger'}}) }}
                        </div>
                    </div>
 
-
-{# Nom #}
+                   {# Nom #}
                    <div class="form-group row mb-4 align-items-center">
                        <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.nom) }}</label>
                        <div class="col-sm-9">
                            {{ form_widget(form.nom, {
                                'attr': {
                                    'class': 'form-control rounded-3',
-                                   'placeholder': 'Nom du produit'
+                                   'placeholder': 'Nom du produit',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.nom, {'attr': {'class': 'text-danger'}}) }}
@@ -47,7 +48,8 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.image, {
                                'attr': {
-                                   'class': 'form-control rounded-3'
+                                   'class': 'form-control rounded-3',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.image, {'attr': {'class': 'text-danger'}}) }}
@@ -61,7 +63,8 @@
                            {{ form_widget(form.quantite, {
                                'attr': {
                                    'class': 'form-control rounded-3',
-                                   'placeholder': 'Entrez la quantité'
+                                   'placeholder': 'Entrez la quantité',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.quantite, {'attr': {'class': 'text-danger'}}) }}
@@ -75,7 +78,8 @@
                            {{ form_widget(form.prix_vente, {
                                'attr': {
                                    'class': 'form-control rounded-3',
-                                   'placeholder': 'Entrez le prix de vente'
+                                   'placeholder': 'Entrez le prix de vente',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.prix_vente, {'attr': {'class': 'text-danger'}}) }}
@@ -88,14 +92,14 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.statut, {
                                'attr': {
-                                   'class': 'form-select rounded-3'
+                                   'class': 'form-select rounded-3',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.statut, {'attr': {'class': 'text-danger'}}) }}
                        </div>
                    </div>
 
-                   
                    {# Description globale #}
                    <div class="form-group row mb-4">
                        <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.description_globale) }}</label>
@@ -104,7 +108,8 @@
                                'attr': {
                                    'class': 'form-control rounded-3',
                                    'rows': '3',
-                                   'placeholder': 'Description globale du produit'
+                                   'placeholder': 'Description globale du produit',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.description_globale, {'attr': {'class': 'text-danger'}}) }}
@@ -119,7 +124,8 @@
                                'attr': {
                                    'class': 'form-control rounded-3',
                                    'rows': '5',
-                                   'placeholder': 'Description détaillée du produit'
+                                   'placeholder': 'Description détaillée du produit',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.description_detaille, {'attr': {'class': 'text-danger'}}) }}
@@ -132,7 +138,8 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.categorie, {
                                'attr': {
-                                   'class': 'form-select rounded-3'
+                                   'class': 'form-select rounded-3',
+                                   'required': 'required'
                                }
                            }) }}
                            {{ form_errors(form.categorie, {'attr': {'class': 'text-danger'}}) }}
@@ -145,7 +152,8 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.enPromotion, {
                                'attr': {
-                                   'class': 'form-check-input ms-2'
+                                   'class': 'form-check-input ms-2',
+                                   'id': 'enPromotionCheckbox'  # Ajoute un identifiant pour le ciblage en JavaScript
                                }
                            }) }}
                        </div>
@@ -158,7 +166,8 @@
                            {{ form_widget(form.pourcentage_promo, {
                                'attr': {
                                    'class': 'form-control rounded-3',
-                                   'placeholder': 'Pourcentage'
+                                   'placeholder': 'Pourcentage',
+                                   'required': form.enPromotion.vars.data ? 'required' : ''  # Il n'est pas requis par défaut
                                }
                            }) }}
                            {{ form_errors(form.pourcentage_promo, {'attr': {'class': 'text-danger'}}) }}
@@ -171,7 +180,8 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.date_debut_promo, {
                                'attr': {
-                                   'class': 'form-control rounded-3 flatpickr-input'
+                                   'class': 'form-control rounded-3 flatpickr-input',
+                                   'required': form.enPromotion.vars.data ? 'required' : ''  # Il n'est pas requis par défaut
                                }
                            }) }}
                            {{ form_errors(form.date_debut_promo, {'attr': {'class': 'text-danger'}}) }}
@@ -184,19 +194,18 @@
                        <div class="col-sm-9">
                            {{ form_widget(form.date_fin_promo, {
                                'attr': {
-                                   'class': 'form-control rounded-3 flatpickr-input'
+                                   'class': 'form-control rounded-3 flatpickr-input',
+                                   'required': form.enPromotion.vars.data ? 'required' : ''  # Il n'est pas requis par défaut
                                }
                            }) }}
                            {{ form_errors(form.date_fin_promo, {'attr': {'class': 'text-danger'}}) }}
                        </div>
                    </div>
 
-                   
-
                    {# Boutons #}
                    <div class="form-group row mt-5">
                        <div class="col-12 text-center">
-                           <button type="submit" class="btn btn-success me-3">
+                           <button type="submit" class="btn btn-success me-3" <div class="card-header py-3" style="background-color: #49a760; color: white;">>
                                <i class="fas fa-save me-2"></i>Enregistrer le produit
                            </button>
                            <a href="{{ path('app_produitback_index') }}" class="btn btn-light">
@@ -212,7 +221,32 @@
    </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const enPromotionCheckbox = document.querySelector('input[name="form[enPromotion]"]');
+        const pourcentagePromoInput = document.querySelector('input[name="form[pourcentage_promo]"]');
+        const dateDebutPromoInput = document.querySelector('input[name="form[date_debut_promo]"]');
+        const dateFinPromoInput = document.querySelector('input[name="form[date_fin_promo]"]');
 
+        function togglePromoFields() {
+            const isChecked = enPromotionCheckbox.checked;
 
+            // Si la case "En Promotion" est cochée, les champs sont requis
+            if (isChecked) {
+                pourcentagePromoInput.setAttribute('required', 'required');
+                dateDebutPromoInput.setAttribute('required', 'required');
+                dateFinPromoInput.setAttribute('required', 'required');
+            } else {
+                // Si la case "En Promotion" n'est pas cochée, les champs ne sont pas requis
+                pourcentagePromoInput.removeAttribute('required');
+                dateDebutPromoInput.removeAttribute('required');
+                dateFinPromoInput.removeAttribute('required');
+            }
+        }
 
-{% endblock %}
+        // Appeler la fonction au chargement de la page et lors des changements de la case "En Promotion"
+        togglePromoFields();
+        enPromotionCheckbox.addEventListener('change', togglePromoFields);
+    });
+</script>
+{% endblock %}  

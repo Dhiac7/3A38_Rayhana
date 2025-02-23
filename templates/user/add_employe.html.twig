@@ -1,101 +1,114 @@
 {% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Ajouter un employé</h4>
-          <p class="card-description">Informations</p>
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row justify-content-center">  {# Center the card #}
+                <div class="col-md-10">  {# Adjust width as needed #}
+                    <div class="card shadow-lg border-0 rounded-lg">
+                        <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <h4 class="card-title mb-0">Ajouter un employé</h4>
+                            </div>
+                        </div>
+                        <div class="card-body p-5">  {# Add padding to card body #}
 
-          {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form', 'enctype': 'multipart/form-data'}}) }}
+                            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form', 'enctype': 'multipart/form-data'}}) }}
 
-          {% for error in form.vars.errors %}
-              <div class="alert alert-danger">{{ error.message }}</div>
-          {% endfor %}
+                            {% for error in form.vars.errors %}
+                                <div class="alert alert-danger">{{ error.message }}</div>
+                            {% endfor %}
 
-          <div class="row">
-            <div class="col-md-6">
-             {{ form_errors(form.nom)}}
-              {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_errors(form.prenom)}}
-              {{ form_label(form.prenom, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
-            </div>
-          </div>
-          <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.nom) }}
+                                    {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.prenom) }}
+                                    {{ form_label(form.prenom, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          <div class="row">
-            <div class="col-md-6">
-              {{ form_errors(form.role)}}
-              {{ form_label(form.role, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_errors(form.cin)}}
-              {{ form_label(form.cin, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.cin, {'attr': {'class': 'form-control'}}) }}
-            </div>
-          </div>
-          <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.role) }}
+                                    {{ form_label(form.role, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.cin) }}
+                                    {{ form_label(form.cin, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.cin, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          <div class="row">
-            <div class="col-md-6">
-              {{ form_errors(form.email)}}
-              {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_errors(form.salaire)}}
-              {{ form_label(form.salaire, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.salaire, {'attr': {'class': 'form-control'}}) }}
-            </div>
-          </div>
-          <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.email) }}
+                                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.salaire) }}
+                                    {{ form_label(form.salaire, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.salaire, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          <div class="row">
-            <div class="col-md-6">
-              {{ form_errors(form.photo)}}
-              {{ form_label(form.photo, 'Téléchargez une photo', {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_errors(form.tel)}}
-              {{ form_label(form.tel, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.tel, {'attr': {'class': 'form-control'}}) }}
-            </div>
-          </div>
-          <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.photo) }}
+                                    {{ form_label(form.photo, 'Téléchargez une photo', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.tel) }}
+                                    {{ form_label(form.tel, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.tel, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          <div class="row">
-            <div class="col-md-6">
-              {{ form_errors(form.mdp)}}
-              {{ form_label(form.mdp, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.mdp, {'attr': {'class': 'form-control'}}) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_errors(form.adresse)}}
-              {{ form_label(form.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
-              {{ form_widget(form.adresse, {'attr': {'class': 'form-select'}}) }}
-            </div>
-          </div>
-          <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.mdp.first) }}
+                                    {{ form_widget(form.mdp.first, {'attr': {'class': 'form-control', 'placeholder': 'Mot de passe'}}) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.mdp.second) }}
+                                    {{ form_widget(form.mdp.second, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          <div class="row">
-            <div class="col-md-6">
-            {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-dark'}}) }}
-            </div>
-          </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_errors(form.adresse) }}
+                                    {{ form_label(form.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.adresse, {'attr': {'class': 'form-select'}}) }}
+                                </div>
+                            </div>
+                            <br>
 
-          {{ form_end(form) }}
 
-        </div>
-      </div>
+<div class="row">
+    <div class="col-md-6 d-flex align-items-center">  {# Keep the flexbox for side-by-side buttons #}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-primary me-2', 'icon': 'mdi mdi-content-save', 'label': 'Enregistrer'}}) }}
+        <a href="{{ path('app_user_listemploye') }}" class="btn btn-gradient-light">Annuler</a>
     </div>
-  </div>
 </div>
+
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

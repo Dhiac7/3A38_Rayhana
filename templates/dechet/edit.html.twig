@@ -3,10 +3,21 @@
 {% block body %}
 <div class="main-panel">
   <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Modifier un dechet</h4>
+    <div class="row">
+             <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-lg">
+                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
+    <h4 class="card-title mb-0" style="flex-grow: 1;">Modifier dechet</h4>  {# Title takes up available space #}
+   
+</div>
+    <div class="mb-4"> {# Margin bottom for spacing #}
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                    
+                        <h4 class="card-title text-center">Remplissez le formulaire</h4>
+                       
           <p class="card-description">Mettez à jour les informations</p>
 
           {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'forms-sample'}}) }}
@@ -57,12 +68,16 @@
             </div>
           </div>
 
-          <div class="row">
+         {# <div class="row">
             <div class="col-md-6">
               {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
               <button type="submit" class="btn btn-gradient-light">Annuler</button>
             </div>
-          </div>
+          </div>#}
+          
+          <button type="submit" class="btn btn-gradient-primary me-2 w-100">
+              <i class="mdi mdi-content-save"></i> Enregistrer
+          </button> 
           {{ form_end(form) }}
 
         </div>

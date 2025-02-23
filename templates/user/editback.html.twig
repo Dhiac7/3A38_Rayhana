@@ -2,14 +2,12 @@
 
 {% block body %}
 <div class="main-panel">
-    <div class="content-wrapper">
-   <div class="row justify-content-center">
-       <div class="col-md-10">
-           <div class="card shadow-lg border-0 rounded-lg">
-               <div class="card-header py-3" style="background-color: #49a760; color: white;">
-                        <div class="d-flex justify-content-center align-items-center">  <h4 class="card-title mb-0">Modifier l'employé</h4></div>
-                    </div>
-               <div class="card-body p-5">
+  <div class="content-wrapper">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Modifier un employé</h4>
+          <p class="card-description">Informations</p>
 
           {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'contact-form', 'enctype': 'multipart/form-data'}}) }}
 
@@ -82,7 +80,7 @@
                 {{ form_errors(form.mdp.second) }}
                 {{ form_widget(form.mdp.second, {'attr': {'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}}) }}
             </div>
-          </div>
+          </div><br>
           <div class="row">
             <div class="col-md-6">
               {{ form_errors(form.adresse)}}
@@ -93,14 +91,14 @@
           <br>
 
           <div class="row">
-            <div class="col-md-6">
-            {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-success'}}) }}
-                <button type="submit" class="btn btn-gradient-light">Annuler</button>
-            </div>
-          </div>
+    <div class="col-md-6 d-flex align-items-center">  {# Keep the flexbox for side-by-side buttons #}
+        {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-primary me-2', 'icon': 'mdi mdi-content-save', 'label': 'Enregistrer'}}) }}
+        <a href="{{ path('app_user_listemploye') }}" class="btn btn-gradient-light">Annuler</a>
+    </div>
+</div>
+
 
           {{ form_end(form) }}
-        </div>
 
         </div>
       </div>

@@ -1,20 +1,17 @@
 
 {% block body %}
-<div class="main-panel">
-  <div class="content-wrapper">
-    <div class="col-12 grid-margin">
-      <div class="card">
+
         <div class="card-body">
           <h4 class="card-title text-center">Liste des Ateliers</h4>
           <p class="card-description text-center">Voici tous les ateliers disponibles.</p>
           <!-- Conteneur des ateliers -->
           <div id="atelier-container">
-              {% for atelier in ateliers %}
+              {% for atelier in pagination %}
                   <div class="card mb-3 atelier-card" data-id="{{ atelier.id }}">
                       <div class="row g-0 align-items-center">
                           <div class="col-md-4">
                                {% if atelier.photo %}
-                            <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" alt="Photo de l'atelier" width=90px , height=90px>
+                            <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" alt="Photo de l'atelier" width=150px , height=150px>
                         {% else %}
                             <p>Aucune photo disponible.</p>
                         {% endif %}
@@ -26,8 +23,10 @@
                                   <p class="card-text"><strong>Date:</strong> {{ atelier.dateAtelier|date("d/m/Y") }}</p>
                                   <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
                                   <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
-                                  <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-primary">Modifier</a><br>
-                                  <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-danger btn-delete" data-id="{{ atelier.id }}">Supprimer</a>
+                                                                     <div class="d-flex" >
+    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier </a> 
+    <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ atelier.id }}">  Supprimer</a>
+</div>
                               </div>
                           </div>
                       </div>
@@ -38,10 +37,9 @@
           </div>
 
         </div>
-      </div>
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(pagination) }}
     </div>
-  </div>
-</div>
 
 <!-- Script JavaScript pour la suppression AJAX -->
 <script>

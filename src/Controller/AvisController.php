@@ -86,7 +86,7 @@ public function show(Avis $avi, SessionInterface $session, EntityManagerInterfac
     }
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_login');
+        return $this->redirectToRoute('gi');
     }
     return $this->render('avis/show.html.twig', [
         'avi' => $avi,

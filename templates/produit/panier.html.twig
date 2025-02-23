@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Mon Panier</h1>
+
+    {% if panier is empty %}
+        <p>Votre panier est vide.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in panier %}
+                    <tr>
+                        <td>{{ item.produit.nom }}</td>
+                        <td>{{ item.quantite }}</td>
+                        <td>
+                            <a href="{{ path('panier_ajouter', {'id': item.produit.id}) }}">➕</a>
+                            <a href="{{ path('panier_diminuer', {'id': item.produit.id}) }}">➖</a>
+                            <a href="{{ path('panier_supprimer', {'id': item.produit.id}) }}">❌</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="{{ path('panier_vider') }}">Vider le panier</a>
+    {% endif %}
+{% endblock %}

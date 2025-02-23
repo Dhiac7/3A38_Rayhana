@@ -24,7 +24,7 @@ final class AtelierbackController extends AbstractController
     // public function index(AtelierRepository $atelierRepository): Response
     public function indexBack(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator , SessionInterface $session,EntityManagerInterface $entityManager): Response
      {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -33,14 +33,20 @@ final class AtelierbackController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
+        if ($loggedInUser->getRole() !== 'agriculteur') {
+            return $this->redirectToRoute('app_dashboard'); 
+        }
          $query = $atelierRepository->findAll();
          $pagination = $paginator->paginate(
              $query, // Donneili bch namlou pagination
              $request->query->getInt('page', 1), // Num page 
              6 // nbr element par page 
          );
+         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+
          return $this->render('atelier/indexBack.html.twig', [
              'pagination' => $pagination,
+             'MAPBOX_API_KEY' => $mapboxApiKey,
              'loggedInUser' => $loggedInUser,
 
          ]);
@@ -49,7 +55,7 @@ final class AtelierbackController extends AbstractController
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $em, SessionInterface $session , EntityManagerInterface $entityManager): Response
-{    $loggedInUserId = $session->get('admin_user_id');
+{    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -73,10 +79,10 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
             'date_atelier' => $atelier->getDateAtelier()
         ]);
 
-        if ($existingAtelier) {
+       /* if ($existingAtelier) {
             $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d') . " avec le nom : " . $existingAtelier->getNom());
             return $this->redirectToRoute('app_atelier_new');
-        }
+        }*/
 
         // Gestion de l'upload de la photo
         $photoFile = $form->get('photo')->getData();
@@ -96,6 +102,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         } else {
             dump('No file uploaded'); 
         }
+        $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
 
         // Sauvegarde de l’atelier en base de données
         $em->persist($atelier);
@@ -116,7 +123,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
       
     #[Route('/{id}', name: 'app_atelier_show', methods: ['GET'])]
     public function show(Atelier $atelier,  EntityManagerInterface $entityManager, SessionInterface $session ): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -127,9 +134,11 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-    
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+
         return $this->render('atelier/show.html.twig', [
             'atelier' => $atelier,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
             'loggedInUser' => $loggedInUser,
 
         ]);
@@ -137,7 +146,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
     #[Route('/{id}/edit', name: 'app_atelier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Atelier $atelier, EntityManagerInterface $entityManager ,SessionInterface $session): Response
-    {   $loggedInUserId = $session->get('admin_user_id');
+    {   $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -160,11 +169,14 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
             return $this->redirectToRoute('app_atelier_indexBack', [], Response::HTTP_SEE_OTHER);
         }
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
         return $this->render('atelier/edit.html.twig', [
             'atelier' => $atelier,
 'form' => $form->createView(),
             'user' => $user,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+
             'loggedInUser' => $loggedInUser,
 
 
@@ -173,7 +185,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
     #[Route('/atelier/delete/{id}', name: 'app_atelier_back_delete', methods: ['GET'])]
     public function delete(Request $request, Atelier $atelier, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -231,48 +243,62 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         ]);
     }*/
     #[Route('/atelier/list', name: 'atelier_list_ajax')]
-public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-{   $loggedInUserId = $session->get('admin_user_id');
+    public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+    {   
+        // Vérification de la session de l'utilisateur
+        $loggedInUserId = $session->get('user_id');
+            
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        // Récupération de l'utilisateur
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        // Récupération des paramètres de tri et de recherche
+        $sortOrder = $request->query->get('sort', '');
+        $searchQuery = $request->query->get('search', '');
+    
+        // Récupération des ateliers avec un tri et une recherche si nécessaire
+        $atelierRepository = $entityManager->getRepository(Atelier::class);
+        $queryBuilder = $atelierRepository->createQueryBuilder('a');
+    
+        if (!empty($searchQuery)) {
+            $queryBuilder->andWhere('a.nom LIKE :search')
+                         ->setParameter('search', '%' . $searchQuery . '%');
+        }
+    
+        if ($sortOrder === "asc") {
+            $queryBuilder->orderBy('a.nom', 'ASC');
+        } elseif ($sortOrder === "desc") {
+            $queryBuilder->orderBy('a.nom', 'DESC');
+        }
+    
+        // Pagination avec KnpPaginator
+        $pagination = $paginator->paginate(
+            $queryBuilder, // La requête avec les filtres de recherche et tri
+            $request->query->getInt('page', 1), // Le numéro de la page
+            4 // Le nombre d'éléments par page
+        );
+    
+        // Récupération de la clé API de Mapbox
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
         
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_loginback');
+        // Rendu de la vue avec les données
+        return $this->render('atelier/_list.html.twig', [
+            'pagination' => $pagination,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+            'loggedInUser' => $loggedInUser,
+        ]);
     }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-    $sortOrder = $request->query->get('sort', '');
-    $searchQuery = $request->query->get('search', '');
-
-    // Récupération des ateliers avec un tri et une recherche si nécessaire
-    $atelierRepository = $entityManager->getRepository(Atelier::class);
-    $queryBuilder = $atelierRepository->createQueryBuilder('a');
-
-    if (!empty($searchQuery)) {
-        $queryBuilder->andWhere('a.nom LIKE :search')
-                     ->setParameter('search', '%' . $searchQuery . '%');
-    }
-
-    if ($sortOrder === "asc") {
-        $queryBuilder->orderBy('a.nom', 'ASC');
-    } elseif ($sortOrder === "desc") {
-        $queryBuilder->orderBy('a.nom', 'DESC');
-    }
-
-    $ateliers = $queryBuilder->getQuery()->getResult();
-
-    return $this->render('atelier/_list.html.twig', [
-        'ateliers' => $ateliers,
-        'loggedInUser' => $loggedInUser,
-
-    ]);
-}
 
 
 public function deleteAtelierAjax(Request $request , AtelierRepository $atelierRepository , EntityManagerInterface $entityManager , SessionInterface $session): JsonResponse
-    {   $loggedInUserId = $session->get('admin_user_id');
+    {   $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
