@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\User;
+use App\Service\NotificationService;
 use App\Form\UserType;
 use App\Form\UserEditType;
 use App\Repository\UserRepository;
@@ -91,7 +92,7 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
 
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SluggerInterface $slugger): Response
+public function new(Request $request, EntityManagerInterface $entityManager,NotificationService $notificationService,UserPasswordHasherInterface $passwordHasher, SessionInterface $session,SluggerInterface $slugger): Response
 {
     $user = new User();
     $form = $this->createForm(UserType::class, $user);
@@ -123,13 +124,16 @@ public function new(Request $request, EntityManagerInterface $entityManager, Use
         $user->setCreatedAt(new \DateTime());
 
     
-      /*  $currentUser = $this->getUser();  
+    /*  $currentUser = $this->getUser();  
         if ($currentUser) {
             $user->setCreatedBy($currentUser);  
         }*/
         $entityManager->persist($user);
         $entityManager->flush();
 
+         // Send a notification to the admin
+        $notificationMessage = sprintf('New user created: %s %s', $user->getNom(), $user->getPrenom());
+        $notificationService->createNotification($notificationMessage);
         return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
     }
 
