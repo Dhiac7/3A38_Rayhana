@@ -1,5 +1,4 @@
 <?php
-use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
 
 return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
