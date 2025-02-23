@@ -20,7 +20,7 @@ final class StockController extends AbstractController
     #[Route(name: 'app_stock_index', methods: ['GET'])]
     public function index(StockRepository $stockRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -41,7 +41,7 @@ final class StockController extends AbstractController
     #[Route('/new', name: 'app_stock_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, StockRepository $stockRepository): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -84,7 +84,7 @@ final class StockController extends AbstractController
     #[Route('/{id}', name: 'app_stock_show', methods: ['GET'])]
     public function show(Stock $stock, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -105,7 +105,7 @@ final class StockController extends AbstractController
     #[Route('/{id}/edit', name: 'app_stock_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Stock $stock, EntityManagerInterface $entityManager, SessionInterface $session, StockRepository $stockRepository): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -146,7 +146,7 @@ final class StockController extends AbstractController
     #[Route('/{id}', name: 'app_stock_delete', methods: ['POST'])]
     public function delete(Request $request, Stock $stock, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
