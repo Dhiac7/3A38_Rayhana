@@ -15,6 +15,7 @@ class PanierService
 
     public function __construct(RequestStack $requestStack, ProduitRepository $produitRepository, LoggerInterface $logger)
     {
+          
         $this->session = $requestStack->getSession();
         $this->produitRepository = $produitRepository;
         $this->logger = $logger;
@@ -22,6 +23,7 @@ class PanierService
 
     public function ajouterProduit(int $id): void
     {
+        
         $panier = $this->session->get('panier', []);
 
         // Vérifie si $panier[$id] est un tableau, sinon l'initialise
@@ -37,7 +39,7 @@ class PanierService
     }
 
     public function supprimerProduit(int $id): void
-    {
+    {     
         $panier = $this->session->get('panier', []);
 
         if (isset($panier[$id])) {
