@@ -22,7 +22,7 @@ final class InspectionController extends AbstractController{
     public function index(InspectionRepository $inspectionRepository, SessionInterface $session,
     EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -42,7 +42,7 @@ final class InspectionController extends AbstractController{
     #[Route('/new', name: 'app_inspection_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -75,7 +75,7 @@ final class InspectionController extends AbstractController{
     public function show(Inspection $inspection, SessionInterface $session,
     EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -96,7 +96,7 @@ final class InspectionController extends AbstractController{
     public function edit(Request $request, Inspection $inspection, SessionInterface $session,
     EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -145,7 +145,7 @@ public function repondreToAvis(
     SessionInterface $session
 ): Response {
     // Vérifier si l'utilisateur admin est connecté
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
     }
@@ -191,7 +191,7 @@ public function repondreToAvis(
         EntityManagerInterface $entityManager
     ): Response {
         // Vérifier que l'administrateur est connecté
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
