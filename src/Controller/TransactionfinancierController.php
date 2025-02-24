@@ -1,38 +1,55 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\User;
 use App\Entity\Transactionfinancier;
-use App\Form\TransactionfinancierType;
 use App\Repository\TransactionfinancierRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
 #[Route('/transactionfinancier')]
-final class TransactionfinancierController extends AbstractController{
+final class TransactionfinancierController extends AbstractController
+{
     #[Route(name: 'app_transactionfinancier_index', methods: ['GET'])]
-    public function index(TransactionfinancierRepository $transactionfinancierRepository,SessionInterface $session,EntityManagerInterface $entityManager): Response
-    {
+    public function index(
+        TransactionfinancierRepository $transactionfinancierRepository,
+        SessionInterface $session,
+        EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
         $loggedInUserId = $session->get('admin_user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
+        
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
+
+        $query = $transactionfinancierRepository->findAll();
+        
+        // Pagination
+        $transactions = $paginator->paginate(
+            $query, // Requête Doctrine
+            $request->query->getInt('page', 1), // Page actuelle, par défaut 1
+            5 // Nombre d'éléments par page
+        );
+
         return $this->render('transactionfinancier/index.html.twig', [
-            'transactionfinanciers' => $transactionfinancierRepository->findAll(),
+            'transactionfinanciers' => $transactions,
             'loggedInUser' => $loggedInUser,
-           
         ]);
     }
+
 
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response

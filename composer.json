@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "guzzlehttp/guzzle": "^7.9",
         "knplabs/knp-paginator-bundle": "^6.6",
         "pagerfanta/doctrine-orm-adapter": "^4.7",
         "phpdocumentor/reflection-docblock": "^5.6",
