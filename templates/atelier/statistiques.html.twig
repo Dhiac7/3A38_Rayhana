@@ -1,0 +1,95 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Statistiques{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h3>Statistiques des participants aux ateliers</h3>
+        
+        <!-- Graphique du genre -->
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="genderChart"></canvas>
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Inclure Chart.js depuis un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Récupération du contexte pour chaque graphique
+        const genderChartCtx = document.getElementById('genderChart').getContext('2d');
+        const ageChartCtx = document.getElementById('ageChart').getContext('2d');
+
+        // Initialisation des graphiques
+        const genderChart = new Chart(genderChartCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Homme', 'Femme'],
+                datasets: [{
+                    label: 'Répartition par genre',
+                    data: [0, 0],  // Valeurs initiales à zéro
+                    backgroundColor: ['#4e73df', '#e74a3b'],
+                    hoverOffset: 4
+                }]
+            }
+        });
+
+        const ageChart = new Chart(ageChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Moins de 18', '18-25', '26-35', '36-45', '46-60', 'Plus de 60'],
+                datasets: [{
+                    label: 'Répartition par tranche d\'âge',
+                    data: [0, 0, 0, 0, 0, 0],  // Valeurs initiales à zéro
+                    backgroundColor: '#1cc88a',
+                    borderColor: '#1cc88a',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Récupération des données JSON
+        fetch("{{ path('api_statistiques') }}")
+            .then(response => response.json())
+            .then(data => {
+                // Vérification des données dans la console
+                console.log('Données récupérées:', data);
+
+                // Mettre à jour le graphique du genre
+                genderChart.data.datasets[0].data = [data.gender_count.homme, data.gender_count.femme];
+                genderChart.update();
+
+                // Mettre à jour le graphique des groupes d'âge
+                ageChart.data.datasets[0].data = [
+                    data.age_groups.moins_18, 
+                    data.age_groups['18_25'], 
+                    data.age_groups['26_35'], 
+                    data.age_groups['36_45'], 
+                    data.age_groups['46_60'], 
+                    data.age_groups.plus_60
+                ];
+                ageChart.update();
+            })
+            .catch(error => {
+                // Afficher une erreur dans la console si la requête échoue
+                console.error('Erreur lors de la récupération des données:', error);
+            });
+    });
+</script>
+
+{% endblock %}

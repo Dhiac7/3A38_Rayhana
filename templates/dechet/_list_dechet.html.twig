@@ -51,7 +51,6 @@
 <!--  suppr AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Supprimer un dechet
     document.querySelectorAll('.btn-delete').forEach(function (button) {
         button.addEventListener('click', function (e) {
             e.preventDefault();
@@ -67,8 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Si la suppression a réussi, tu peux supprimer l'élément de la page
-                    document.querySelector(`[data-id='${dechetId}']`).closest('.dechet-card').remove();
+                    document.querySelector(`[data-id='${dechetId}']`).closest('tr').remove();
                 } else {
                     alert("Erreur lors de la suppression : " + data.message);
                 }
@@ -76,8 +74,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
-
-
 </script>
 {% endblock %}

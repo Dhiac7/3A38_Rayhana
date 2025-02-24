@@ -258,7 +258,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-    
+     
         // Récupération des paramètres de tri et de recherche
         $sortOrder = $request->query->get('sort', '');
         $searchQuery = $request->query->get('search', '');
@@ -279,12 +279,12 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         }
     
         // Pagination avec KnpPaginator
+        
         $pagination = $paginator->paginate(
             $queryBuilder, // La requête avec les filtres de recherche et tri
             $request->query->getInt('page', 1), // Le numéro de la page
             4 // Le nombre d'éléments par page
         );
-    
         // Récupération de la clé API de Mapbox
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
         
