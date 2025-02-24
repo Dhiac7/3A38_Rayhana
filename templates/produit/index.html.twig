@@ -3,15 +3,14 @@
 {% block title %}Produits{% endblock %}
 
 {% block body %}
-    
-       <a href="assets/img/melon.jpg" class="item popup-gallery">
+    <a href="assets/img/melon.jpg" class="item popup-gallery">
     <!-- Start Breadcrumb 
     ============================================= -->
     <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url(assets/img/front.jpg");">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
-                    <h1>Produuits</h1>
+                    <h1>Produits</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li><a href="index.html"><i class="fas fa-home"></i> Chez nous</a></li>
@@ -29,9 +28,7 @@
     <div class="validtheme-shop-area default-padding">
         <div class="container">
             <div class="shop-listing-contentes">
-
                 <div class="row item-flex center">
-
                     <div class="col-lg-7">
                         <div class="content">
                             <!-- Tab Nav -->
@@ -52,14 +49,14 @@
 
                     <div class="col-lg-5 text-right">
                         <p>
-                            Showing 1–10 of 47 results
+                            Showing 1–10 of {{ pagination.getTotalItemCount() }} results
                         </p>
                         <select name="cars" id="cars">
                             <option value="volvo">Short by latest</option>
                             <option value="saab">Short by Recent</option>
                             <option value="mercedes">Short by Popular</option>
                             <option value="audi">Short by Relevant</option>
-                          </select>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -68,20 +65,17 @@
                     <!-- Start Tab Content -->
                     <div class="tab-content tab-content-info text-center" id="shop-tabContent">
 
-                        <!-- Strt Product Grid Vies -->
+                        <!-- Start Product Grid View -->
                         <div class="tab-pane fade show active" id="grid-tab" role="tabpanel" aria-labelledby="grid-tab-control">
                             <ul class="vt-products columns-4">
-
-                               {% for produit in produits %}
-
+                               {% for produit in pagination %}
                                 <!-- Single product -->
                                 <li class="product">
                                     <div class="product-contents">
                                         <div class="product-image">
-                                            <a href="shop-single.html">
-                                               
-                                                {% if produit.image %} <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
-                                                   
+                                            <a href="{{ path('app_produit_show', {'id': produit.id}) }}">
+                                                {% if produit.image %}
+                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
                                                 {% else %}
                                                     <span class="text-muted">Aucune image disponible</span>
                                                 {% endif %}
@@ -99,15 +93,13 @@
                                                     </li>
                                                     <li class="quick-view">
                                                         <a href="{{ path('app_produit_show', {'id': produit.id}) }}" ><span> Détail</span></a>
-                                                        
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="product-caption">
-                                          
                                             <h4 class="product-title">
-                                                <a href="shop-single.html">{{ produit.nom }}</a>
+                                                <a href="{{ path('app_produit_show', {'id': produit.id}) }}">{{ produit.nom }}</a>
                                             </h4>
                                             <div class="price">
                                                 {% if produit.enPromotion %}
@@ -119,40 +111,45 @@
                                                 {% endif %}
                                             </div>
                                             <a href="{{ path('panier_ajouter1', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
-                                            
                                         </div>
                                     </div>
                                 </li>
-                                <!-- Single product -->
-
-                                {% endfor %}
-  
+                               {% endfor %}
                             </ul>
                         </div>
-                        <!-- End Product List Vies -->
-
+                        <!-- End Product Grid View -->
 
                     </div>
                     <!-- End Tab Content -->
 
-                    
-
-                  
-                 <!-- Pgination -->
+   
+<!-- Pagination -->
 <nav class="woocommerce-pagination">
     <ul class="page-numbers">
         {# Bouton Précédent #}
         <li>
-            <a class="previous page-numbers {{ pager.currentPage == 1 ? 'disabled' : '' }}" 
-               href="{{ pager.currentPage > 1 ? path('app_produit_index', {'page': pager.currentPage - 1}) : '#' }}">
+            <a class="previous page-numbers {{ pagination.getCurrentPageNumber() == 1 ? 'disabled' : '' }}"
+               href="{{ pagination.getCurrentPageNumber() > 1 ? path('app_produit_index', {'page': pagination.getCurrentPageNumber() - 1}) : '#' }}">
                 <i class="fas fa-angle-left"></i>
             </a>
         </li>
 
+        {# Calculate total pages #}
+        {% set totalPages = (pagination.getTotalItemCount() / pagination.getItemNumberPerPage())|round(0, 'ceil') %}
+
+        {# Calculate start and end pages #}
+        {% set startPage = pagination.getCurrentPageNumber() - 2 > 1 ? pagination.getCurrentPageNumber() - 2 : 1 %}
+        {% set endPage = pagination.getCurrentPageNumber() + 2 < totalPages ? pagination.getCurrentPageNumber() + 2 : totalPages %}
+
+        {# Ensure startPage is not greater than endPage #}
+        {% if startPage > endPage %}
+            {% set startPage = endPage %}
+        {% endif %}
+
         {# Affichage des numéros de page #}
-        {% for page in 1..pager.nbPages %}
+        {% for page in startPage..endPage %}
             <li>
-                {% if page == pager.currentPage %}
+                {% if page == pagination.getCurrentPageNumber() %}
                     <span aria-current="page" class="page-numbers current">{{ page }}</span>
                 {% else %}
                     <a class="page-numbers" href="{{ path('app_produit_index', {'page': page}) }}">{{ page }}</a>
@@ -162,17 +159,22 @@
 
         {# Bouton Suivant #}
         <li>
-            <a class="next page-numbers {{ pager.currentPage == pager.nbPages ? 'disabled' : '' }}" 
-               href="{{ pager.currentPage < pager.nbPages ? path('app_produit_index', {'page': pager.currentPage + 1}) : '#' }}">
+            <a class="next page-numbers {{ pagination.getCurrentPageNumber() == totalPages ? 'disabled' : '' }}"
+               href="{{ pagination.getCurrentPageNumber() < totalPages ? path('app_produit_index', {'page': pagination.getCurrentPageNumber() + 1}) : '#' }}">
                 <i class="fas fa-angle-right"></i>
             </a>
         </li>
     </ul>
 </nav>
+
+
+
+
+
+
                 </div>
             </div>
         </div>
     </div>
     <!-- End Shop -->
-
 {% endblock %}
