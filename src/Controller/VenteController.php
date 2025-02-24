@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Form\AtelierType; // Importez correctement le formulaire
-use App\Entity\Atelier; // Importez l'entité Atelier
+use App\Form\AtelierType; 
+use App\Entity\Atelier; 
 
 #[Route('/vente')]
 final class VenteController extends AbstractController
@@ -98,55 +98,55 @@ public function index(
         SessionInterface $session
     ): Response {
         $loggedInUserId = $session->get('client_user_id');
-
+    
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
         }
-
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
-
+    
         $vente = new Vente();
         $produitId = $request->query->get('id');
-
+    
         if (!$produitId) {
             $this->addFlash('error', 'Aucun produit sélectionné.');
             return $this->redirectToRoute('app_vente_index');
         }
-
+    
         $produit = $produitRepository->find($produitId);
-
+    
         if (!$produit) {
             $this->addFlash('error', 'Produit introuvable.');
             return $this->redirectToRoute('app_vente_index');
         }
-
+    
         // Définir le nom et autres informations de la vente
         $vente->setNom($produit->getNom());
         $vente->setProduit($produit);
         $vente->setPrix($produit->getPrixVente());
         $vente->setQuantite(1);
         $vente->setUser($loggedInUser);
-
+    
         $form = $this->createForm(VenteType::class, $vente, [
             'prix_unitaire' => $produit->getPrixVente(),
         ]);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = $vente->getQuantite();
             $prixUnitaire = $produit->getPrixVente();
             $vente->setPrix($quantite * $prixUnitaire);
-
+    
             // Récupérer la méthode de paiement choisie
             $paymentMethod = $form->get('methodepayement')->getData();
-
+    
             if ($paymentMethod === 'carte_bancaire') {
                 // Intégration du paiement par carte bancaire avec Stripe
                 Stripe::setApiKey($this->getParameter('stripe_secret_key'));
-
+    
                 $sessionStripe = StripeSession::create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
@@ -163,13 +163,22 @@ public function index(
                     'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
                     'cancel_url' => $this->generateUrl('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 ]);
-
-                // Optionnel : stockez l'ID de session Stripe dans la vente pour suivi
-                // $vente->setTransactionId($sessionStripe->id);
-
+    
+                // Créer une transaction même pour le paiement par carte bancaire
+                $transaction = new Transactionfinancier();
+                $transaction->setMontant($vente->getPrix());
+                $transaction->setDate(new \DateTime());
+                $transaction->setType('Revenue');
+                $transaction->setVente($vente);
+    
+                // Lier la transaction à la vente
+                $vente->setTransaction($transaction);
+    
+                // Persist pour enregistrer la transaction et la vente dans la base de données
+                $entityManager->persist($transaction);
                 $entityManager->persist($vente);
                 $entityManager->flush();
-
+    
                 // Redirige vers la page de paiement Stripe
                 return $this->redirect($sessionStripe->url);
             } else {
@@ -179,25 +188,25 @@ public function index(
                 $transaction->setDate(new \DateTime());
                 $transaction->setType('Revenue');
                 $transaction->setVente($vente);
-
+    
                 $vente->setTransaction($transaction);
-
+    
                 $entityManager->persist($vente);
                 $entityManager->persist($transaction);
                 $entityManager->flush();
-
+    
                 $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
                 return $this->redirectToRoute('app_vente_index');
             }
         }
-
+    
         return $this->render('vente/new.html.twig', [
             'form' => $form->createView(),
             'produit' => $produit,
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
+    
     #[Route('/payment/success', name: 'payment_success')]
     public function paymentSuccess(Request $request): Response
     {
