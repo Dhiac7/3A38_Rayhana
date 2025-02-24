@@ -19,7 +19,7 @@ final class AvisController extends AbstractController{
     public function index(AvisRepository $avisRepository, SessionInterface $session,
     EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -47,7 +47,7 @@ final class AvisController extends AbstractController{
     #[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -80,7 +80,7 @@ final class AvisController extends AbstractController{
     #[Route('/{id}', name: 'app_avis_show', methods: ['GET'], requirements: ['id' => '\d+'])]
 public function show(Avis $avi, SessionInterface $session, EntityManagerInterface $entityManager): Response
 {
-    $loggedInUserId = $session->get('client_user_id');
+    $loggedInUserId = $session->get('user_id');
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
     }
@@ -98,7 +98,7 @@ public function show(Avis $avi, SessionInterface $session, EntityManagerInterfac
     #[Route('/{id}/edit', name: 'app_avis_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Avis $avi, EntityManagerInterface $entityManager,SessionInterface $session ): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -144,7 +144,7 @@ public function show(Avis $avi, SessionInterface $session, EntityManagerInterfac
     #[Route('/avisback', name: 'app_avisback_index', methods: ['GET'])]
 public function index2(AvisRepository $avisRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
     }
