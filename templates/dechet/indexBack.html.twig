@@ -20,7 +20,7 @@
           <!-- Zone de recherche et tri -->
           <div class="d-flex justify-content-between mb-3">
             <input type="text" id="search" class="form-control w-50" placeholder="Rechercher un déchet...">
-            <div>
+           <div>
               <button class="btn btn-outline-green" id="sortAsc">Tri Croissant</button>
               <button class="btn btn-outline-green" id="sortDesc">Tri Décroissant</button>
             </div>
@@ -35,9 +35,6 @@
           <div id="dechhet-list">
             <!-- Le contenu de la liste sera mis à jour ici avec AJAX -->
           </div>
-          <div id="pagination-container" class="d-flex justify-content-center mt-3">
-    {{ knp_pagination_render(pagination) }}
-</div>
         </div>
         </div>
       </div>
@@ -47,55 +44,47 @@
 
 <!-- Script AJAX -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
+   function fetchDechhets(sortOrder = "", searchQuery = "") {
+     let url = "{{ path('dechet_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
 
-    // Fonction pour récupérer les dechets via AJAX
-    function fetchDechhets(sortOrder = "", searchQuery = "") {
-      let url = "{{ path('dechet_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
+     fetch(url)
+       .then(response => response.text())
+       .then(data => {
+         document.getElementById("dechhet-list").innerHTML = data;
+       });
+   }
 
-      fetch(url)
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById("dechhet-list").innerHTML = data;
-        });
-    }
+   // Recherche en temps réel
+   document.getElementById("search").addEventListener("input", function () {
+     fetchDechhets("", this.value);
+   });
 
-    // Recherche en temps réel
-    document.getElementById("search").addEventListener("input", function () {
-      fetchDechhets("", this.value);
-    });
+   // Tri croiss
+   document.getElementById("sortAsc").addEventListener("click", function () {
+     fetchDechhets("asc", document.getElementById("search").value);
+   });
 
-    // Tri croissant
-    document.getElementById("sortAsc").addEventListener("click", function () {
-      fetchDechhets("asc", document.getElementById("search").value);
-    });
+   // Tri décroi
+   document.getElementById("sortDesc").addEventListener("click", function () {
+     fetchDechhets("desc", document.getElementById("search").value);
+   });
 
-    // Tri décroissant
-    document.getElementById("sortDesc").addEventListener("click", function () {
-      fetchDechhets("desc", document.getElementById("search").value);
-    });
+   // Chargement initial des déchets
+   fetchDechhets();
 
-    // Charger les déchets au début
-    fetchDechets();
-
-    // Ajouter un dechets : afficher le formulaire
-    document.getElementById("addDechetBtn").addEventListener("click", function () {
-      let formContainer = document.getElementById("dechetFormContainer");
-      let formContent = document.getElementById("dechetFormContainer");
-
-      if (formContainer.style.display === "none") {
-        // Charger le formulaire via AJAX
-        fetch("{{ path('app_dechet_new') }}")
-          .then(response => response.text())
-          .then(data => {
-            formContent.innerHTML = data;
-            formContainer.style.display = "block";
-          })
-          .catch(error => console.error("Erreur lors du chargement du formulaire :", error));
-      } else {
-        formContainer.style.display = "none";
-      }
-    });
-  });
+   // Ouvrir le formulaire d'ajout de déchet lors du clic sur le bouton "+"
+   document.getElementById("addDechetBtn").addEventListener("click", function () {
+     // Afficher le formulaire d'ajout en envoyant une requête AJAX
+     fetch("{{ path('app_dechet_new') }}")
+       .then(response => response.text())
+       .then(data => {
+         // Charger le formulaire dans le conteneur
+         document.getElementById("dechetFormContainer").style.display = "block";
+         document.getElementById("dechetFormContent").innerHTML = data;
+       });
+   });
+ });
 </script>
+
 {% endblock %}
