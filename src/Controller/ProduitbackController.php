@@ -21,7 +21,7 @@ final class ProduitbackController extends AbstractController
     #[Route(name: 'app_produitback_index', methods: ['GET'])]
     public function index(ProduitRepository $produitRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     { 
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -41,7 +41,7 @@ final class ProduitbackController extends AbstractController
     #[Route('/new', name: 'app_produitback_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
     {  
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -90,7 +90,7 @@ final class ProduitbackController extends AbstractController
     #[Route('/{id}', name: 'app_produitback_show', methods: ['GET'])]
     public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager): Response
     { 
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -109,7 +109,7 @@ final class ProduitbackController extends AbstractController
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
     { 
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -149,7 +149,7 @@ final class ProduitbackController extends AbstractController
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager, SessionInterface $session): Response
     { 
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');

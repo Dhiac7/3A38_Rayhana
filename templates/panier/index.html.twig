@@ -1,4 +1,4 @@
-{% extends 'user/client.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Produits{% endblock %}
 
@@ -210,8 +210,8 @@
                                 <a href="{{ path('panier_ajouter', {'id': item.produit.id}) }}" class="quantity-btn">+</a>
                             </div>
                         </td>
-                        <td class="unit-price">{{ item.prixVente }} €</td>
-                        <td class="total-price">{{ item.prixTotalProduit }} €</td>
+                        <td class="unit-price">{{ item.prixVente }} DT</td>
+                        <td class="total-price">{{ item.prixTotalProduit }} DT</td>
                         <td class="actions">
                             {% if item.produit is defined and item.produit is not null %}
                                 <a href="{{ path('panier_supprimer', {'id': item.produit.id}) }}">❌</a>
@@ -225,7 +225,7 @@
             <tfoot>
                 <tr>
                     <td colspan="3"><strong>Total du panier</strong></td>
-                    <td colspan="2" class="cart-total"><strong>{{ totalPanier }} €</strong></td>
+                    <td colspan="2" class="cart-total"><strong>{{ totalPanier }} DT</strong></td>
                 </tr>
             </tfoot>
         </table>
