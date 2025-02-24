@@ -8,3 +8,8 @@ app_atelier_delete_ajax:
     path: /atelierBack/atelier/delete
     controller: App\Controller\AtelierController::delete
     methods: GET
+
+# config/routes.yaml
+predict:
+  path: /predict
+  controller: App\Controller\PredictController::predict

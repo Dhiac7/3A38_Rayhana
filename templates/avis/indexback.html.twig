@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Avis{% endblock %}
+
+{% block body %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <!-- Title with box -->
+      <div class="p-3 mb-4 bg-primary text-white text-center rounded">
+        <h4>Liste des Avis</h4>
+      </div>
+      <p class="card-description">Liste des avis enregistrés</p>
+      
+      <!-- Table for Avis -->
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th> ID </th>
+            <th> Commentaire </th>
+            <th> Date </th>
+            <th> Actions </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for avi in avis %}
+          <tr>
+            <td>{{ avi.id }}</td>
+            <td>{{ avi.commentaire }}</td>
+            <td>{{ avi.date ? avi.date|date('d/m/Y H:i:s') : 'N/A' }}</td>
+            <td>
+              <!-- Bouton pour répondre à cet avis -->
+              <a href="{{ path('app_inspection_repondre', {'id': avi.id}) }}" class="btn btn-info btn-sm">
+                <i class="mdi mdi-reply"></i> Répondre
+              </a>
+              <!-- Nouveau bouton pour voir la liste des inspections pour cet avis -->
+              <a href="{{ path('app_inspection_list_for_avis', {'id': avi.id}) }}" class="btn btn-secondary btn-sm">
+                <i class="mdi mdi-format-list-bulleted"></i> Voir Inspections
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center">Aucun avis trouvé</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      <br>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}

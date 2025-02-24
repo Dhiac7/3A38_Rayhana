@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 use App\Entity\User;
+use App\Entity\Notification;
 use App\Form\UserType;
 use App\Form\UserEditType;
 use App\Form\UserAdminEditType;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
+//use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Service\NotificationService;
 
 
 #[Route('/userback')]
@@ -24,7 +27,7 @@ final class UserBackController extends AbstractController
     #[Route(name: 'app_user_indexback', methods: ['GET'])]
     public function index(Request $request,UserRepository $userRepository, SessionInterface $session,EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -49,7 +52,7 @@ final class UserBackController extends AbstractController
     #[Route('/listemployeback', name: 'app_user_listemploye', methods: ['GET'])]
     public function listemploye(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -73,7 +76,7 @@ final class UserBackController extends AbstractController
         foreach ($roles as $role) {
             $query = $userRepository->createQueryBuilder('u')
                 ->where('u.role = :role')
-                ->andWhere('u.agriculteur = :agriculteur') // Filter by agriculteur
+                ->andWhere('u.agriculteur = :agriculteur') 
                 ->setParameter('role', $role)
                 ->setParameter('agriculteur', $loggedInUser)
                 ->getQuery();
@@ -107,7 +110,7 @@ final class UserBackController extends AbstractController
     #[Route('/listclientback', name: 'app_user_listclient', methods: ['GET'])]
 public function listclient(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -157,7 +160,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
                 if (!in_array($user->getRole(), $allowedRoles)) {
                     $error = 'Accès refusé. Seuls les utilisateurs avec les rôles suivants peuvent se connecter : ' . implode(', ', $allowedRoles) . '.';
                 } else {
-                    $session->set('admin_user_id', $user->getId());
+                    $session->set('user_id', $user->getId());
 
                     User::setCurrentUser($user);
 
@@ -218,7 +221,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     
     #[Route('/{id}/editback', name: 'app_user_editback', methods: ['GET', 'POST'])]
     public function editback(Request $request, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher, SessionInterface $session, int $id): Response {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -293,19 +296,10 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
         return $this->redirectToRoute('app_user_listclient', [], Response::HTTP_SEE_OTHER);
     }
 
-    
-
-    /*#[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
-    {
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
-    }*/
     #[Route('/newemploye', name: 'app_user_newemploye', methods: ['GET', 'POST'])] // Removed {agriculteurId}
     public function newemploye(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -355,7 +349,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     #[Route('/{id}/editprofiladmin', name: 'app_user_editprofiladmin', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -399,4 +393,96 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     }
     
 
+
+    #[Route('/ban/{id}', name: 'admin_ban_user')]
+    public function banUser(int $id, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            $this->addFlash('danger', 'Utilisateur non trouvé.');
+            return $this->redirectToRoute('app_user_listclient');
+        }
+
+        if ($user->getStatut() === 'banni') {
+            $this->addFlash('info', 'Cet utilisateur est déjà banni.');
+            return $this->redirectToRoute('app_user_listclient');
+        }
+
+        $user->setStatut('banni');
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur banni avec succès.');
+
+        if ($session->get('user_id') == $user->getId()) {
+            $session->remove('user_id');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return $this->redirectToRoute('app_user_listclient');
+    }
+
+    #[Route('/admin/statistics', name: 'admin_statistics')]
+public function statistics(UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $loggedInUserId = $session->get('user_id');
+
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    $genderStats = $userRepository->getUserStatistics();
+    $ageStats = $userRepository->getAgeStatistics();
+
+    // Debugging: Check the data
+    dump($genderStats);
+    dump($ageStats);
+
+    return $this->render('user/statistics.html.twig', [
+        'genderStats' => $genderStats,
+        'ageStats' => $ageStats,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
+#[Route('/notif', name: 'notif')]
+public function dashboard(NotificationService $notificationService, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $loggedInUserId = $session->get('user_id');
+    
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+    $notifications = $notificationService->getUnreadNotifications();
+
+    return $this->render('user/notification.html.twig', [
+        'notifications' => $notifications,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
+#[Route('/notif/mark-as-read/{id}', name: 'notification_mark_as_read')]
+public function markAsRead(int $id, NotificationService $notificationService): Response
+{
+    $notification = $notificationService->getNotificationById($id);
+    if ($notification) {
+        $notificationService->markAsRead($notification);
+    }
+
+    return $this->redirectToRoute('notif');
+}
 }

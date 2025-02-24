@@ -19,7 +19,7 @@ final class AvisController extends AbstractController{
     public function index(AvisRepository $avisRepository, SessionInterface $session,
     EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -47,7 +47,7 @@ final class AvisController extends AbstractController{
     #[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -77,31 +77,28 @@ final class AvisController extends AbstractController{
         ]);
     }
 
-    #[Route('/{id}', name: 'app_avis_show', methods: ['GET'])]
-    public function show(Avis $avi, SessionInterface $session,
-    EntityManagerInterface $entityManager): Response
-    {
-        $loggedInUserId = $session->get('client_user_id');
-    
+    #[Route('/{id}', name: 'app_avis_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+public function show(Avis $avi, SessionInterface $session, EntityManagerInterface $entityManager): Response
+{
+    $loggedInUserId = $session->get('user_id');
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
     }
-
-    // Récupérer l'utilisateur connecté
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
         return $this->redirectToRoute('gi');
     }
-        return $this->render('avis/show.html.twig', [
-            'avi' => $avi,
-            'loggedInUser' => $loggedInUser,
-        ]);
-    }
+    return $this->render('avis/show.html.twig', [
+        'avi' => $avi,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
 
     #[Route('/{id}/edit', name: 'app_avis_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Avis $avi, EntityManagerInterface $entityManager,SessionInterface $session ): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -139,4 +136,29 @@ final class AvisController extends AbstractController{
 
         return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    /////////////////////////////////////////////// SHOW AVIS fel backoffice ///////////////////////////////////////////////
+
+
+    #[Route('/avisback', name: 'app_avisback_index', methods: ['GET'])]
+public function index2(AvisRepository $avisRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
+{
+    $loggedInUserId = $session->get('user_id');
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+    return $this->render('avis/indexback.html.twig', [
+        'avis' => $avisRepository->findAll(),
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+
+
+
+    
 }

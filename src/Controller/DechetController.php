@@ -21,7 +21,7 @@ final class DechetController extends AbstractController
     #[Route(name: 'app_dechet_index', methods: ['GET'])]
 public function index(Request $request, DechetRepository $dechetRepository, PaginatorInterface $paginator, SessionInterface $session, EntityManagerInterface $entityManager): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -64,7 +64,7 @@ public function index(Request $request, DechetRepository $dechetRepository, Pagi
 #[Route('/new', name: 'app_dechet_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_loginback');
@@ -97,7 +97,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
 
     #[Route('/{id}', name: 'app_dechet_show', methods: ['GET'])]
     public function show(Dechet $dechet , SessionInterface $session , EntityManagerInterface $entityManager): Response
-    {   $loggedInUserId = $session->get('client_user_id');
+    {   $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -115,7 +115,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
 
     #[Route('/{id}/edit', name: 'app_dechet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Dechet $dechet, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -143,7 +143,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
 
     #[Route('/dechet/delete/{id}', name: 'app_dechet_delete', methods: ['GET'])]
     public function delete(Request $request, Dechet $dechet, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {$loggedInUserId = $session->get('admin_user_id');
+    {$loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');

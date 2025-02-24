@@ -56,5 +56,51 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function findByEmail(string $email)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.email = :email')  
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();  
+    }
+    
+     public function getUserStatistics()
+     {
+         return $this->createQueryBuilder('u')
+             ->select('u.genre AS genre, COUNT(u.id) AS user_count')
+             ->groupBy('u.genre')
+             ->getQuery()
+             ->getResult();
+     }
+     
+    public function getAgeStatistics()
+    {
+        $users = $this->findAll(); 
+        $ageGroups = [
+            ['age_range' => '0-18', 'user_count' => 0],
+            ['age_range' => '19-35', 'user_count' => 0],
+            ['age_range' => '36-50', 'user_count' => 0],
+            ['age_range' => '50+', 'user_count' => 0]
+        ];
+    
+        foreach ($users as $user) {
+            $age = $user->getAge(); 
+    
+            if ($age <= 18) {
+                $ageGroups[0]['user_count']++;
+            } elseif ($age <= 35) {
+                $ageGroups[1]['user_count']++;
+            } elseif ($age <= 50) {
+                $ageGroups[2]['user_count']++;
+            } else {
+                $ageGroups[3]['user_count']++;
+            }
+        }
+    
+        return $ageGroups;
+    }
+    
+
 
 }

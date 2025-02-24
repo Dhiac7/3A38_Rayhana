@@ -31,33 +31,33 @@
                 <div class="row align-center">
                     <div class="col-lg-5 left-info mb-md-50 mb-xs-40">
                         <div class="thumb">
-                        {% if user.photo %}
-                            <img src="{{ asset('img/users/' ~ user.photo) }}" alt="Photo de l'utilisateur">
+                        {% if loggedInUser.photo %}
+                            <img src="{{ asset('img/users/' ~ loggedInUser.photo) }}" alt="Photo de l'utilisateur">
                         {% else %}
                             <p>Aucune photo disponible.</p>
                         {% endif %}
                         </div>
                     </div>
                     <div class="col-lg-7 right-info pl-80 pl-md-15 pl-xs-15">
-                        <h2> {{ user.nom }} {{ user.prenom }}</h2>
-                        <span> {{ user.role }}</span>
+                        <h2> {{ loggedInUser.nom }} {{ loggedInUser.prenom }}</h2>
+                        <span> {{ loggedInUser.role }}</span>
                         <p>
                              Description                        </p>
                         
                         <ul>
                             <li>
                                 <strong>Email:</strong>
-                                <a href="mailto: {{ user.email }}"> {{ user.email }}</a>
+                                <a href="mailto: {{ loggedInUser.email }}"> {{ loggedInUser.email }}</a>
                             </li>
                             <li>
                                 <strong>Phone:</strong>
-                                <a href="tel: {{ user.tel }}"> {{ user.tel }}</a>
+                                <a href="tel: {{ loggedInUser.tel }}"> {{ loggedInUser.tel }}</a>
                             </li>
                         </ul>
                         <div class="social">
-                            <a class="btn circle btn-sm btn-dark animation me-2" href="{{ path('app_user_edit', {'id': user.id}) }}">Modifier</a>
-                            <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                            <a class="btn circle btn-sm btn-dark animation me-2" href="{{ path('app_user_edit', {'id': loggedInUser.id}) }}">Modifier</a>
+                            <form method="post" action="{{ path('app_user_delete', {'id': loggedInUser.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ loggedInUser.id) }}">
                                 <a type="submit" class="btn circle btn-sm btn-dark animation">Supprimer</a> 
                             </form>
                             <div class="share-link">

@@ -28,4 +28,6 @@ class MailService
             throw new \Exception("Failed to send SMS: " . $e->getMessage());
         }
     }
-}
+
+        
+    }

@@ -38,6 +38,7 @@
                 <th>Tel</th>
                 <th>Cin</th>
                 <th>Adresse</th>
+                <th class="text-center"><center>Actions</center></th>
               {#  <th class="text-center">Actions</th> #}
             </tr>
         </thead>
@@ -53,6 +54,11 @@
                     <td>{{ user.tel }}</td>
                     <td>{{ user.cin }}</td>
                     <td>{{ user.adresse }}</td>
+                    <td class="text-center">  {# Center actions #}
+                        <a href="{{ path('admin_ban_user', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Banner compte
+                        </a>
+                    </td>
                 </tr>
             {% else %}
                 <tr>
