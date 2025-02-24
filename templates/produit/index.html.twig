@@ -6,14 +6,14 @@
     <a href="assets/img/melon.jpg" class="item popup-gallery">
     <!-- Start Breadcrumb 
     ============================================= -->
-    <div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url(assets/img/front.jpg");">
+<div class="breadcrumb-area text-center shadow dark-hard bg-cover text-light" style="background-image: url('{{ asset('img/front4.jpg') }}');">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 offset-lg-2">
                     <h1>Produits</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li><a href="index.html"><i class="fas fa-home"></i> Chez nous</a></li>
+                            <li><a href="index.html"><i class="fas fa-home"></i> Rayhana</a></li>
                             <li class="active">boutique</li>
                         </ol>
                     </nav>
@@ -86,7 +86,7 @@
                                             <div class="shop-action">
                                                 <ul>
                                                     <li class="cart">
-                                                       <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">buy</a>
+                                                       <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">Achetr</a>
                                                     </li>
                                                     <li class="wishlist">
                                                         <a href="#"><span>Add to wishlist</span></a>
@@ -110,7 +110,7 @@
                                                     <span>{{ produit.prixVente }} DT</span>
                                                 {% endif %}
                                             </div>
-                                            <a href="{{ path('panier_ajouter1', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
+                                            <a href="{{ path('panier_ajouter1', {'id': produit.id}) }}" class="cart-btn"><i class="fas fa-shopping-bag"></i>Ajout au panier</a>
                                         </div>
                                     </div>
                                 </li>
