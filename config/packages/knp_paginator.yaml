@@ -1,5 +1,5 @@
 knp_paginator:
-    page_range: 4           # Nombre de pages affichées dans la barre de pagination
+    page_range: 3           # Nombre de pages affichées dans la barre de pagination
     default_options:
         page_name: page       # Nom du paramètre GET pour la pagination
         sort_field_name: sort # Nom du paramètre GET pour trier 

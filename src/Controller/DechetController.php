@@ -52,12 +52,12 @@ public function index(Request $request, DechetRepository $dechetRepository, Pagi
     $pagination = $paginator->paginate(
         $query, // Requête avec tri
         $request->query->getInt('page', 1), // Page actuelle
-        4 // Nombre d'éléments par page
+        3 // Nombre d'éléments par page
     );
 
     return $this->render('dechet/indexBack.html.twig', [
         'pagination' => $pagination,
-        'loggedInUser' => $loggedInUser,
+                'loggedInUser' => $loggedInUser,
     ]);
 }
 
@@ -83,7 +83,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Ses
         $entityManager->persist($dechet);
         $entityManager->flush();
         // Rediriger vers la liste des déchets
-        $this->addFlash('success', "L'atelier a été ajouté avec succès.");
+        $this->addFlash('success', "le dechet a été ajouté avec succès.");
         return $this->redirectToRoute('app_dechet_index', [], Response::HTTP_SEE_OTHER);
     }
     // Rendre la vue pour afficher le formulaire
@@ -189,29 +189,60 @@ public function deleteAjax(Request $request, EntityManagerInterface $entityManag
 
 
 #[Route('/dechet/list', name: 'dechet_list_ajax')]
-public function listdechet(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $sortOrder = $request->query->get('sort', '');
-    $searchQuery = $request->query->get('search', '');
-        $atelierRepository = $entityManager->getRepository(dechet::class);
-    $queryBuilder = $atelierRepository->createQueryBuilder('a');
-
-    if (!empty($searchQuery)) {
-        $queryBuilder->andWhere('a.type LIKE :search')
-                     ->setParameter('search', '%' . $searchQuery . '%');
+#[Route('/dechet/list', name: 'dechet_list_ajax')]
+    public function listdechet(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+    {   
+        // Vérification de la session de l'utilisateur
+        $loggedInUserId = $session->get('user_id');
+            
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        // Récupération de l'utilisateur
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        // Récupération des paramètres de tri et de recherche
+        $sortOrder = $request->query->get('sort', '');
+        $searchQuery = $request->query->get('search', '');
+    
+        // Récupération des dechet avec un tri et une recherche si nécessaire
+        $dechetRepository = $entityManager->getRepository(Dechet::class);
+        $queryBuilder = $dechetRepository->createQueryBuilder('a');
+    
+        if (!empty($searchQuery)) {
+            $queryBuilder->andWhere('a.nom LIKE :search')
+                         ->setParameter('search', '%' . $searchQuery . '%');
+        }
+    
+        if ($sortOrder === "asc") {
+            $queryBuilder->orderBy('a.nom', 'ASC');
+        } elseif ($sortOrder === "desc") {
+            $queryBuilder->orderBy('a.nom', 'DESC');
+        }
+    
+        // Pagination avec KnpPaginator
+        $pagination = $paginator->paginate(
+            $queryBuilder, // La requête avec les filtres de recherche et tri
+            $request->query->getInt('page', 1), // Le numéro de la page
+            4 // Le nombre d'éléments par page
+        );
+    
+        // Récupération de la clé API de Mapbox
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
+        
+        // Rendu de la vue avec les données
+        return $this->render('dechet/_list.html.twig', [
+            'pagination' => $pagination,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+            'loggedInUser' => $loggedInUser,
+        ]);
     }
 
-    if ($sortOrder === "asc") {
-        $queryBuilder->orderBy('a.type', 'ASC');
-    } elseif ($sortOrder === "desc") {
-        $queryBuilder->orderBy('a.type', 'DESC');
-    }
 
-    $dechets = $queryBuilder->getQuery()->getResult();
-
-    return $this->render('dechet/_list_dechet.html.twig', [
-        'dechets' => $dechets,
-    ]);
-}
 
 }
