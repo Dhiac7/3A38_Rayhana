@@ -539,10 +539,11 @@
 	}
 	loader();
   // Initialisation de DataTables
-  $(document).ready(function () {
+  $.noConflict();
+jQuery(document).ready(function ($) {
     $('#atelierTable').DataTable({
         ordering: true,       // Active le tri
-        paging: false,         // Active la pagination
+        paging: false,        // Désactive la pagination (mettre à true si tu veux la pagination)
         searching: true,      // Active la barre de recherche
         pageLength: 4,        // Nombre d'éléments par page
         lengthChange: false,  // Désactive le menu pour modifier le nombre d'éléments par page
@@ -551,19 +552,5 @@
         }
     });
 });
-$.noConflict();
-jQuery(document).ready(function ($) {
-    $('#atelierTable').DataTable({
-        ordering: true,
-        paging: false,
-        searching: true,
-        pageLength: 4,
-        lengthChange: false,
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/French.json"
-        }
-    });
-});
-
 
 })(jQuery); // End jQuery
