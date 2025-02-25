@@ -58,35 +58,30 @@ class InterfaceController extends AbstractController
             $this->addFlash('error', 'You do not have permission to access this page.');
             return $this->redirectToRoute('role_interface', ['role' => $loggedInUser->getRole()]);
         }
-         // Fetch agriculture news using an external API (e.g., NewsAPI or similar)
             $response = $httpClient->request('GET', 'https://newsapi.org/v2/everything', [
                 'query' => [
                     'q' => 'agriculture',
                     'language' => 'fr',
-                    'apiKey' => '54c165e45e684e5c9dc19c4afdd0b8fb', // Your News API key
+                    'apiKey' => '54c165e45e684e5c9dc19c4afdd0b8fb', 
                 ],
             ]);
 
-             // Check for successful response
             if ($response->getStatusCode() === 200) {
-                // Decode the response JSON
                 $newsData = $response->toArray();
                 $articles = $newsData['articles'] ?? [];
             } else {
-                // Handle error if the API request fails
                 $articles = [];
             }
 
-            // Paginate the articles
             $paginatedArticles = $paginator->paginate(
-                $articles, // The array of articles
-                $request->query->getInt('page', 1), // Current page number, default to 1
-                5 // Number of items per page
+                $articles, 
+                $request->query->getInt('page', 1), 
+                5 
             );
 
         return $this->render("user/{$role}.html.twig", [
             'loggedInUser' => $loggedInUser,
-            'articles' => $paginatedArticles, // Pass the news articles to the template
+            'articles' => $paginatedArticles, 
  
         ]);
     }
@@ -206,7 +201,7 @@ class InterfaceController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email'); 
-            $user = $userRepository->findOneByEmail($email);  // Searching for the user by email
+            $user = $userRepository->findOneByEmail($email); 
 
             if ($user) {
                 $session = $request->getSession();
@@ -216,7 +211,6 @@ class InterfaceController extends AbstractController
                 $session->set('verification_code', $verificationCode);
                 $session->set('email', $email);
 
-                // Create email message
                 $emailMessage = (new Email())
                     ->from('routou200@gmail.com')
                     ->to($email)
@@ -225,7 +219,6 @@ class InterfaceController extends AbstractController
                     ->html('<p>Your verification code is: <strong>' . $verificationCode . '</strong></p>');
 
                 try {
-                    // Send the email using Symfony Mailer
                     $this->mailer->send($emailMessage);
                     $showVerificationForm = true;
 
@@ -310,50 +303,42 @@ class InterfaceController extends AbstractController
     public function clientDashboard(SessionInterface $session, EntityManagerInterface $entityManager, HttpClientInterface $httpClient,PaginatorInterface $paginator, // Inject the paginator
     Request $request): Response
 {
-    // Retrieve the logged-in user ID from session
     $loggedInUserId = $session->get('user_id');
 
-    // Check if the user is logged in
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
     }
 
-    // Fetch user data from the database
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
 
     if (!$loggedInUser) {
         return $this->redirectToRoute('app_user_login');
     }
 
-    // Fetch agriculture news in French using an external API (e.g., NewsAPI or similar)
     $response = $httpClient->request('GET', 'https://newsapi.org/v2/everything', [
         'query' => [
             'q' => 'agriculture', 
             'language' => 'fr',
-            'apiKey' => '54c165e45e684e5c9dc19c4afdd0b8fb', // Replace with your actual API key
+            'apiKey' => '54c165e45e684e5c9dc19c4afdd0b8fb', 
         ],
     ]);
 
-    // Check for successful response
     if ($response->getStatusCode() === 200) {
-        // Decode the response JSON
         $newsData = $response->toArray();
         $articles = $newsData['articles'] ?? [];
     } else {
-        // Handle error if the API request fails
         $articles = [];
     }
 
-    // Paginate the articles
     $paginatedArticles = $paginator->paginate(
-        $articles, // The array of articles
-        $request->query->getInt('page', 1), // Current page number, default to 1
-        5 // Number of items per page
+        $articles, 
+        $request->query->getInt('page', 1),         
+        5 
     );
 
     return $this->render('user/news.html.twig', [
         'loggedInUser' => $loggedInUser,
-        'articles' => $paginatedArticles, // Pass the paginated articles to the template
+        'articles' => $paginatedArticles, 
     ]);
 }
 

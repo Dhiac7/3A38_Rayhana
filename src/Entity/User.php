@@ -220,6 +220,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'createdBy')]
     private Collection $users;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $GoogleId = null;
+
 
 
     public function __construct()
@@ -749,6 +752,18 @@ public function getPassword(): ?string
                 $user->setCreatedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->GoogleId;
+    }
+
+    public function setGoogleId(?string $GoogleId): static
+    {
+        $this->GoogleId = $GoogleId;
 
         return $this;
     }
