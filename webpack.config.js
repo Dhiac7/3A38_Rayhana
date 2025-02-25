@@ -14,12 +14,6 @@ Encore
     // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
-
-
-
-
-
-    
     /*
      * ENTRY CONFIG
      *
@@ -35,6 +29,7 @@ Encore
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
     .enableStimulusBridge('./assets/bootstrap.js')
+
 
     /*
      * FEATURE CONFIG
@@ -61,6 +56,10 @@ Encore
     })
 
     // enables Sass/SCSS support
+    //.enableSassLoader()
+
+    // uncomment if you use TypeScript
+    //.enableTypeScriptLoader()
     .enableSassLoader()
 
     // uncomment if you use TypeScript
