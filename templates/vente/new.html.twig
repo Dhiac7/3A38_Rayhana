@@ -57,9 +57,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-12">
-                                   
-                                </div>
+                              
 
                             {{ form_end(form) }}
                         </div>
@@ -69,37 +67,17 @@
                         <div class="product-info">
                             <h3>Informations du Produit</h3>
                             {% if produit is defined %}
-                                <div class="prediction-info mb-4">
-                                    <h4>Prédiction de vente</h4>
-                                    {% if prediction is not null %}
-                                        <div class="alert alert-info">
-                                            Probabilité de vente : {{ (prediction * 100)|number_format(2) }}%
-                                        </div>
-                                    {% else %}
-                                        <div class="alert alert-warning">
-                                            Prédiction non disponible
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="product-details">
-                                    <p><strong>Nom du produit:</strong> {{ produit.nom }}</p>
-                                    <p><strong>Quantité Disponible:</strong> {{ produit.quantite }}</p>
-                                    <p><strong>Prix de Vente:</strong> {{ produit.prixVente }} €</p>
-                                    {% if produit.image %}
-                                        <img src="{{ asset('img/stock/' ~ produit.image) }}" 
-                                             alt="{{ produit.nom }}" 
-                                             class="img-fluid rounded shadow-sm">
-                                    {% else %}
-                                        <div class="no-image alert alert-secondary">
-                                            Aucune image disponible
-                                        </div>
-                                    {% endif %}
-                                </div>
+                                <p><strong>Nom du produit:</strong> {{ produit.nom }}</p>
+                                <p><strong>Quantité Disponible:</strong> {{ produit.quantite }}</p>
+                                <p><strong>Prix de Vente:</strong> {{ produit.prixVente }} €</p>
+                                {% if produit.image %}
+                                <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="{{ produit.nom }}" class="img-fluid">
+                                {% else %}
+                                    <p class="text-danger">Aucune image disponible.</p>
+                                    <p>Valeur de produit.image : {{ produit.image }}</p>
+                                {% endif %}
                             {% else %}
-                                <div class="alert alert-danger">
-                                    Aucun produit sélectionné
-                                </div>
+                                <p class="text-danger">Aucun produit sélectionné.</p>
                             {% endif %}
                         </div>
                     </div>
@@ -112,29 +90,30 @@
 {% block javascripts %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const quantiteInput = document.getElementById("vente_quantite");
-        const prixUnitaireInput = document.getElementById("vente_prixUnitaire");
-        const prixTotalInput = document.getElementById("vente_prix");
-        const availableQuantity = {{ produit.quantite|default(0) }};
+        let quantiteInput = document.getElementById("vente_quantite");
+        let prixUnitaireInput = document.getElementById("vente_prixUnitaire");
+        let prixTotalInput = document.getElementById("vente_prix");
+        let availableQuantity = {{ produit.quantite|default(0) }};
 
         function updatePrixTotal() {
-            const quantite = parseInt(quantiteInput.value) || 0;
-            const prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
-            prixTotalInput.value = (quantite * prixUnitaire).toFixed(2);
+            let quantite = parseInt(quantiteInput.value) || 0;
+            let prixUnitaire = parseFloat(prixUnitaireInput.value) || 0;
+            let prixTotal = quantite * prixUnitaire;
+            prixTotalInput.value = prixTotal.toFixed(2);
         }
 
         function validateQuantity() {
             let quantite = parseInt(quantiteInput.value) || 0;
             if (quantite > availableQuantity) {
-                alert(`Quantité maximum disponible : ${availableQuantity}`);
+                alert("La quantité ne peut pas être supérieure à la quantité disponible !");
                 quantiteInput.value = availableQuantity;
                 updatePrixTotal();
             }
         }
 
-        quantiteInput.addEventListener('input', () => {
-            validateQuantity();
+        quantiteInput.addEventListener("input", function () {
             updatePrixTotal();
+            validateQuantity();
         });
 
         updatePrixTotal();
