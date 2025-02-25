@@ -136,7 +136,7 @@ class Parcelle
         return $this;
     }
 
-    public function getIdUser(): ?User
+    public function getUser(): ?User
     {
         return $this->user;
     }

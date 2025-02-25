@@ -27,7 +27,7 @@ final class ParcelleController extends AbstractController
     #[Route(name: 'app_parcelle_index', methods: ['GET'])]
     public function index(Request $request, ParcelleRepository $parcelleRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -65,7 +65,7 @@ final class ParcelleController extends AbstractController
     #[Route('/new', name: 'app_parcelle_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -101,7 +101,7 @@ final class ParcelleController extends AbstractController
     #[Route('/{id}', name: 'app_parcelle_show', methods: ['GET'])]
     public function show(Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -125,7 +125,7 @@ final class ParcelleController extends AbstractController
     #[Route('/{id}/edit', name: 'app_parcelle_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -135,7 +135,7 @@ final class ParcelleController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
 
-        if ($parcelle->getUser() !== $loggedInUser) {
+        if ($parcelle->getIdUser() !== $loggedInUser) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette parcelle.');
         }
 
@@ -163,7 +163,7 @@ final class ParcelleController extends AbstractController
     #[Route('/{id}', name: 'app_parcelle_delete', methods: ['POST'])]
     public function delete(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -185,7 +185,7 @@ final class ParcelleController extends AbstractController
     #[Route('/dashboard', name: 'app_parcelle_index2', methods: ['GET'])]
     public function dashparcelle(Request $request, ParcelleRepository $parcelleRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -232,7 +232,7 @@ final class ParcelleController extends AbstractController
     #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
     public function show2(Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -254,7 +254,7 @@ final class ParcelleController extends AbstractController
     #[Route('/dashboard/{id}/edit', name: 'app_parcelle_edit2', methods: ['GET', 'POST'])]
     public function edit2(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');

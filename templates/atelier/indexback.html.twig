@@ -36,9 +36,7 @@
           <div id="atelier-list">
             <!-- Les ateliers seront affichés dynamiquement ici -->
           </div>
-              <div class="d-flex justify-content-center">
-    {{ knp_pagination_render(pagination) }}
-</div>
+             
 <div class="col-lg-12">
                     <div id="map" style="
                         width: 100%; 
@@ -56,33 +54,31 @@
   
 <!-- Script AJAX -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
+   function fetchAteliers(sortOrder = "", searchQuery = "") {
+     let url = "{{ path('atelier_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
 
-    // Fonction pour récupérer les ateliers via AJAX
-    function fetchAteliers(sortOrder = "", searchQuery = "") {
-      let url = "{{ path('atelier_list_ajax') }}?sort=" + sortOrder + "&search=" + searchQuery;
-
-      fetch(url)
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById("atelier-list").innerHTML = data;
-        });
-    }
+     fetch(url)
+       .then(response => response.text())
+       .then(data => {
+         document.getElementById("atelier-list").innerHTML = data;
+       });
+   }
 
     // Recherche en temps réel
     document.getElementById("search").addEventListener("input", function () {
       fetchAteliers("", this.value);
     });
 
-    // Tri croissant
-    document.getElementById("sortAsc").addEventListener("click", function () {
-      fetchAteliers("asc", document.getElementById("search").value);
-    });
+     // Tri croiss
+   document.getElementById("sortAsc").addEventListener("click", function () {
+     fetchDechhets("asc", document.getElementById("search").value);
+   });
 
-    // Tri décroissant
-    document.getElementById("sortDesc").addEventListener("click", function () {
-      fetchAteliers("desc", document.getElementById("search").value);
-    });
+   // Tri décroi
+   document.getElementById("sortDesc").addEventListener("click", function () {
+     fetchDechhets("desc", document.getElementById("search").value);
+   });
 
     // Charger les ateliers au début
     fetchAteliers();

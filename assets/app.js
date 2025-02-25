@@ -1,4 +1,6 @@
 import './bootstrap.js';
+import './calendar';
+
 /*
  * Welcome to your app's main JavaScript file!
  *

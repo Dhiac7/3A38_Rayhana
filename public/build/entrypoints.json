@@ -3,6 +3,7 @@
     "app": {
       "js": [
         "/build/runtime.js",
+        "/build/vendors-node_modules_fullcalendar_daygrid_index_js-node_modules_fullcalendar_interaction_inde-44d67c.js",
         "/build/app.js"
       ]
     }
