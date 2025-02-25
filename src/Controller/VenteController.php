@@ -4,8 +4,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Vente;
 use App\Entity\Produit;
+use Psr\Log\LoggerInterface;
 use App\Form\VenteType;
 use Stripe\Stripe;
+use App\Service\PredictionService;
 use Stripe\Checkout\Session as StripeSession;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\Transactionfinancier;
@@ -33,7 +35,7 @@ public function index(
     SessionInterface $session,
     EntityManagerInterface $entityManager
 ): Response {
-    $loggedInUserId = $session->get('client_user_id');
+    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
@@ -42,7 +44,7 @@ public function index(
     // Récupérer l'utilisateur connecté
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_login');
+        return $this->redirectToRoute('user_login');
     }
 
     // Filtrer les ventes pour l'utilisateur connecté
@@ -66,7 +68,7 @@ public function index(
     #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
     public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -89,6 +91,8 @@ public function index(
 
     }
 
+
+   
 
     #[Route('/new', name: 'app_vente_new', methods: ['GET', 'POST'])]
     public function new(
@@ -206,7 +210,6 @@ public function index(
             'loggedInUser' => $loggedInUser,
         ]);
     }
-    
     #[Route('/payment/success', name: 'payment_success')]
     public function paymentSuccess(Request $request): Response
     {
@@ -300,7 +303,7 @@ public function edit(Request $request, Vente $vente, EntityManagerInterface $ent
 #[Route('/atelier/new', name: 'app_vente_atelier_new', methods: ['GET', 'POST'])]
 public function newVenteAtelier(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
-    $loggedInUserId = $session->get('client_user_id');
+    $loggedInUserId = $session->get('user_id');
     
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');

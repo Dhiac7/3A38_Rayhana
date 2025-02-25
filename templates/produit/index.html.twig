@@ -229,8 +229,14 @@
                                             <div class="shop-action">
                                                 <ul>
                                                     <li class="cart">
-                                                       <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">Acheter</a>
+                                                       <a href="{{ path('app_vente_new', {'id': produit.id}) }}">Acheter produit</a>
                                                     </li>
+                                                    <li class="wishlist">
+                                                        <a href="#"><span>Add to wishlist</span></a>
+                                                       <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">Ajouter au panier</a>
+                                                    </li>
+                                                    
+                                                    
                                                   
                                                     <li class="quick-view">
                                                         <a href="{{ path('app_produit_show', {'id': produit.id}) }}" ><span> Détail</span></a>
