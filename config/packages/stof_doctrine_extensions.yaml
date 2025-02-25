@@ -1,0 +1,9 @@
+# config/packages/stof_doctrine_extensions.yaml
+stof_doctrine_extensions:
+    default_locale: en  # Default locale for translatable behavior
+    orm:
+        default:
+            timestampable: true  # Enable Timestampable behavior
+            sluggable: true     # Enable Sluggable behavior
+            blameable: true     # Enable Blameable behavior
+            softdeleteable: true # Enable SoftDeleteable behavior

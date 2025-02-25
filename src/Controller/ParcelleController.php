@@ -135,7 +135,7 @@ final class ParcelleController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
 
-        if ($parcelle->getUser() !== $loggedInUser) {
+        if ($parcelle->getIdUser() !== $loggedInUser) {
             throw $this->createAccessDeniedException('Vous ne pouvez pas accéder à cette parcelle.');
         }
 
