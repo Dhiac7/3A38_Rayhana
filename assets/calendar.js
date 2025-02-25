@@ -5,7 +5,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
-
     if (calendarEl) {
         var calendar = new Calendar(calendarEl, {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -14,11 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
             editable: true,
             selectable: true,
         });
-
-
-
-
-        
         calendar.render();
     }
 });
