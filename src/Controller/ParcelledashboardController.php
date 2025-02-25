@@ -25,7 +25,7 @@ final class ParcelledashboardController extends AbstractController
     #[Route('/parcelledashboard', name: 'app_parcelle_dashboard_index')]
     public function index(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -67,7 +67,7 @@ final class ParcelledashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_parcelle_index2')]
     public function dashparcelle(Request $request, ParcelleRepository $parcelleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -115,7 +115,7 @@ final class ParcelledashboardController extends AbstractController
     #[Route('/dashboard/new', name: 'app_parcelle_new2', methods: ['GET', 'POST'])]
     public function new2(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -149,7 +149,7 @@ final class ParcelledashboardController extends AbstractController
     #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
     public function show2(Parcelle $parcelle, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');

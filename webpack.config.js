@@ -28,6 +28,8 @@ Encore
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
+    .enableStimulusBridge('./assets/bootstrap.js')
+
 
     /*
      * FEATURE CONFIG
@@ -58,6 +60,10 @@ Encore
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
+    .enableSassLoader()
+
+    // uncomment if you use TypeScript
+    .enableTypeScriptLoader()
 
     // uncomment if you use React
     //.enableReactPreset()
