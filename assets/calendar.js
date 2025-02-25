@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
             selectable: true,
         });
 
+
+
+
+        
         calendar.render();
     }
 });
