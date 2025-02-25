@@ -24,7 +24,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route(name: 'app_culture_agricole_dashboard_index', methods: ['GET'])]
     public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -60,7 +60,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/new', name: 'app_culture_agricole_dashboard_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -97,7 +97,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/{id}', name: 'app_culture_agricole_dashboard_show', methods: ['GET'])]
     public function show(CultureAgricole $cultureAgricole, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -120,7 +120,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     #[Route('/{id}/edit', name: 'app_culture_agricole_dashboard_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -167,7 +167,7 @@ final class CultureAgricoleDashboardController extends AbstractController
         CultureAgricole $cultureAgricole,
         SessionInterface $session
     ): Response {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
 
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');

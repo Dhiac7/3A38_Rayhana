@@ -20,7 +20,7 @@ final class AtelierController extends AbstractController
 {
     #[Route(name: 'app_atelier_index', methods: ['GET'])]
    public function index(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator , SessionInterface $session , EntityManagerInterface $entityManager): Response
-    { $loggedInUserId = $session->get('client_user_id');
+    { $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
