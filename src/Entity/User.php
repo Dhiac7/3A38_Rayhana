@@ -223,6 +223,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $GoogleId = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $SessionId = null;
+
 
 
     public function __construct()
@@ -610,7 +613,7 @@ public function getPassword(): ?string
     {
         if ($this->parcelles->removeElement($parcelle)) {
             // set the owning side to null (unless already changed)
-            if ($parcelle->getIdUser() === $this) {
+            if ($parcelle->getUser() === $this) {
                 $parcelle->setIdUser(null);
             }
         }
@@ -764,6 +767,18 @@ public function getPassword(): ?string
     public function setGoogleId(?string $GoogleId): static
     {
         $this->GoogleId = $GoogleId;
+
+        return $this;
+    }
+
+    public function getSessionId(): ?string
+    {
+        return $this->SessionId;
+    }
+
+    public function setSessionId(?string $SessionId): static
+    {
+        $this->SessionId = $SessionId;
 
         return $this;
     }

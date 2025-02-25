@@ -17,3 +17,28 @@ api_statistiques:
     path: /api/statistiques
     controller: App\Controller\StatistiquesController::statistiques
     methods: [GET]
+
+
+    
+#some_endpoint:
+ #   path: /some-endpoint
+  #  controller: App\Controller\InterfaceController::someEndpointAction
+
+#send_message:
+#    path: /send-message
+ #   controller: App\Controller\InterfaceController::sendMessage
+  #  methods: POST
+
+#fetch_messages:
+ #   path: /fetch-messages
+   # controller: App\Controller\InterfaceController::fetchMessages
+   # methods: GET
+
+
+connect_google:
+    path: /connect/google
+    controller: App\Controller\SecurityController::connectGoogle
+
+connect_google_check:
+    path: /connect/google/check
+    controller: App\Controller\SecurityController::connectGoogleCheck
