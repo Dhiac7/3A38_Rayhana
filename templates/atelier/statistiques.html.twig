@@ -1,7 +1,22 @@
 {% extends 'baseAdmin.html.twig' %}
-
+-
 {% block title %}Statistiques{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <style>  body {
+    font-family: Arial, sans-serif;
+}
 
+h3 {
+    color: #333;
+}
+
+.canvas-container {
+    width: 100%;
+    height: auto;
+}
+ </style>
+{% endblock %}
 {% block body %}
     <div class="container mt-4">
         <h3>Statistiques des participants aux ateliers</h3>
