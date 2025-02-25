@@ -24,7 +24,7 @@ final class TransactionfinancierController extends AbstractController
         PaginatorInterface $paginator,
         Request $request
     ): Response {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -54,7 +54,7 @@ final class TransactionfinancierController extends AbstractController
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -86,7 +86,7 @@ public function new(Request $request, EntityManagerInterface $entityManager,Sess
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
     public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -104,7 +104,7 @@ public function new(Request $request, EntityManagerInterface $entityManager,Sess
     #[Route('/{id}/edit', name: 'app_transactionfinancier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Transactionfinancier $transactionfinancier, EntityManagerInterface $entityManager,SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
