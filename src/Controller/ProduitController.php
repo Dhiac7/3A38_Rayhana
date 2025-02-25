@@ -42,7 +42,7 @@ final class ProduitController extends AbstractController
         $pagination = $paginator->paginate(
             $query, // Donneili bch namlou pagination
             $request->query->getInt('page', 1), // Num page 
-            2 // nbr element par page 
+            4 // nbr element par page 
         );
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
