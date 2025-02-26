@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class PanierController extends AbstractController
 {
     private PanierService $panierService;
@@ -37,19 +37,28 @@ class PanierController extends AbstractController
     }
 
     #[Route('/panier', name: 'panier_index')]
-    public function index(): Response
+    public function index(SessionInterface $session): Response
     {
         $loggedInUser = $this->getLoggedInUser();
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
-
+        
         $panier = $this->panierService->getPanier();
-
+        $discountPercentage = $session->get('discount_percentage');
+        
+        // Calculer le prix après réduction si une réduction existe
+        $totalApreReduction = $panier['totalPanier'];
+        if ($discountPercentage) {
+            $totalApreReduction = $panier['totalPanier'] - ($panier['totalPanier'] * $discountPercentage / 100);
+        }
+        
         return $this->render('panier/index.html.twig', [
             'panier' => $panier['panierData'],
             'totalPanier' => $panier['totalPanier'],
             'loggedInUser' => $loggedInUser,
+            'discountPercentage' => $discountPercentage,
+            'totalApreReduction' => $totalApreReduction,
         ]);
     }
 
