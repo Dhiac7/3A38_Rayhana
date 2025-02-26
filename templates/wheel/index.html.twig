@@ -1,0 +1,204 @@
+{% extends 'user/client.html.twig' %}
+
+{% block title %}Wheel of Fortune{% endblock %}
+
+{% block body %}
+<div class="wheel-container">
+    <h1>WHEEL OF FORTUNE</h1>
+    
+    <div class="price-info">
+        <p>Prix du panier: <span id="panier-price">{{ app.session.get('panier') is not empty ? panierTotal : '0.00' }}</span> DT</p>
+    </div>
+    
+    <div class="game-area">
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <button id="spin" class="spin-button" {% if hasPlayed %}disabled{% endif %}>SPIN</button>
+    </div>
+    
+    <div id="result" class="result-display"></div>
+    <div id="price-result" class="price-result"></div>
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        background-color: #fff;
+    }
+    
+    .wheel-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        background: linear-gradient(45deg, #FF0066, #FF9500);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+    }
+    
+    .price-info {
+        margin-bottom: 30px;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+    
+    .game-area {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+    
+    canvas {
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(255, 0, 102, 0.2);
+        max-width: 100%;
+    }
+    
+    .spin-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(45deg, #FF0066, #FF9500);
+        color: #fff;
+        border: none;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(255, 0, 102, 0.4);
+    }
+    
+    .spin-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    
+    .result-display,
+    .price-result {
+        margin-top: 20px;
+        font-size: 1.8rem;
+        font-weight: bold;
+        height: 60px;
+        color: #333;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        padding: 15px 30px;
+        display: inline-block;
+    }
+    
+    .result-display.active,
+    .price-result.active {
+        opacity: 1;
+    }
+</style>
+
+<script>
+    var options = ["5%", "10%", "15%", "25%", "30%", "35%"];
+    var colors = ["#FF0066", "#FF9500", "#00CCFF", "#33CC33", "#CC33FF", "#FFCC00"];
+
+    var startAngle = 0;
+    var arc = Math.PI / (options.length / 2);
+    var spinTimeout = null;
+
+    var ctx;
+    var panierTotal = {{ app.session.get('panier') is not empty ? panierTotal : 0 }};
+    var hasPlayed = {{ hasPlayed ? 'true' : 'false' }}; 
+
+    document.getElementById("spin").addEventListener("click", spin);
+    var resultDisplay = document.getElementById("result");
+    var priceResultDisplay = document.getElementById("price-result");
+
+    function drawRouletteWheel() {
+        var canvas = document.getElementById("canvas");
+        if (canvas.getContext) {
+            var outsideRadius = 200;
+            var textRadius = 160;
+            var insideRadius = 125;
+
+            ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, 500, 500);
+
+            for (var i = 0; i < options.length; i++) {
+                var angle = startAngle + i * arc;
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.arc(250, 250, outsideRadius, angle, angle + arc, false);
+                ctx.arc(250, 250, insideRadius, angle + arc, angle, true);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.save();
+                ctx.fillStyle = "#fff";
+                ctx.translate(250 + Math.cos(angle + arc / 2) * textRadius, 
+                              250 + Math.sin(angle + arc / 2) * textRadius);
+                ctx.rotate(angle + arc / 2 + Math.PI / 2);
+                var text = options[i];
+                ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
+                ctx.restore();
+            }
+        }
+    }
+
+    function spin() {
+        if (hasPlayed) {
+            alert("Vous avez déjà joué cette session.");
+            return;
+        }
+
+        if (panierTotal <= 0) {
+            alert("Votre panier est vide. Ajoutez des produits avant de jouer.");
+            return;
+        }
+        
+        document.getElementById("spin").disabled = true;
+        var index = Math.floor(Math.random() * options.length);
+        var discountText = options[index];
+        var discountPercentage = parseFloat(discountText.replace('%', ''));
+        
+        var discount = (panierTotal * discountPercentage) / 100;
+        var finalPrice = panierTotal - discount;
+        
+        resultDisplay.innerHTML = "Vous avez gagné: <span style='color:" + colors[index] + ";'>" + discountText + "</span> 🎉";
+        priceResultDisplay.innerHTML = "Prix final: <span style='color:#33CC33;'>" + finalPrice.toFixed(2) + "DT</span> <small>(Économie: " + discount.toFixed(2) + "DT)</small>";
+
+        resultDisplay.classList.add("active");
+        setTimeout(() => priceResultDisplay.classList.add("active"), 500);
+
+        applyDiscountToServer(discountPercentage);
+    }
+
+    function applyDiscountToServer(discountPercentage) {
+        fetch('{{ path("app_wheel_apply_discount") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token("wheel_discount") }}'
+            },
+            body: JSON.stringify({ discountPercentage: discountPercentage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                hasPlayed = true;
+                document.getElementById("spin").disabled = true;
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+    }
+
+    drawRouletteWheel();
+</script>
+{% endblock %}
