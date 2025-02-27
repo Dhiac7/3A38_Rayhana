@@ -101,7 +101,7 @@ public function index(
         ProduitRepository $produitRepository,
         SessionInterface $session
     ): Response {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -231,7 +231,7 @@ public function index(
     #[Route('/{id}', name: 'app_vente_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Vente $vente, SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
-        $loggedInUserId = $session->get('admin_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -250,7 +250,7 @@ public function index(
     #[Route('/{id}/edit', name: 'app_vente_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, Vente $vente, EntityManagerInterface $entityManager,SessionInterface $session,): Response
 {
-    $loggedInUserId = $session->get('admin_user_id');
+    $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
