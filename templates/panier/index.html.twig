@@ -79,6 +79,9 @@
             font-size: 20px;
             color: black; /* Texte vert foncé */
         }
+        .text-success {
+            color: #28a745;
+        }
         .quantity-control {
             display: flex;
             align-items: center;
@@ -227,6 +230,21 @@
                     <td colspan="3"><strong>Total du panier</strong></td>
                     <td colspan="2" class="cart-total"><strong>{{ totalPanier }} DT</strong></td>
                 </tr>
+                {% if discountPercentage is defined and discountPercentage is not null and discountPercentage > 0 %}
+                <tr>
+                    <td colspan="3"><strong>Réduction ({{ discountPercentage }}%)</strong></td>
+                   <td colspan="2" class="cart-total text-danger">
+    <strong>-{{ (totalPanier * discountPercentage / 100)|number_format(2, '.', ',') }} DT</strong>
+</td>
+
+                </tr>
+                <tr>
+                    <td colspan="3"><strong>Total après réduction</strong></td>
+                    <td colspan="2" class="cart-total" style="color:black; font-size: 22px;">
+                        <strong>{{ totalApreReduction|number_format(2, '.', ',') }} DT</strong>
+                    </td>
+                </tr>
+                {% endif %}
             </tfoot>
         </table>
         <div class="btn-container">

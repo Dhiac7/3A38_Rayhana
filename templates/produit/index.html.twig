@@ -176,15 +176,7 @@
                         <div class="content">
                             <!-- Tab Nav -->
                             <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" id="grid-tab-control" data-bs-toggle="tab" data-bs-target="#grid-tab" type="button" role="tab" aria-controls="grid-tab" aria-selected="true">
-                                        <i class="fas fa-th-large"></i>
-                                    </button>
-
-                                    <button class="nav-link" id="list-tab-control" data-bs-toggle="tab" data-bs-target="#list-tab" type="button" role="tab" aria-controls="list-tab" aria-selected="false">
-                                        <i class="fas fa-th-list"></i>
-                                    </button>
-                                </div>
+                               <a class="btn btn-theme secondary mt-10 btn-md radius animation"href="{{ path('app_wheel') }}""> Jouez avec nous !</a>
                             </nav>
                             <!-- End Tab Nav -->
                         </div>
@@ -232,7 +224,7 @@
                                                        <a href="{{ path('app_vente_new', {'id': produit.id}) }}">Acheter produit</a>
                                                     </li>
                                                     <li class="wishlist">
-                                                        <a href="#"><span>Add to wishlist</span></a>
+                                                      
                                                        <a href="{{ path('panier_ajouter', {'id': produit.id}) }}">Ajouter au panier</a>
                                                     </li>
                                                     

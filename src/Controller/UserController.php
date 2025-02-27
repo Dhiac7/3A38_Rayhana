@@ -44,6 +44,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
+    #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
 public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
     $error = null;
@@ -61,12 +62,24 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
         } elseif ($user->getStatut() === 'banni') {
             $error = 'Vous avez un ban , Accès refusé';
         } else {
-            $session->set('user_id', $user->getId());
-            User::setCurrentUser($user);
-            $user->setStatut('actif');
+            // If another session is active, force logout previous session
+            if ($user->getSessionId() !== null && $user->getSessionId() !== $session->getId()) {
+                $error = 'Une session est déjà active pour cet utilisateur.';
+            } else {
+                // Ensure no other user is logged in
+                if ($session->has('user_id') && $session->get('user_id') !== $user->getId()) {
+                    $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
+                } else {
+                    // Set session data
+                    $session->set('user_id', $user->getId());
+                    $user->setSessionId($session->getId());
+                    $user->setStatut('actif');
 
+                    $entityManager->flush();
 
-            return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+                    return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+                }
+            }
         }
     }
 
@@ -75,20 +88,27 @@ public function login(Request $request, EntityManagerInterface $entityManager, S
     ]);
 }
 
-    #[Route('/logout', name: 'app_user_logout')]
-    public function logout(SessionInterface $session, EntityManagerInterface $entityManager): Response
-    {
-        $loggedInUserId = $session->get('user_id');
-    
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
+
+#[Route('/logout', name: 'app_user_logout', methods: ['GET'])]
+public function logout(EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $loggedInUserId = $session->get('user_id');
+
+    if ($loggedInUserId) {
+        $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if ($user) {
+            $user->setSessionId(null);
+            $user->setStatut('inactif');
+            $entityManager->flush();
         }
-        $loggedInUser->setStatut('inactif');
-        $session->clear();
-        return $this->redirectToRoute('app_home');
     }
+
+    $session->clear();
+    User::setCurrentUser(null);
+
+    return $this->redirectToRoute('app_user_login');
+}
+
 
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
