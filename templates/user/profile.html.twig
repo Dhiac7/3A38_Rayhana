@@ -34,15 +34,14 @@
                         {% if loggedInUser.photo %}
                             <img src="{{ asset('img/users/' ~ loggedInUser.photo) }}" alt="Photo de l'utilisateur">
                         {% else %}
-                            <p>Aucune photo disponible.</p>
+                            <img src="{{ asset('img/users/avatar.jpg')}}" alt="Photo de l'utilisateur">
                         {% endif %}
                         </div>
                     </div>
                     <div class="col-lg-7 right-info pl-80 pl-md-15 pl-xs-15">
                         <h2> {{ loggedInUser.nom }} {{ loggedInUser.prenom }}</h2>
                         <span> {{ loggedInUser.role }}</span>
-                        <p>
-                             Description                        </p>
+                        <span> {{ loggedInUser.genre }}</span>
                         
                         <ul>
                             <li>
@@ -52,6 +51,14 @@
                             <li>
                                 <strong>Phone:</strong>
                                 <a href="tel: {{ loggedInUser.tel }}"> {{ loggedInUser.tel }}</a>
+                            </li>
+                            <li>
+                                <strong>Cin:</strong>
+                                <a href="mailto: {{ loggedInUser.cin }}"> {{ loggedInUser.cin }}</a>
+                            </li>
+                            <li>
+                                <strong>Année de naissance:</strong>
+                                <a href="tel: {{ loggedInUser.AnneeNaissance }}"> {{ loggedInUser.AnneeNaissance }}</a>
                             </li>
                         </ul>
                         <div class="social">

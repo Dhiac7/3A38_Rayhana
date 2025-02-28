@@ -84,7 +84,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle active" data-toggle="dropdown" >Home</a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ path('user_profile') }}">Profil</a></li>
+                                <li><a href="{{ path('user_profile', {'slug': loggedInUser.slug}) }}">Profil</a></li>
                                 <li><a href="">Contactez-nous</a></li>
                             </ul>
                         </li>

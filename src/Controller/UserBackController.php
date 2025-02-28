@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
 //use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Service\NotificationService;
+use App\Entity\Transactionfinancier;
 
 
 #[Route('/userback')]
