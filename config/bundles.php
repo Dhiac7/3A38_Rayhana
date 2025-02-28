@@ -19,5 +19,5 @@ return [
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
-
+    Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
 ];

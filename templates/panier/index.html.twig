@@ -1,256 +1,566 @@
 {% extends 'user/client.html.twig' %}
 
-{% block title %}Produits{% endblock %}
+{% block title %}Panier d'achat{% endblock %}
 
 {% block body %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier d'achat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #178330;
+            --primary-light: #e6f2e9;
+            --primary-hover: #146c28;
+            --secondary-color: #f0f8f0;
+            --text-dark: #333333;
+            --text-light: #6c757d;
+            --danger: #dc3545;
+            --danger-hover: #c82333;
+            --shadow: 0 4px 10px rgba(0,0,0,0.08);
+            --border-radius: 10px;
+        }
+        
         body {
-            background-color: #f0f8f0; /* Légèrement vert pour correspondre à la navbar */
+            background-color: var(--secondary-color);
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
+            color: var(--text-dark);
         }
+        
         .cart-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
         .cart-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: white;
-            border-radius: 15px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
         }
+        
         .cart-table th, .cart-table td {
             padding: 20px;
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #eee;
         }
+        
         .cart-table th {
-            background-color: #fff; /* Vert clair pour les en-têtes */
+            background-color: var(--primary-light);
             font-weight: 600;
-            color: black; /* Texte vert foncé */
+            color: var(--primary-color);
             text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
+        
+        .cart-table tbody tr:hover {
+            background-color: #fafafa;
+        }
+        
         .cart-table td {
             vertical-align: middle;
         }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        
         .product-name {
             font-weight: 600;
-            color:rgb(23, 131, 48); /* Texte vert foncé */
-            font-size: 18px;
-        }
-        .quantity {
+            color: var(--primary-color);
             font-size: 16px;
-            color: #6c757d;
-        }
-        .unit-price, .total-price {
-            font-size: 16px;
-            color: black; /* Texte vert foncé */
-        }
-        .actions a {
-            margin: 0 5px;
-            color: #dc3545; /* Rouge pour les actions */
-            font-size: 18px;
-            text-decoration: none;
             transition: color 0.3s;
         }
-        .actions a:hover {
-            color: #c82333; /* Rouge foncé au survol */
+        
+        .product-name:hover {
+            color: var(--primary-hover);
         }
-        .actions span {
-            color: #6c757d;
-            font-size: 16px;
-        }
-        .cart-total {
-            background-color: #fff; /* Vert clair pour le total */
-            padding: 20px;
-            text-align: right;
-            font-weight: 700;
-            font-size: 20px;
-            color: black; /* Texte vert foncé */
-        }
-        .text-success {
-            color: #28a745;
-        }
+        
         .quantity-control {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 5px;
+            width: fit-content;
         }
+        
         .quantity-btn {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #ced4da;
+            border: none;
             background: white;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.2s;
+            color: var(--primary-color);
+            font-size: 18px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
+        
         .quantity-btn:hover {
-            background: #f1f1f1;
+            background: var(--primary-light);
+            transform: translateY(-2px);
         }
+        
         .quantity-input {
             width: 40px;
+            height: 35px;
             text-align: center;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            font-weight: 500;
-            padding: 5px;
+            border: none;
+            background: white;
+            border-radius: 6px;
+            font-weight: 600;
+            color: var(--text-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
+        
+        .unit-price, .total-price {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        .total-price {
+            font-weight: 700;
+        }
+        
+        .actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background-color: #fff0f0;
+            color: var(--danger);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .actions a:hover {
+            background-color: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .cart-summary {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 16px;
+        }
+        
+        .summary-row.total {
+            font-size: 20px;
+            font-weight: 700;
+            border-top: 2px solid var(--primary-light);
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+        
+        .discount-label {
+            color: var(--danger);
+        }
+        
+        .discount-value {
+            color: var(--danger);
+            font-weight: 700;
+        }
+        
+        .promo-code-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .promo-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .promo-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-control {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #eeeeee;
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-dark);
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(23, 131, 48, 0.1);
+        }
+        
         .btn {
             display: inline-block;
-            font-weight: 400;
+            font-weight: 600;
             color: #fff;
             text-align: center;
             vertical-align: middle;
             user-select: none;
-            background-color: #28a745; /* Vert pour les boutons */
-            border: 1px solid transparent;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: 0.25rem;
-            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            background-color: var(--primary-color);
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(23, 131, 48, 0.1);
         }
+        
         .btn-success {
-            color: #fff;
-            background-color: #28a745; /* Vert pour les boutons */
-            border-color: #28a745;
+            background-color: var(--primary-color);
         }
+        
         .btn-success:hover {
-            color: #fff;
-            background-color: #218838; /* Vert foncé au survol */
-            border-color: #218838;
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(23, 131, 48, 0.15);
         }
-        .btn-outline-secondary {
-            color: #6c757d;
+        
+        .btn-outline {
+            color: var(--text-light);
             background-color: transparent;
-            border-color: #6c757d;
+            border: 2px solid #eeeeee;
+            box-shadow: none;
         }
-        .btn-outline-secondary:hover {
-            color: #fff;
-            background-color: #6c757d;
-            border-color: #6c757d;
+        
+        .btn-outline:hover {
+            border-color: var(--text-dark);
+            color: var(--text-dark);
+            transform: translateY(-2px);
         }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+        
         .btn-container {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
+            justify-content: space-between;
+            gap: 15px;
         }
+        
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            background-color: #fff;
+            box-shadow: var(--shadow);
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert::before {
+            margin-right: 12px;
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 18px;
+        }
+        
+        .alert-success {
+            border-color: #28a745;
+            background-color: #f0fff4;
+        }
+        
+        .alert-success::before {
+            content: "\f058";
+            color: #28a745;
+        }
+        
+        .alert-danger {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+        
+        .alert-danger::before {
+            content: "\f057";
+            color: #dc3545;
+        }
+        
+        .alert-info {
+            border-color: #17a2b8;
+            background-color: #f0fbff;
+        }
+        
+        .alert-info::before {
+            content: "\f05a";
+            color: #17a2b8;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-cart i {
+            font-size: 60px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .empty-cart h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+        
+        .empty-cart p {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 991px) {
+            .cart-container {
+                padding: 0 15px;
+            }
+            
+            .page-title {
+                font-size: 24px;
+            }
+        }
+        
         @media (max-width: 768px) {
+            .cart-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
             .cart-table th, .cart-table td {
                 padding: 15px;
-                font-size: 14px;
             }
-            .product-name {
-                font-size: 16px;
-            }
-            .quantity, .unit-price, .total-price {
-                font-size: 14px;
-            }
-            .actions a {
-                font-size: 16px;
-            }
-            .cart-total {
-                font-size: 18px;
-            }
+            
             .btn-container {
                 flex-direction: column;
-                align-items: center;
             }
-            .btn-container .btn {
+            
+            .btn {
                 width: 100%;
-                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 22px;
+            }
+            
+            .cart-table th:nth-child(4), 
+            .cart-table td:nth-child(4) {
+                display: none;
+            }
+            
+            .promo-form {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
     <div class="cart-container">
-        <table class="cart-table">
-            <thead>
-                <tr>
-                    <th>Image du produit</th>
-                    <th>Produit</th>
-                    <th>Quantité</th>
-                    <th>Prix unitaire</th>
-                    <th>Prix total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in panier %}
+        <h1 class="page-title">Votre Panier</h1>
+        
+        {# Afficher les messages flash #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        
+        {% if panier is empty %}
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Votre panier est vide</h3>
+                <p>Il semblerait que vous n'ayez pas encore ajouté de produits à votre panier.</p>
+                <a href="{{ path('app_produit_index') }}" class="btn btn-success">Découvrir nos produits</a>
+            </div>
+        {% else %}
+            <table class="cart-table">
+                <thead>
                     <tr>
-                        <td>
-                            <img src="{{ asset('img/stock/' ~ item.produit.image) }}" alt="Image du produit"
-                                 style="width: 80px; height: 80px; object-fit: cover;" class="rounded">
-                        </td>
-                        <td>
-                            {% if item.produit is defined and item.produit is not null %}
-                                <span class="product-name">{{ item.produit.nom }}</span>
-                            {% else %}
-                                <span class="product-name">Produit non trouvé</span>
-                            {% endif %}
-                        </td>
-                        <td class="quantity">
-                            <div class="quantity-control">
-                                <a href="{{ path('panier_diminuer', {'id': item.produit.id}) }}" class="quantity-btn">−</a>
-                                <input type="text" class="quantity-input" value="{{ item.quantite }}" readonly>
-                                <a href="{{ path('panier_ajouter', {'id': item.produit.id}) }}" class="quantity-btn">+</a>
-                            </div>
-                        </td>
-                        <td class="unit-price">{{ item.prixVente }} DT</td>
-                        <td class="total-price">{{ item.prixTotalProduit }} DT</td>
-                        <td class="actions">
-                            {% if item.produit is defined and item.produit is not null %}
-                                <a href="{{ path('panier_supprimer', {'id': item.produit.id}) }}">❌</a>
-                            {% else %}
-                                <span>Actions non disponibles</span>
-                            {% endif %}
-                        </td>
+                        <th>Produit</th>
+                        <th>Nom</th>
+                        <th>Quantité</th>
+                        <th>Prix unitaire</th>
+                        <th>Total</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3"><strong>Total du panier</strong></td>
-                    <td colspan="2" class="cart-total"><strong>{{ totalPanier }} DT</strong></td>
-                </tr>
+                </thead>
+                <tbody>
+                    {% for item in panier %}
+                        <tr>
+                            <td>
+                                <img src="{{ asset('img/stock/' ~ item.produit.image) }}" alt="{{ item.produit.nom }}"
+                                     class="product-image">
+                            </td>
+                            <td>
+                                {% if item.produit is defined and item.produit is not null %}
+                                    <span class="product-name">{{ item.produit.nom }}</span>
+                                {% else %}
+                                    <span class="product-name">Produit non trouvé</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="quantity-control">
+                                    <a href="{{ path('panier_diminuer', {'id': item.produit.id}) }}" class="quantity-btn">−</a>
+                                    <input type="text" class="quantity-input" value="{{ item.quantite }}" readonly>
+                                    <a href="{{ path('panier_ajouter', {'id': item.produit.id}) }}" class="quantity-btn">+</a>
+                                </div>
+                            </td>
+                            <td class="unit-price">{{ item.prixVente }} DT</td>
+                            <td class="total-price">{{ item.prixTotalProduit }} DT</td>
+                            <td class="actions">
+                                {% if item.produit is defined and item.produit is not null %}
+                                    <a href="{{ path('panier_supprimer', {'id': item.produit.id}) }}" title="Supprimer">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                {% else %}
+                                    <span>Actions non disponibles</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="cart-summary">
+                <h2 class="summary-title">Récapitulatif de commande</h2>
+                
+                <div class="summary-row">
+                    <span>Total du panier</span>
+                    <span>{{ totalPanier }} DT</span>
+                </div>
+                
                 {% if discountPercentage is defined and discountPercentage is not null and discountPercentage > 0 %}
-                <tr>
-                    <td colspan="3"><strong>Réduction ({{ discountPercentage }}%)</strong></td>
-                   <td colspan="2" class="cart-total text-danger">
-    <strong>-{{ (totalPanier * discountPercentage / 100)|number_format(2, '.', ',') }} DT</strong>
-</td>
-
-                </tr>
-                <tr>
-                    <td colspan="3"><strong>Total après réduction</strong></td>
-                    <td colspan="2" class="cart-total" style="color:black; font-size: 22px;">
-                        <strong>{{ totalApreReduction|number_format(2, '.', ',') }} DT</strong>
-                    </td>
-                </tr>
+                <div class="summary-row">
+                    <span class="discount-label">Réduction roulette ({{ discountPercentage }}%)</span>
+                    <span class="discount-value">-{{ montantReductionRoulette|number_format(2, '.', ',') }} DT</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Total après réduction roulette</span>
+                    <span>{{ totalApreReductionRoulette|number_format(2, '.', ',') }} DT</span>
+                </div>
                 {% endif %}
-            </tfoot>
-        </table>
-        <div class="btn-container">
-            <a href="#" class="btn btn-success py-2">Passer au paiement</a>
-            <a href="{{ path('app_produit_index') }}" class="btn btn-outline-secondary py-2">Retour</a>
-        </div>
+                
+                {% if codePromoPercentage is defined and codePromoPercentage is not null and codePromoPercentage > 0 %}
+                <div class="summary-row">
+                    <span class="discount-label">Code promo "{{ codePromoCode }}" ({{ codePromoPercentage }}%)</span>
+                    <span class="discount-value">-{{ montantReductionCodePromo|number_format(2, '.', ',') }} DT</span>
+                </div>
+                
+                <!-- Total après code promo identique au Total final -->
+                <div class="summary-row">
+                    <span>Total après code promo</span>
+                    <span>{{ totalFinal|number_format(2, '.', ',') }} DT</span>
+                </div>
+                {% endif %}
+                
+                <div class="summary-row total">
+                    <span>Total final</span>
+                    <span>{{ totalFinal|number_format(2, '.', ',') }} DT</span>
+                </div>
+            </div>
+            
+            {# Formulaire de code promo #}
+            <div class="promo-code-container">
+                <h3 class="promo-title">Vous avez un code promo ?</h3>
+                <form action="{{ path('panier_appliquer_code') }}" method="POST" class="promo-form">
+                    <input type="text" name="code" placeholder="Entrez votre code promo" class="form-control">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Appliquer
+                    </button>
+                </form>
+            </div>
+            
+            <div class="btn-container">
+                <a href="{{ path('app_produit_index') }}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Continuer mes achats
+                </a>
+                <a href="#" class="btn btn-success">
+                    <i class="fas fa-credit-card"></i> Passer au paiement
+                </a>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>

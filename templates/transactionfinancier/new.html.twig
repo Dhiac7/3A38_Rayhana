@@ -27,16 +27,12 @@
                                 {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.user) }}
                             </div>
-                            
 
                             <div class="form-group">
                                 {{ form_label(form.montant, 'Montant') }}
                                 {{ form_widget(form.montant, {'attr': {'class': 'form-control', 'placeholder': 'Montant'}}) }}
                                 {{ form_errors(form.montant) }}
                             </div>
-                            
-                          
-
 
                             <button type="submit" class="btn btn-primary">Enregistrer</button>
 
@@ -55,13 +51,8 @@
             const userSelect = document.getElementById('{{ form.user.vars.id }}'); // Champ de sélection de l'employé
             const montantInput = document.getElementById('{{ form.montant.vars.id }}'); // Champ montant
 
-            // Log des éléments pour déboguer
-            console.log('User select ID:', userSelect.id);
-            console.log('Montant input ID:', montantInput.id);
-
             userSelect.addEventListener('change', function () {
                 const userId = this.value; // ID de l'utilisateur sélectionné
-                console.log('ID utilisateur sélectionné:', userId);
 
                 if (userId) {
                     fetch(`/user/${userId}/details`)
@@ -72,7 +63,6 @@
                             return response.json();
                         })
                         .then(data => {
-                            console.log('Données reçues:', data); // Afficher les données de l'API dans la console
                             const salaire = data.salaire || 0; // Récupérer le salaire de l'utilisateur
                             montantInput.value = salaire.toFixed(2); // Remplir le champ "Montant" avec le salaire
                         })
