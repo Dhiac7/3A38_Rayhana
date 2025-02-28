@@ -60,10 +60,33 @@
                     <div class="actions">
                         <a href="{{ path('app_avis_index') }}" class="btn btn-secondary">Retour à la liste</a>
                         <a href="{{ path('app_avis_edit', {'id': avi.id}) }}" class="btn btn-primary">Éditer</a>
-
                         {{ include('avis/_delete_form.html.twig') }}
                     </div>
                 </div>
+
+                {# Section pour afficher les détails de l'inspection associée #}
+                <div class="inspection-detail-area default-padding mt-4">
+                    <h3>Inspection de votre avis :</h3>
+                    {% if inspection %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Résultat</th>
+                                    <th>Date Inspection</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ inspection.resultat }}</td> 
+                                    <td>{{ inspection.dateInspection ? inspection.dateInspection|date('d/m/Y H:i:s') : 'N/A' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>Aucune inspection associée.</p>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
     </div>

@@ -3,6 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Avis;
+
+use App\Entity\Inspection;
+use App\Repository\InspectionRepository;
+
+
 use App\Entity\User;
 use App\Form\AvisType;
 use App\Repository\AvisRepository;
@@ -88,11 +93,17 @@ public function show(Avis $avi, SessionInterface $session, EntityManagerInterfac
     if (!$loggedInUser) {
         return $this->redirectToRoute('gi');
     }
+
+    // Récupérer l'inspection associée à l'avis
+    $inspection = $entityManager->getRepository(Inspection::class)->findOneBy(['avis' => $avi]);
+
     return $this->render('avis/show.html.twig', [
         'avi' => $avi,
         'loggedInUser' => $loggedInUser,
+        'inspection' => $inspection,
     ]);
 }
+
 
 
     #[Route('/{id}/edit', name: 'app_avis_edit', methods: ['GET', 'POST'])]
