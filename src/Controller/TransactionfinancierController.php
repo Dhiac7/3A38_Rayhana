@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+
 use App\Entity\User;
 use App\Entity\Transactionfinancier;
+use App\Form\TransactionfinancierType;
 use App\Repository\TransactionfinancierRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -52,9 +54,9 @@ final class TransactionfinancierController extends AbstractController
 
 
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
-{
-    $loggedInUserId = $session->get('user_id');
+    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
@@ -63,26 +65,34 @@ public function new(Request $request, EntityManagerInterface $entityManager,Sess
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-    $transactionfinancier = new Transactionfinancier();
-    $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
-    $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Set the date manually
-        $transactionfinancier->setDate(new \DateTime());
+        $transactionfinancier = new Transactionfinancier();
+        $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
+        $form->handleRequest($request);
 
-        $entityManager->persist($transactionfinancier);
-        $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $transactionfinancier->setDate(new \DateTime());
+            $entityManager->persist($transactionfinancier);
+            $entityManager->flush();
 
-        return $this->redirectToRoute('app_transactionfinancier_index');
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+
+        $users = $entityManager->getRepository(User::class)->findAll(); // Récupérer tous les utilisateurs
+
+        return $this->render('transactionfinancier/new.html.twig', [
+            'form' => $form->createView(),
+            'loggedInUser' => $loggedInUser,
+            'users' => $users, // Passer les utilisateurs au template
+        ]);
     }
 
-    return $this->render('transactionfinancier/new.html.twig', [
-        'form' => $form->createView(),
-        'loggedInUser' => $loggedInUser,
-    ]);
-}
-
+    #[Route('/salaire', name: 'salaire', methods: ['GET'])]
+    public function userDetails(User $user): JsonResponse
+    {
+        return $this->json(['salaire' => $user->getSalaire()]);
+    }
+    
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
     public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {
