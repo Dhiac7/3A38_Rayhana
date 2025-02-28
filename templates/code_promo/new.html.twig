@@ -1,11 +1,90 @@
 {% extends 'baseAdmin.html.twig' %}
 
-{% block title %}New CodePromo{% endblock %}
+{% block title %}Ajouter un Code Promo{% endblock %}
 
 {% block body %}
-    <h1>Create new CodePromo</h1>
+<div class="container py-5">
+   <div class="row justify-content-center">
+       <div class="col-md-10">
+           <div class="card shadow-lg border-0 rounded-lg">
+               <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                   <h4 class="card-title mb-0 text-center">Ajouter un Code Promo</h4>
+               </div>
+               <div class="card-body p-5">
+                   {{ form_start(form, {'attr': {'class': 'forms-sample needs-validation', 'novalidate': 'novalidate'}}) }}
 
-    {{ include('code_promo/_form.html.twig') }}
+                   {# Code #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.code) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.code, {
+                               'attr': {
+                                   'class': 'form-control rounded-3',
+                                   'placeholder': 'Code promo',
+                                   'required': 'required'
+                               }
+                           }) }}
+                           {{ form_errors(form.code, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
 
-    <a href="{{ path('app_code_promo_index') }}">back to list</a>
+                   {# Réduction #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.reduction) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.reduction, {
+                               'attr': {
+                                   'class': 'form-control rounded-3',
+                                   'placeholder': 'Réduction (%)',
+                                   'required': 'required'
+                               }
+                           }) }}
+                           {{ form_errors(form.reduction, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Date d'expiration #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.date_expiration) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.date_expiration, {
+                               'attr': {
+                                   'class': 'form-control rounded-3 flatpickr-input',
+                                   'placeholder': 'Date d\'expiration'
+                               }
+                           }) }}
+                           {{ form_errors(form.date_expiration, {'attr': {'class': 'text-danger'}}) }}
+                       </div>
+                   </div>
+
+                   {# Actif #}
+                   <div class="form-group row mb-4 align-items-center">
+                       <label class="col-sm-3 col-form-label fw-bold">{{ form_label(form.actif) }}</label>
+                       <div class="col-sm-9">
+                           {{ form_widget(form.actif, {
+                               'attr': {
+                                   'class': 'form-check-input ms-2'
+                               }
+                           }) }}
+                       </div>
+                   </div>
+
+                   {# Boutons #}
+                   <div class="form-group row mt-5">
+                       <div class="col-12 text-center">
+                           <button type="submit" class="btn btn-success me-3">
+                               <i class="fas fa-save me-2"></i>Enregistrer
+                           </button>
+                           <a href="{{ path('app_code_promo_index') }}" class="btn btn-light">
+                               <i class="fas fa-times me-2"></i>Retour à la liste
+                           </a>
+                       </div>
+                   </div>
+
+                   {{ form_end(form) }}
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
 {% endblock %}
