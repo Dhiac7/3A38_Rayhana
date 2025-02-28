@@ -44,7 +44,6 @@ final class UserController extends AbstractController
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-    #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
 public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {
     $error = null;
@@ -111,8 +110,8 @@ public function logout(EntityManagerInterface $entityManager, SessionInterface $
 
 
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager,NotificationService $notificationService,UserPasswordHasherInterface $passwordHasher, SessionInterface $session,SluggerInterface $slugger): Response
+#[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, NotificationService $notificationService, UserPasswordHasherInterface $passwordHasher, SessionInterface $session, SluggerInterface $slugger): Response
 {
     $user = new User();
     $form = $this->createForm(UserType::class, $user);
@@ -121,39 +120,44 @@ public function new(Request $request, EntityManagerInterface $entityManager,Noti
     if ($form->isSubmitted() && $form->isValid()) {
         $photoFile = $form->get('photo')->getData();
 
+        // Check if a file was uploaded, else set a default avatar
         if ($photoFile instanceof UploadedFile) {
-            dump($photoFile); 
-            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            // Handle the uploaded photo
+            $uploadsDirectory = $this->getParameter('uploads_directory');
             $newFilename = uniqid().'.'.$photoFile->guessExtension();
-
             $photoFile->move($uploadsDirectory, $newFilename);
 
+            // Set the uploaded photo as the user's photo
             $user->setPhoto($newFilename);
         } else {
-            dump('No file uploaded'); 
+            // No file uploaded, use a default avatar
+            $defaultAvatar = 'img/users/avatar.jpg'; // Set the filename of the default image
+            $user->setPhoto($defaultAvatar); // Set the default avatar
         }
 
+        // Hash the password and set it
         $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
         $user->setPassword($hashedPassword);
 
+        // Set the default role for the user
         $user->setRole('client');
 
+        // Generate the user slug
         $slug = $slugger->slug($user->getNom() . ' ' . $user->getPrenom())->lower();
         $user->setSlug($slug);
 
+        // Set the creation date
         $user->setCreatedAt(new \DateTime());
 
-    
-    /*  $currentUser = $this->getUser();  
-        if ($currentUser) {
-            $user->setCreatedBy($currentUser);  
-        }*/
+        // Persist and save the user entity
         $entityManager->persist($user);
         $entityManager->flush();
 
-         // Send a notification to the admin
+        // Send a notification to the admin
         $notificationMessage = sprintf('New user created: %s %s', $user->getNom(), $user->getPrenom());
         $notificationService->createNotification($notificationMessage);
+
+        // Redirect after successful creation
         return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
     }
 
