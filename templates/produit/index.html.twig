@@ -182,18 +182,20 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-5 text-right">
-                        <p>
-                            Showing 1–10 of {{ pagination.getTotalItemCount() }} results
-                        </p>
-                        <select name="cars" id="cars">
-                            <option value="volvo">Short by latest</option>
-                            <option value="saab">Short by Recent</option>
-                            <option value="mercedes">Short by Popular</option>
-                            <option value="audi">Short by Relevant</option>
-                        </select>
-                    </div>
-                </div>
+                   {# In the select element section of your template #}
+{# In the select element section of your template #}
+<div class="col-lg-5 text-right">
+    <p>
+        Showing 1–{{ pagination.count > 0 ? pagination.count : 0 }} of {{ pagination.getTotalItemCount() }} results
+    </p>
+    <form method="GET" action="{{ path('app_produit_index') }}" id="categoryFilterForm">
+        <select name="category" id="categoryFilter" onchange="this.form.submit()">
+            <option value="" {% if currentCategory is null %}selected{% endif %}>Tous les produits</option>
+            <option value="fruits" {% if currentCategory == 'fruits' %}selected{% endif %}>Fruits</option>
+            <option value="legumes" {% if currentCategory == 'legumes' %}selected{% endif %}>Légumes</option>
+        </select>
+    </form>
+</div>        </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">

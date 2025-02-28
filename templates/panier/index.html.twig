@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier d'achat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -528,13 +528,11 @@
                     <span class="discount-value">-{{ montantReductionCodePromo|number_format(2, '.', ',') }} DT</span>
                 </div>
                 
-                <!-- Ajout du total après code promo -->
+                <!-- Total après code promo identique au Total final -->
                 <div class="summary-row">
                     <span>Total après code promo</span>
-                    <span>{{ (totalFinal + montantReductionCodePromo)|number_format(2, '.', ',') }} DT</span>
+                    <span>{{ totalFinal|number_format(2, '.', ',') }} DT</span>
                 </div>
-                
-              
                 {% endif %}
                 
                 <div class="summary-row total">
