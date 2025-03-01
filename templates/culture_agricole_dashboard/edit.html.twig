@@ -83,6 +83,17 @@
                         </div>
                     </div>
 
+                    <!-- Parcelles Selection -->
+                    <div class="form-group">
+                        {{ form_label(form.parcelles, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-group">
+                            {{ form_widget(form.parcelles, { 'attr': {'class': 'select2-multiple form-control'} }) }}
+                        </div>
+                        <div {{ form_errors(form.parcelles) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.parcelles) }}
+                        </div>
+                    </div>
+
                     <!-- Boutons -->
                     <button type="submit" class="btn btn-gradient-primary me-2">
                         <i class="fas fa-sync-alt"></i> Mettre à jour

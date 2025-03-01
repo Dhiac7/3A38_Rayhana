@@ -27,21 +27,25 @@
                 <div class="row">
                     <!-- Carte Rendement -->
                     <div class="col-md-6 grid-margin stretch-card">
-                        <div class="card shadow">
+                        <div class="card shadow border-0">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h4 class="card-title">Rendement Estimé</h4>
                                         <h2 class="text-primary">{{ culture_agricole.rendementEstime }} <small class="h5">kg/ha</small></h2>
                                     </div>
-                                    <div class="bg-gradient-primary p-3 rounded">
+                                    <div class="bg-gradient-primary p-3 rounded-circle">
                                         <i class="mdi mdi-chart-areaspline text-white h3"></i>
                                     </div>
                                 </div>
-                                <div class="progress progress-md mt-3">
+                                <div class="progress progress-md mt-3 bg-light">
                                     <div class="progress-bar bg-gradient-primary" 
                                          role="progressbar" 
-                                         style="width: {{ culture_agricole.rendementEstime / 10 }}%"></div>
+                                         style="width: {{ culture_agricole.rendementEstime / 10 }}%"
+                                         aria-valuenow="{{ culture_agricole.rendementEstime }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="1000">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -49,21 +53,21 @@
 
                     <!-- Carte Statut -->
                     <div class="col-md-6 grid-margin stretch-card">
-                        <div class="card shadow">
+                        <div class="card shadow border-0">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h4 class="card-title">Statut</h4>
-                                        <span class="badge 
+                                        <span class="badge badge-gradient 
                                             {% if culture_agricole.statut == 'en croissance' %}bg-success
                                             {% elseif culture_agricole.statut == 'mature' %}bg-primary
-                                            {% elseif culture_agricole.statut == 'récolté' %}bg-secondary
+                                            {% elseif culture_agricole.statut == 'récolté' %}bg-info
                                             {% elseif culture_agricole.statut == 'malade' %}bg-danger
-                                            {% else %}bg-warning{% endif %} h5 p-2">
+                                            {% else %}bg-warning{% endif %} fs-6 p-2">
                                             {{ culture_agricole.statut|capitalize }}
                                         </span>
                                     </div>
-                                    <div class="bg-gradient-warning p-3 rounded">
+                                    <div class="bg-gradient-warning p-3 rounded-circle">
                                         <i class="mdi mdi-heart-pulse text-white h3"></i>
                                     </div>
                                 </div>
@@ -73,25 +77,52 @@
 
                     <!-- Timeline -->
                     <div class="col-12 grid-margin">
-                        <div class="card shadow">
+                        <div class="card shadow border-0">
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Chronologie</h4>
                                 <div class="timeline">
-                                    <div class="timeline-item border-start border-primary ps-4 pb-4">
-                                        <div class="timeline-point bg-primary"></div>
+                                    <div class="timeline-item border-start border-primary ps-4 pb-4 position-relative">
+                                        <div class="timeline-point bg-primary position-absolute top-0 start-0 translate-middle"></div>
                                         <div class="timeline-content">
-                                            <h6 class="text-primary">Semis</h6>
-                                            <p>{{ culture_agricole.dateSemi|date('d M Y') }}</p>
+                                            <h6 class="text-primary mb-1">Semis</h6>
+                                            <p class="text-muted mb-0">{{ culture_agricole.dateSemi|date('d M Y') }}</p>
                                         </div>
                                     </div>
-                                    <div class="timeline-item border-start border-warning ps-4 pb-4">
-                                        <div class="timeline-point bg-warning"></div>
+                                    <div class="timeline-item border-start border-warning ps-4 pb-4 position-relative">
+                                        <div class="timeline-point bg-warning position-absolute top-0 start-0 translate-middle"></div>
                                         <div class="timeline-content">
-                                            <h6 class="text-warning">Traitement</h6>
-                                            <p>15 Mars 2024</p>
+                                            <h6 class="text-warning mb-1">Traitement</h6>
+                                            <p class="text-muted mb-0">15 Mars 2024</p>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Parcelles associées -->
+                    <div class="col-12 grid-margin">
+                        <div class="card shadow border-0">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Parcelles associées</h4>
+                                {% if culture_agricole.parcelles is not empty %}
+                                    <div class="list-group-flush">
+                                        {% for parcelle in culture_agricole.parcelles %}
+                                            <a href="{{ path('app_parcelle_show2', { id: parcelle.id }) }}" 
+                                               class="list-group-item list-group-item-action d-flex align-items-center py-3">
+                                                <i class="mdi mdi-map-marker-outline text-primary me-3 h4"></i>
+                                                <div>
+                                                    <h6 class="mb-1">{{ parcelle.nom }}</h6>
+                                                    <small class="text-muted">Superficie: {{ parcelle.superficie }} ha</small>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-light border" role="alert">
+                                        Aucune parcelle associée
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -100,36 +131,36 @@
 
             <!-- Colonne droite - Métadonnées -->
             <div class="col-lg-4">
-                <div class="card shadow">
+                <div class="card shadow border-0">
                     <div class="card-body">
                         <h4 class="card-title mb-4">Caractéristiques</h4>
                         
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="bg-gradient-primary p-3 rounded me-3">
-                                        <i class="mdi mdi-seed text-white h4"></i>
-                                    </div>
+                        <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                            <div class="bg-gradient-primary p-3 rounded-circle me-3">
+                                <i class="mdi mdi-seed text-white h4"></i>
+                            </div>
                             <div>
-                                <small class="text-muted">Type</small>
+                                <small class="text-muted d-block">Type</small>
                                 <h5 class="mb-0">{{ culture_agricole.type }}</h5>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="bg-gradient-primary p-3 rounded me-3">
-                                        <i class="mdi mdi-ruler-square text-white h4"></i>
-                                    </div>
+                        <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                            <div class="bg-gradient-primary p-3 rounded-circle me-3">
+                                <i class="mdi mdi-ruler-square text-white h4"></i>
+                            </div>
                             <div>
-                                <small class="text-muted">Superficie</small>
+                                <small class="text-muted d-block">Superficie</small>
                                 <h5 class="mb-0">{{ culture_agricole.superficie }} ha</h5>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <div class="bg-gradient-primary p-3 rounded me-3">
-                                        <i class="mdi mdi-calendar-clock text-white h4"></i>
-                                    </div>
+                            <div class="bg-gradient-primary p-3 rounded-circle me-3">
+                                <i class="mdi mdi-calendar-clock text-white h4"></i>
+                            </div>
                             <div>
-                                <small class="text-muted">Âge</small>
+                                <small class="text-muted d-block">Âge</small>
                                 <h5 class="mb-0">{{ date().diff(date(culture_agricole.dateSemi)).days }} jours</h5>
                             </div>
                         </div>
@@ -140,19 +171,26 @@
 
         <!-- Section Actions -->
         <div class="mt-4">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center">
                 <a href="{{ path('app_culture_agricole_dashboard_index') }}" class="btn btn-light">
-                    <i class="mdi mdi-arrow-left me-2"></i>Retour
+                    <i class="mdi mdi-arrow-left me-2"></i>Retour à la liste
                 </a>
                 <div>
                     <a href="{{ path('app_culture_agricole_dashboard_edit', { id: culture_agricole.id }) }}" 
                        class="btn btn-gradient-warning me-2">
-                        <i class="mdi mdi-pencil me-2"></i>Modifier
+                        <i class="mdi mdi-pencil-outline me-2"></i>Modifier
                     </a>
+                                        <!-- PDF Download Button -->
+                    <a href="{{ path('pdf', {'id': culture_agricole.id}) }}" 
+                    class="btn btn-gradient-info me-2" 
+                    target="_blank">
+                        <i class="mdi mdi-file-pdf-box me-2"></i>Télécharger PDF
+                    </a>
+
                     <button class="btn btn-gradient-danger" 
                             data-bs-toggle="modal" 
                             data-bs-target="#deleteModal">
-                        <i class="mdi mdi-delete me-2"></i>Supprimer
+                        <i class="mdi mdi-trash-can-outline me-2"></i>Supprimer
                     </button>
                 </div>
             </div>
@@ -162,20 +200,23 @@
 
 <!-- Modal de Suppression -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
             <div class="modal-header bg-gradient-primary text-white">
-                <h5 class="modal-title">Confirmer la suppression</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title"><i class="mdi mdi-alert-circle-outline me-2"></i>Confirmation</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Êtes-vous sûr de vouloir supprimer définitivement "{{ culture_agricole.nom }}" ?
+                <p>Êtes-vous sûr de vouloir supprimer définitivement :</p>
+                <h5 class="text-primary mb-0">"{{ culture_agricole.nom }}"</h5>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                 <form method="post" action="{{ path('app_culture_agricole_dashboard_delete', {'id': culture_agricole.id}) }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture_agricole.id) }}">
-                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="mdi mdi-delete-forever-outline me-2"></i>Confirmer
+                    </button>
                 </form>
             </div>
         </div>
@@ -187,12 +228,14 @@
         position: relative;
     }
     .timeline-point {
-        position: absolute;
-        left: -24px;
-        top: 6px;
         width: 16px;
         height: 16px;
         border-radius: 50%;
+    }
+    .list-group-item-action:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+        transition: all 0.3s ease;
     }
 </style>
 {% endblock %}

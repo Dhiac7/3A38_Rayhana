@@ -15,6 +15,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="{{ asset('assetsback/vendors/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assetsback/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- endinject -->
 
@@ -80,6 +82,7 @@
               <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
             </a>
           </li>
+          
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="mdi mdi-email-outline"></i>
@@ -224,7 +227,10 @@
                     <a class="nav-link" href="{{ path('app_culture_agricole_dashboard_index') }}">Culture Agricole</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/ui-features/typography.html')}}">Typography</a>
+                    <a class="nav-link" href="{{ path('predict_model1') }}">model1</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('predict_model2') }}">model2</a>
                   </li>
                 </ul>
               </div>
@@ -725,7 +731,7 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
-          {% block js %}
+    {% block js %}
 
     <!-- container-scroller -->
     <!-- plugins:js -->
@@ -747,6 +753,17 @@
     <script src="{{ asset('assetsback/js/dashboard.js')}}"></script>
     <!-- End custom js for this page -->
     <!-- Popper.js and Bootstrap JS -->
+
+    <script src="{{ asset('assetsback/vendors/select2/select2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('.select2-multiple').select2({
+                placeholder: "Sélectionnez les parcelles",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
     {% endblock %}
 

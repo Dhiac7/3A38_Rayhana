@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "^7.9",
         "knplabs/knp-menu-bundle": "*",
         "knplabs/knp-paginator-bundle": "^6.6",
+        "knplabs/knp-snappy-bundle": "^1.10",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "league/oauth2-google": "^4.0",
         "liip/imagine-bundle": "^2.13",
