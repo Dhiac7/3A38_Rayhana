@@ -147,7 +147,7 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
     public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $error = null;
-        $allowedRoles = ['agriculteur', 'inspecteur'];
+        $allowedRoles = ['agriculteur', 'inspecteur' , 'livreur' , 'fermier'];
     
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
@@ -160,15 +160,12 @@ public function listclient(Request $request, UserRepository $userRepository, Ent
             } elseif (!in_array($user->getRole(), $allowedRoles)) {
                 $error = 'Accès refusé. Seuls les utilisateurs avec les rôles suivants peuvent se connecter : ' . implode(', ', $allowedRoles) . '.';
             } else {
-                // If another session is active, force logout previous session
                 if ($user->getSessionId() !== null && $user->getSessionId() !== $session->getId()) {
                     $error = 'Une session est déjà active pour cet utilisateur.';
                 } else {
-                    // Ensure no other user is logged in
                     if ($session->has('user_id') && $session->get('user_id') !== $user->getId()) {
                         $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
                     } else {
-                        // Set session data
                         $session->set('user_id', $user->getId());
                         $user->setSessionId($session->getId());
                         $user->setStatut('actif');
