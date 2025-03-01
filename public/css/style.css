@@ -115,6 +115,40 @@ Sidebar heading:  22px 'Outfit', sans-serif
 }
 
 
+.seating-plan-image {
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+
+.seating-places {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.seat {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+}
+
+.seat.selected {
+    background-color: #ff5722;
+}
+
+.seat.disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+}
 
 /* ============================================================== 
      # Reset Browsers
