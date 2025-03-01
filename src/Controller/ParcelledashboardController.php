@@ -18,6 +18,8 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\User;
+use App\Service\WeatherService;
+
 
 
 final class ParcelledashboardController extends AbstractController
@@ -147,7 +149,7 @@ final class ParcelledashboardController extends AbstractController
     }
 
     #[Route('/dashboard/{id}', name: 'app_parcelle_show2', methods: ['GET'])]
-    public function show2(Parcelle $parcelle, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function show2(Parcelle $parcelle, EntityManagerInterface $entityManager, SessionInterface $session, WeatherService $weatherService): Response
     {
         $loggedInUserId = $session->get('user_id');
 
@@ -158,13 +160,16 @@ final class ParcelledashboardController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+        $weather = $weatherService->getWeatherByCoordinates($parcelle->getLatitude(), $parcelle->getLongitude());
+
 
         return $this->render('parcelle/showAdmin.html.twig', [
             'parcelle' => $parcelle,
             'MAPBOX_API_KEY' => $mapboxApiKey,
             'loggedInUser' => $loggedInUser,
+            'weather' => $weather,
+
         ]);
     }
 

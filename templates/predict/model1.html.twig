@@ -1,0 +1,55 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Classification Fruits & Légumes - Modèle 1{% endblock %}
+
+{% block body %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- En-tête conforme à la charte -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                    <i class="mdi mdi-fruit"></i>
+                </span>
+                Classification Fruits & Légumes - Modèle 1
+            </h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">Accueil</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Classification</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow border-0">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Téléversez une image pour classification</h4>
+                        <form method="post" enctype="multipart/form-data" class="dropzone" id="fileUploadForm">
+                            <div class="dz-message" data-dz-message>
+                                <i class="mdi mdi-cloud-upload h1 text-muted"></i>
+                                <h5>Glissez-déposez une image ici ou cliquez pour téléverser</h5>
+                                <span class="text-muted">Formats supportés : JPG, PNG, JPEG</span>
+                            </div>
+                            <div class="fallback">
+                                <input type="file" name="file" id="file" required>
+                            </div>
+                        </form>
+                        <button type="submit" form="fileUploadForm" class="btn btn-gradient-primary mt-3">
+                            <i class="mdi mdi-magnify me-2"></i>Prédire
+                        </button>
+
+                        {% if prediction %}
+                            <div class="mt-4 p-3 bg-light rounded">
+                                <h5 class="text-success">Résultat de la prédiction :</h5>
+                                <p class="mb-0">{{ prediction }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

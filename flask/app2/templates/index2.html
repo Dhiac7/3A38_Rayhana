@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit & Vegetable Classifier</title>
+    <style>
+        /* Styles de base */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #d9f9d9, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Input pour le fichier */
+        .file-label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            border: 2px dashed #007bff;
+            padding: 10px;
+            background: #f9f9f9;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #0056b3;
+        }
+
+        /* Bouton stylisé */
+        .submit-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Résultat */
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: bold;
+            animation: fade-in 1.5s ease-in-out;
+        }
+
+        /* Animation */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .submit-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fruit & Vegetable Classifier</h1>
+        <p>Upload an image of a fruit or vegetable, and we'll classify it for you.</p>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="file" class="file-label">Choose an image:</label>
+            <input type="file" name="file" id="file" required>
+            <button type="submit" class="submit-button">Predict</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Gérer la soumission du formulaire
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+
+            // Récupérer le fichier sélectionné
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+
+            // Vérifier si un fichier est sélectionné
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            // Créer un FormData et ajouter le fichier
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Envoyer la requête POST au serveur
+            try {
+                const response = await fetch('/model2/predict_model2', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Vérifier si la réponse est OK
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Error during prediction.');
+                }
+
+                // Récupérer les données de la réponse
+                const data = await response.json();
+
+                // Afficher le résultat
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `
+                    Prediction: ${data.prediction} <br>
+                    Calories per 100g: ${data.calories_per_100g}
+                `;
+            } catch (error) {
+                // Afficher les erreurs
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                console.error('Error:', error);
+            }
+        };
+    </script>
+</body>
+</html>

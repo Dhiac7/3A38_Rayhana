@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\CultureAgricole;
+use App\Entity\Parcelle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 
 
 class CultureAgricoleType extends AbstractType
@@ -64,6 +67,13 @@ class CultureAgricoleType extends AbstractType
             ->add('rendementEstime', NumberType::class, [
                 'attr' => ['class' => 'form-control', 'placeholder' => 'Rendement estimé'],
                 'label' => 'Rendement estimé'
+            ])
+            ->add('parcelles', EntityType::class, [
+                'class' => Parcelle::class,
+                'choice_label' => 'nom', // Adjust this based on your Parcelle entity
+                'multiple' => true,
+                'expanded' => false, // Set to true for checkboxes, false for multi-select dropdown
+                'attr' => ['class' => 'form-check'], // Bootstrap class for checkboxes
             ]);
     }
 
