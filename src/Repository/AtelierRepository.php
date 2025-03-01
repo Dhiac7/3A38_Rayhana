@@ -14,6 +14,8 @@ class AtelierRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Atelier::class);
+                parent::__construct($registry, Atelier::class);
+
     }
 
     //    /**
@@ -40,4 +42,6 @@ class AtelierRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
 }

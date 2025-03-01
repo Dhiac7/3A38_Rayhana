@@ -74,10 +74,6 @@ class Atelier
     /**
      * @var Collection<int, User>
      */
-
-
-
-
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'ateliers')]
     private Collection $users;
 
@@ -89,6 +85,17 @@ class Atelier
      */
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'dechet')]
     private Collection $dechet;
+
+    #[ORM\Column(type: "string", length: 255)]
+    private string $title;
+
+    #[ORM\Column(type: "datetime")]
+    private \DateTimeInterface $startAt;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $endAt = null;
+
+ 
 
     public function __construct()
     {
@@ -286,5 +293,40 @@ class Atelier
 
         return $this;
     }
+       // Getters et Setters
+  
+       public function getTitle(): string
+       {
+           return $this->title;
+       }
+   
+       public function setTitle(string $title): self
+       {
+           $this->title = $title;
+           return $this;
+       }
+   
+       public function getStartAt(): \DateTimeInterface
+       {
+           return $this->startAt;
+       }
+   
+       public function setStartAt(\DateTimeInterface $startAt): self
+       {
+           $this->startAt = $startAt;
+           return $this;
+       }
+   
+       public function getEndAt(): ?\DateTimeInterface
+       {
+           return $this->endAt;
+       }
+   
+       public function setEndAt(?\DateTimeInterface $endAt): self
+       {
+           $this->endAt = $endAt;
+           return $this;
+       }
+   
 
 }

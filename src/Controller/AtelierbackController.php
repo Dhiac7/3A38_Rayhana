@@ -297,35 +297,44 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     }
 
 
-public function deleteAtelierAjax(Request $request , AtelierRepository $atelierRepository , EntityManagerInterface $entityManager , SessionInterface $session): JsonResponse
-    {   $loggedInUserId = $session->get('user_id');
+    /*public function deleteAtelierAjax(Request $request, AtelierRepository $atelierRepository, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
+    {
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
+            return new JsonResponse([
+                'success' => false,
+                'redirect' => $this->generateUrl('app_user_loginback')
+            ]);
         }
     
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     
         if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
+            return new JsonResponse([
+                'success' => false,
+                'redirect' => $this->generateUrl('app_user_loginback')
+            ]);
         }
+    
         // Récupérer l'ID envoyé dans la requête (au format JSON)
         $data = json_decode($request->getContent(), true);
-
+    
         if (isset($data['id'])) {
             $atelierId = $data['id'];
-            $atelier = $this->$atelierRepository->find($atelierId);
-
+            $atelier = $atelierRepository->find($atelierId);
+    
             if ($atelier) {
                 // Supprimer l'atelier
-                $this->$entityManager->remove($atelier);
-                $this->$entityManager->flush();
-
+                $entityManager->remove($atelier);
+                $entityManager->flush();
+    
                 return new JsonResponse(['success' => true]);
             }
         }
-
+    
         return new JsonResponse(['success' => false, 'message' => 'Atelier non trouvé ou ID invalide'], 400);
-    }
+    }*/
+    
 
 }

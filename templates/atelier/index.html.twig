@@ -80,31 +80,5 @@
             });
         });
     </script>
-    <!-- 🌍 Mapbox Integration -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
-
-     {#<script>
-        mapboxgl.accessToken = "{{ MAPBOX_API_KEY }}";
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/satellite-streets-v11', // Style satellite amélioré
-            center: [{{ parcelle.longitude }}, {{ parcelle.latitude }}],
-            zoom: 15,
-            pitch: 45, // Inclinaison pour un meilleur rendu
-            bearing: -17.6 // Orientation de la carte
-        });
-
-        var marker = new mapboxgl.Marker({ color: 'red' })
-            .setLngLat([{{ parcelle.longitude }}, {{ parcelle.latitude }}])
-            .setPopup(new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`<h6>{{ parcelle.nom }}</h6><p>{{ parcelle.superficie }} m²</p>`))
-            .addTo(map);
-        
-        // Ajout du contrôle de navigation
-        map.addControl(new mapboxgl.NavigationControl());
-
-        // Ajout du contrôle en plein écran
-        map.addControl(new mapboxgl.FullscreenControl());
-    </script> #}
+    
 {% endblock %}
