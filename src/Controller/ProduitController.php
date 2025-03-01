@@ -23,34 +23,39 @@ use Knp\Component\Pager\PaginatorInterface;
 final class ProduitController extends AbstractController
 {
     #[Route(name: 'app_produit_index', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository, Request $request, SessionInterface $session, EntityManagerInterface $entityManager,PaginatorInterface $paginator): Response
+    public function index(ProduitRepository $produitRepository, Request $request, SessionInterface $session, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
         $loggedInUserId = $session->get('user_id');
-
+    
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
         }
-
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
+    
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
         
-        // Récupérer tous les produits
-        $query = $produitRepository->findAll();
+        // Get selected category from request
+        $category = $request->query->get('category');
+        
+        // Get products by category (or all if no category is selected)
+        $query = $produitRepository->findByCategory($category);
+        
         $pagination = $paginator->paginate(
-            $query, // Donneili bch namlou pagination
-            $request->query->getInt('page', 1), // Num page 
-            4 // nbr element par page 
+            $query,
+            $request->query->getInt('page', 1),
+            4
         );
-        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
-
+        
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY'];
+    
         return $this->render('produit/index.html.twig', [
-            /*'produits' => $produits,*/
             'loggedInUser' => $loggedInUser,
             'pagination' => $pagination,
             'MAPBOX_API_KEY' => $mapboxApiKey,
+            'currentCategory' => $category,
         ]);
     }
 

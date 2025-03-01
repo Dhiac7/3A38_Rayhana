@@ -1,0 +1,220 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Gestion des Codes Promo{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CodePromo</title>
+    <style>
+        :root {
+            --primary-color: #28a745; /* Changé de #4a6cf7 (bleu) à #28a745 (vert) */
+            --secondary-color: #f9f9f9;
+            --border-color: #eaeaea;
+            --text-color: #333;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            position: relative;
+        }
+        
+        .card-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .code-badge {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .detail-label {
+            flex: 0 0 180px;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .detail-value {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background-color: rgba(220, 53, 69, 0.15);
+            color: var(--danger-color);
+        }
+        
+        .reduction-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--border-color);
+            color: #666;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline:hover {
+            border-color: #ccc;
+            background-color: #f5f5f5;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Détails du Code Promo</h1>
+                <div class="code-badge">{{ code_promo.code }}</div>
+            </div>
+            <div class="card-body">
+                <div class="detail-row">
+                    <div class="detail-label">ID</div>
+                    <div class="detail-value">{{ code_promo.id }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Code</div>
+                    <div class="detail-value">{{ code_promo.code }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Réduction</div>
+                    <div class="detail-value">
+                        <span class="reduction-value">{{ code_promo.reduction }}%</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Date d'expiration</div>
+                    <div class="detail-value">{{ code_promo.dateExpiration ? code_promo.dateExpiration|date('d/m/Y') : 'Pas de date d\'expiration' }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Statut</div>
+                    <div class="detail-value">
+                        {% if code_promo.actif %}
+                            <span class="status-badge status-active">Actif</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">Inactif</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="{{ path('app_code_promo_index') }}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+          
+          
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
