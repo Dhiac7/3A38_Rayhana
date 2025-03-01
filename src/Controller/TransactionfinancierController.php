@@ -35,8 +35,15 @@ final class TransactionfinancierController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
-        $query = $transactionfinancierRepository->findAll();
+    
+        // Vérifier si l'utilisateur possède le rôle 'ROLE_AGRICULTEUR'
+        if (in_array('ROLE_AGRICULTEUR', $loggedInUser->getRoles(), true)) {
+            // Si l'utilisateur est agriculteur, récupérer toutes les transactions
+            $query = $transactionfinancierRepository->findAll();
+        } else {
+            // Sinon, ne récupérer que les transactions de l'utilisateur connecté
+            $query = $transactionfinancierRepository->findBy(['user' => $loggedInUser]);
+        }
         
         // Pagination
         $transactions = $paginator->paginate(
@@ -44,14 +51,13 @@ final class TransactionfinancierController extends AbstractController
             $request->query->getInt('page', 1), // Page actuelle, par défaut 1
             5 // Nombre d'éléments par page
         );
-
+    
         return $this->render('transactionfinancier/index.html.twig', [
             'transactionfinanciers' => $transactions,
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
-
+    
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request, 
