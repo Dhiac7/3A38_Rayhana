@@ -1,0 +1,11 @@
+ewz_recaptcha:
+    public_key: '%env(EWZ_RECAPTCHA_SITE_KEY)%'
+    private_key: '%env(EWZ_RECAPTCHA_SECRET)%'
+    # Version (2 ou 3, default: 2)
+    version: 2
+    # Locale (default: kernel.default_locale)
+    locale_key: '%kernel.default_locale%'
+    # Options facultatives
+    enabled: true
+    ajax: false
+    # autres options si nécessaire

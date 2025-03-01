@@ -154,36 +154,47 @@ class PanierController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
-
+    
         $code = $request->request->get('code');
-
+    
         if (!$code) {
             $this->addFlash('danger', 'Veuillez entrer un code promo');
             return $this->redirectToRoute('panier_index');
         }
-
+    
+        // Récupération du panier
+        $panier = $this->panierService->getPanier();
+        $totalPanier = $panier['totalPanier'];
+    
+        // Vérification du montant minimum
+        if ($totalPanier < 100) {
+            $this->addFlash('danger', 'Le total du panier doit être au moins de 100 DT pour appliquer un code promo.');
+            return $this->redirectToRoute('panier_index');
+        }
+    
         // Recherche du code promo dans la base de données
         $codePromo = $codePromoRepository->findOneBy(['code' => $code, 'actif' => true]);
-
+    
         if (!$codePromo) {
             $this->addFlash('danger', 'Code promo invalide ou expiré');
             return $this->redirectToRoute('panier_index');
         }
-
+    
         // Vérifier si le code est déjà utilisé
         if ($session->has('code_promo_id') && $session->get('code_promo_id') === $codePromo->getId()) {
             $this->addFlash('info', 'Ce code promo est déjà appliqué');
             return $this->redirectToRoute('panier_index');
         }
-
+    
         // Stocker le code promo et sa réduction dans la session
         $session->set('code_promo_id', $codePromo->getId());
         $session->set('code_promo_percentage', $codePromo->getReduction());
         $session->set('code_promo_code', $codePromo->getCode());
-
+    
         $this->addFlash('success', 'Code promo appliqué avec succès');
         return $this->redirectToRoute('panier_index');
     }
+    
 
     #[Route('/panier/supprimer-code', name: 'panier_supprimer_code')]
     public function supprimerCodePromo(SessionInterface $session): RedirectResponse

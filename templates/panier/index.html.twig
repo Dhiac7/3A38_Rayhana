@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">  
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panier d'achat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,7 +24,7 @@
             --shadow: 0 4px 10px rgba(0,0,0,0.08);
             --border-radius: 10px;
         }
-        
+
         body {
             background-color: var(--secondary-color);
             font-family: 'Inter', sans-serif;
@@ -32,13 +32,13 @@
             padding: 0;
             color: var(--text-dark);
         }
-        
+
         .cart-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
-        
+
         .page-title {
             font-size: 28px;
             font-weight: 700;
@@ -46,7 +46,7 @@
             color: var(--primary-color);
             text-align: center;
         }
-        
+
         .cart-table {
             width: 100%;
             border-collapse: separate;
@@ -57,13 +57,13 @@
             box-shadow: var(--shadow);
             margin-bottom: 30px;
         }
-        
+
         .cart-table th, .cart-table td {
             padding: 20px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
-        
+
         .cart-table th {
             background-color: var(--primary-light);
             font-weight: 600;
@@ -72,15 +72,15 @@
             font-size: 14px;
             letter-spacing: 0.5px;
         }
-        
+
         .cart-table tbody tr:hover {
             background-color: #fafafa;
         }
-        
+
         .cart-table td {
             vertical-align: middle;
         }
-        
+
         .product-image {
             width: 80px;
             height: 80px;
@@ -90,22 +90,22 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: transform 0.3s;
         }
-        
+
         .product-image:hover {
             transform: scale(1.05);
         }
-        
+
         .product-name {
             font-weight: 600;
             color: var(--primary-color);
             font-size: 16px;
             transition: color 0.3s;
         }
-        
+
         .product-name:hover {
             color: var(--primary-hover);
         }
-        
+
         .quantity-control {
             display: flex;
             align-items: center;
@@ -115,7 +115,7 @@
             padding: 5px;
             width: fit-content;
         }
-        
+
         .quantity-btn {
             width: 35px;
             height: 35px;
@@ -131,12 +131,12 @@
             font-size: 18px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
-        
+
         .quantity-btn:hover {
             background: var(--primary-light);
             transform: translateY(-2px);
         }
-        
+
         .quantity-input {
             width: 40px;
             height: 35px;
@@ -148,17 +148,17 @@
             color: var(--text-dark);
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
-        
+
         .unit-price, .total-price {
             font-size: 16px;
             color: var(--text-dark);
             font-weight: 500;
         }
-        
+
         .total-price {
             font-weight: 700;
         }
-        
+
         .actions a {
             display: inline-flex;
             align-items: center;
@@ -172,13 +172,13 @@
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         .actions a:hover {
             background-color: var(--danger);
             color: white;
             transform: translateY(-2px);
         }
-        
+
         .cart-summary {
             background-color: white;
             border-radius: var(--border-radius);
@@ -186,7 +186,7 @@
             padding: 25px;
             margin-bottom: 30px;
         }
-        
+
         .summary-title {
             font-size: 20px;
             font-weight: 700;
@@ -195,14 +195,14 @@
             border-bottom: 2px solid var(--primary-light);
             padding-bottom: 10px;
         }
-        
+
         .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             font-size: 16px;
         }
-        
+
         .summary-row.total {
             font-size: 20px;
             font-weight: 700;
@@ -210,16 +210,16 @@
             margin-top: 10px;
             padding-top: 15px;
         }
-        
+
         .discount-label {
             color: var(--danger);
         }
-        
+
         .discount-value {
             color: var(--danger);
             font-weight: 700;
         }
-        
+
         .promo-code-container {
             background-color: white;
             border-radius: var(--border-radius);
@@ -227,19 +227,19 @@
             padding: 25px;
             margin-bottom: 30px;
         }
-        
+
         .promo-title {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 15px;
             color: var(--primary-color);
         }
-        
+
         .promo-form {
             display: flex;
             gap: 10px;
         }
-        
+
         .form-control {
             flex: 1;
             padding: 12px 15px;
@@ -249,13 +249,13 @@
             color: var(--text-dark);
             transition: border-color 0.3s;
         }
-        
+
         .form-control:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(23, 131, 48, 0.1);
         }
-        
+
         .btn {
             display: inline-block;
             font-weight: 600;
@@ -272,47 +272,47 @@
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(23, 131, 48, 0.1);
         }
-        
+
         .btn-success {
             background-color: var(--primary-color);
         }
-        
+
         .btn-success:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
             box-shadow: 0 6px 10px rgba(23, 131, 48, 0.15);
         }
-        
+
         .btn-outline {
             color: var(--text-light);
             background-color: transparent;
             border: 2px solid #eeeeee;
             box-shadow: none;
         }
-        
+
         .btn-outline:hover {
             border-color: var(--text-dark);
             color: var(--text-dark);
             transform: translateY(-2px);
         }
-        
+
         .btn-danger {
             background-color: var(--danger);
             color: white;
             padding: 8px 15px;
             font-size: 14px;
         }
-        
+
         .btn-danger:hover {
             background-color: var(--danger-hover);
         }
-        
+
         .btn-container {
             display: flex;
             justify-content: space-between;
             gap: 15px;
         }
-        
+
         .alert {
             padding: 15px 20px;
             margin-bottom: 20px;
@@ -324,44 +324,44 @@
             display: flex;
             align-items: center;
         }
-        
+
         .alert::before {
             margin-right: 12px;
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
             font-size: 18px;
         }
-        
+
         .alert-success {
             border-color: #28a745;
             background-color: #f0fff4;
         }
-        
+
         .alert-success::before {
             content: "\f058";
             color: #28a745;
         }
-        
+
         .alert-danger {
             border-color: #dc3545;
             background-color: #fff5f5;
         }
-        
+
         .alert-danger::before {
             content: "\f057";
             color: #dc3545;
         }
-        
+
         .alert-info {
             border-color: #17a2b8;
             background-color: #f0fbff;
         }
-        
+
         .alert-info::before {
             content: "\f05a";
             color: #17a2b8;
         }
-        
+
         .empty-cart {
             text-align: center;
             padding: 40px 20px;
@@ -369,64 +369,64 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
         }
-        
+
         .empty-cart i {
             font-size: 60px;
             color: var(--text-light);
             margin-bottom: 20px;
         }
-        
+
         .empty-cart h3 {
             font-size: 24px;
             margin-bottom: 15px;
             color: var(--text-dark);
         }
-        
+
         .empty-cart p {
             font-size: 16px;
             color: var(--text-light);
             margin-bottom: 25px;
         }
-        
+
         @media (max-width: 991px) {
             .cart-container {
                 padding: 0 15px;
             }
-            
+
             .page-title {
                 font-size: 24px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .cart-table {
                 display: block;
                 overflow-x: auto;
             }
-            
+
             .cart-table th, .cart-table td {
                 padding: 15px;
             }
-            
+
             .btn-container {
                 flex-direction: column;
             }
-            
+
             .btn {
                 width: 100%;
             }
         }
-        
+
         @media (max-width: 576px) {
             .page-title {
                 font-size: 22px;
             }
-            
-            .cart-table th:nth-child(4), 
+
+            .cart-table th:nth-child(4),
             .cart-table td:nth-child(4) {
                 display: none;
             }
-            
+
             .promo-form {
                 flex-direction: column;
             }
@@ -436,7 +436,7 @@
 <body>
     <div class="cart-container">
         <h1 class="page-title">Votre Panier</h1>
-        
+
         {# Afficher les messages flash #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -445,7 +445,7 @@
                 </div>
             {% endfor %}
         {% endfor %}
-        
+
         {% if panier is empty %}
             <div class="empty-cart">
                 <i class="fas fa-shopping-cart"></i>
@@ -501,46 +501,46 @@
                     {% endfor %}
                 </tbody>
             </table>
-            
+
             <div class="cart-summary">
                 <h2 class="summary-title">Récapitulatif de commande</h2>
-                
+
                 <div class="summary-row">
                     <span>Total du panier</span>
                     <span>{{ totalPanier }} DT</span>
                 </div>
-                
+
                 {% if discountPercentage is defined and discountPercentage is not null and discountPercentage > 0 %}
                 <div class="summary-row">
                     <span class="discount-label">Réduction roulette ({{ discountPercentage }}%)</span>
                     <span class="discount-value">-{{ montantReductionRoulette|number_format(2, '.', ',') }} DT</span>
                 </div>
-                
+
                 <div class="summary-row">
                     <span>Total après réduction roulette</span>
                     <span>{{ totalApreReductionRoulette|number_format(2, '.', ',') }} DT</span>
                 </div>
                 {% endif %}
-                
+
                 {% if codePromoPercentage is defined and codePromoPercentage is not null and codePromoPercentage > 0 %}
                 <div class="summary-row">
                     <span class="discount-label">Code promo "{{ codePromoCode }}" ({{ codePromoPercentage }}%)</span>
                     <span class="discount-value">-{{ montantReductionCodePromo|number_format(2, '.', ',') }} DT</span>
                 </div>
-                
+
                 <!-- Total après code promo identique au Total final -->
                 <div class="summary-row">
                     <span>Total après code promo</span>
                     <span>{{ totalFinal|number_format(2, '.', ',') }} DT</span>
                 </div>
                 {% endif %}
-                
+
                 <div class="summary-row total">
                     <span>Total final</span>
                     <span>{{ totalFinal|number_format(2, '.', ',') }} DT</span>
                 </div>
             </div>
-            
+
             {# Formulaire de code promo #}
             <div class="promo-code-container">
                 <h3 class="promo-title">Vous avez un code promo ?</h3>
@@ -551,12 +551,17 @@
                     </button>
                 </form>
             </div>
-            
+
             <div class="btn-container">
                 <a href="{{ path('app_produit_index') }}" class="btn btn-outline">
                     <i class="fas fa-arrow-left"></i> Continuer mes achats
                 </a>
-                <a href="#" class="btn btn-success">
+                <div class="recaptcha-container">
+                    <div class="g-recaptcha" data-sitekey="6Le6C-IqAAAAAAohhyWsJKxJCgc1nSt_liCAD6pQ" data-callback="onSubmit"></div>
+                    <input type="hidden" name="recaptcha-response" id="recaptcha-response">
+                    <div id="recaptchaError" class="text-danger" style="display: none;"></div>
+                </div>
+                <a href="#" class="btn btn-success" id="checkout-btn" onclick="handleFormSubmit()" disabled>
                     <i class="fas fa-credit-card"></i> Passer au paiement
                 </a>
             </div>
@@ -564,4 +569,26 @@
     </div>
 </body>
 </html>
+{% block javascripts %}
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+            function onSubmit(token) {
+                document.getElementById('recaptcha-response').value = token;
+                document.getElementById('recaptchaError').style.display = 'none';
+                document.getElementById('checkout-btn').disabled = false; // Enable the button
+            }
+
+            function handleFormSubmit() {
+                const recaptchaResponse = document.getElementById('recaptcha-response').value;
+                if (!recaptchaResponse) {
+                    document.getElementById('recaptchaError').style.display = 'block';
+                    document.getElementById('recaptchaError').innerText = 'Veuillez vérifier que vous êtes un humain.';
+                } else {
+                    document.getElementById('recaptchaError').style.display = 'none';
+                    // Soumettre le formulaire de paiement ou effectuer l'action
+                    window.location.href = "{{ path('app_vente_new') }}";
+                }
+            }
+        </script>
+{% endblock %}
 {% endblock %}

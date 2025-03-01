@@ -158,7 +158,8 @@
     var arc = Math.PI / (options.length / 2);
     var spinTimeout = null;
 
-    var spinArcStart = 10;
+    // Augmenter la valeur de départ pour une rotation plus rapide
+    var spinArcStart = 20; // Valeur doublée de l'original (10)
     var spinTime = 0;
     var spinTimeTotal = 0;
 
@@ -279,9 +280,11 @@
         }
 
         document.getElementById("spin").disabled = true;
-        spinAngleStart = Math.random() * 10 + 10;
+        // Augmentation de l'angle initial pour un démarrage plus rapide
+        spinAngleStart = Math.random() * 20 + 20; // Original: Math.random() * 10 + 10
         spinTime = 0;
-        spinTimeTotal = Math.random() * 3 + 4 * 1000;
+        // Réduction du temps de rotation total pour une roulette plus rapide
+       spinTimeTotal = 15000;
         rotateWheel();
 
         // Hide previous results
@@ -290,7 +293,8 @@
     }
 
     function rotateWheel() {
-        spinTime += 30;
+        // Augmenter l'incrément du temps pour une rotation plus rapide
+        spinTime += 40; // Original: spinTime += 30
         if (spinTime >= spinTimeTotal) {
             stopRotateWheel();
             return;
@@ -298,7 +302,8 @@
         var spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
         startAngle += (spinAngle * Math.PI / 180);
         drawRouletteWheel();
-        spinTimeout = setTimeout(function () { rotateWheel(); }, 30);
+        // Réduire le délai entre les frames pour une animation plus rapide
+        spinTimeout = setTimeout(function () { rotateWheel(); }, 20); // Original: 30
     }
 
     function stopRotateWheel() {
