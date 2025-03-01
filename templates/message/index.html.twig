@@ -1,0 +1,25 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+<h2>My Messages</h2>
+
+<h3>Sent Messages</h3>
+<ul>
+    {% for message in sentMessages %}
+        <li>To {{ message.recipient.email }}: {{ message.content }} ({{ message.createdAt|date('Y-m-d H:i') }})</li>
+    {% else %}
+        <li>No sent messages.</li>
+    {% endfor %}
+</ul>
+
+<h3>Received Messages</h3>
+<ul>
+    {% for message in receivedMessages %}
+        <li>From {{ message.sender.email }}: {{ message.content }} ({{ message.createdAt|date('Y-m-d H:i') }})</li>
+    {% else %}
+        <li>No received messages.</li>
+    {% endfor %}
+</ul>
+
+<a href="{{ path('app_message_new') }}">Send a Message</a>
+{% endblock %}
