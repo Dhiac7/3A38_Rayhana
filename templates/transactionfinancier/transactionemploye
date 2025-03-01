@@ -1,0 +1,40 @@
+{% extends 'user/client.html.twig' %}
+
+{% block title %}Mes Transactions{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Mes Transactions Financières</h2>
+
+    {% if transactions|length == 0 %}
+        <div class="alert alert-warning text-center">Aucune transaction trouvée.</div>
+    {% else %}
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Montant (€)</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.id }}</td>
+                        <td>{{ transaction.montant }}</td>
+                        <td>{{ transaction.date ? transaction.date|date('d/m/Y H:i') : 'Non spécifiée' }}</td>
+                        <td>
+                            <a href="{{ path('app_transactionfinancier_show', {'id': transaction.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination justify-content-center">
+            {{ knp_pagination_render(transactions) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

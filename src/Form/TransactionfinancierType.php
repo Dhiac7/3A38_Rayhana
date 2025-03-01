@@ -12,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 
 class TransactionfinancierType extends AbstractType
 {
@@ -19,23 +21,23 @@ class TransactionfinancierType extends AbstractType
     {
         $builder
         ->add('montant', NumberType::class, [
-            'attr' => [
-                'class' => 'form-control',
-                'placeholder' => 'Montant',
-            ],
-            'required' => false, // Initialement non requis
-            'disabled' => false, // Désactivé pour empêcher la saisie manuelle
-        ])
-            ->add('type', ChoiceType::class, [
-                'choices' => [
-                    'Dépense' => 'Dépense',
-                    'Revenu' => 'Revenu',
-                ],
+           'label' => 'Montant (€)',
                 'attr' => [
                     'class' => 'form-control',
+                    'readonly' => true,
+                    'id' => 'montant',
                 ],
             ])
-            ->add('user', EntityType::class, [
+            ->add('type', TextType::class, [
+                'label' => 'Type',
+                'data' => 'Dépense', // Valeur par défaut
+                'attr' => [
+                    'class' => 'form-control',
+                    'readonly' => true,
+                ],
+            ]);
+            
+           /* ->add('user', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'email', // Afficher l'email de l'utilisateur
                 'label' => 'Employé',
@@ -45,7 +47,7 @@ class TransactionfinancierType extends AbstractType
                         ->where('u.role IN (:role)')
                         ->setParameter('role', ['livreur', 'inspecteur', 'fermier']);
                 },
-            ]);
+            ]);*/
 
         // Ajouter un écouteur d'événements pour gérer les changements dans le champ "user"
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
