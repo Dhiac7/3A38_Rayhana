@@ -1,5 +1,5 @@
 <?php
-// src/Controller/Api/EventController.php
+
 namespace App\Controller\Api;
 
 use App\Repository\AtelierRepository;
