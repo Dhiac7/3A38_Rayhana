@@ -1,0 +1,11 @@
+fos_ck_editor:
+    default_config: custom
+    js_path: 'https://cdn.ckeditor.com/4.21.0/full-all/ckeditor.js'
+    configs:
+        custom:
+            toolbar: 
+                - [ 'Bold', 'Italic', 'Underline' ]
+                - [ 'Font', 'FontSize' ]
+                - [ 'Undo', 'Redo' ]
+            font_names: 'Arial/Arial, Helvetica, sans-serif; Times New Roman/Times New Roman, Times, serif; Courier New/Courier New, Courier, monospace'
+            uiColor: '#ffffff'
