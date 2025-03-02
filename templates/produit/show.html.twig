@@ -36,20 +36,19 @@
                                 </div>
 
                                  <!-- Carousel Indicators -->
-                                <div class="carousel-indicators">
+  <div class="carousel-indicators">
                                     <div class="product-gallery-carousel swiper">
                                         <!-- Additional required wrapper -->
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
                                                 <div class="item active" data-bs-target="#timeline-carousel" data-bs-slide-to="0" aria-current="true">
-                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+                                                      <img src="{{ asset('img/stock/' ~ produit.image) | imagine_filter('thumbnail') }}" alt="Image du produit">
                                                 </div>
                                             </div>
                                            
                                         </div>
                                     </div>
                                 </div>
-
                                 
                                 <!-- End Carousel Content -->
                                
@@ -143,63 +142,6 @@
             <!-- End Product Bottom Info  -->
 
 
-            <!-- Related Product     barre loutaaaa -->   
-            
-            <div class="related-products carousel-shadow">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>Related Products</h3>
-                          
-                        <div class="vt-products text-center related-product-carousel swiper">
-                            <!-- Additional required wrapper -->
-                            <div class="swiper-wrapper">
-                                <!-- Single product -->
-                           
-                                <div class="swiper-slide">
-                                    <div class="product">
-                                        <div class="product-contents">
-                                            <div class="product-image">
-                                                <a href="shop-single.html">
-                                                    <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" style="max-width: 150px; height: auto;">
-                                                </a>
-                                                <div class="shop-action">
-                                                    <ul>
-                                                        <li class="cart">
-                                                            <a href="#"><span>Add to cart</span></a>
-                                                        </li>
-                                                        <li class="wishlist">
-                                                            <a href="#"><span>Add to wishlist</span></a>
-                                                        </li>
-                                                        <li class="quick-view">
-                                                            <a href="#"><span>Quick view</span></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="product-caption">
-                                                
-                                                <h4 class="product-title">
-                                                    <a href="shop-single.html">{{ produit.nom }}</a>
-                                                </h4>
-                                                <div class={{ produit.PrixVente }}>
-                                                    <span>{{ produit.PrixVente }}</span>
-                                                </div>
-                                                <a href="app_vente_new" class="cart-btn"><i class="fas fa-shopping-bag"></i> Add to cart</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Single product -->
-                               
-                                          
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Related Product  -->
            
         </div>
     </div>
