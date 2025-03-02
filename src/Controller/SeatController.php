@@ -18,6 +18,7 @@ class SeatController extends AbstractController
     
         return $this->render('seat/choose_seat.html.twig', [
             'places' => $places,
+
         ]);
     }
     

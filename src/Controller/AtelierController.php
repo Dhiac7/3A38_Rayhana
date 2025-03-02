@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 use App\Entity\User;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\AtelierLike;
 use App\Entity\Atelier;
+use App\Entity\AtelierLikes;
 use App\Form\AtelierType;
 use App\Repository\AtelierRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -100,5 +102,51 @@ final class AtelierController extends AbstractController
 
         ]);
     }
+
+
+    #[Route('/{id}/like', name: 'app_atelier_like', methods: ['POST'])]
+public function likeAtelier($id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+{
+    $atelier = $entityManager->getRepository(Atelier::class)->find($id);
+    if (!$atelier) {
+        return $this->json(['error' => 'Atelier not found'], 404);
+    }
+
+    $user = $this->getUser();
+    if (!$user) {
+        return $this->json(['error' => 'User not authenticated'], 401);
+    }
+
+    $isLike = $request->request->get('like') === 'true';
+
+    $atelierLikeRepo = $entityManager->getRepository(AtelierLikes::class);
+    $existingLike = $atelierLikeRepo->findOneBy(['atelier' => $atelier, 'user' => $user]);
+
+    if ($existingLike) {
+        if ($existingLike->getIsLike() === $isLike) {
+            $entityManager->remove($existingLike);
+        } else {
+            $existingLike->setIsLiked($isLike);
+            $entityManager->persist($existingLike);
+        }
+    } else {
+        $newLike = new AtelierLikes();
+        $newLike->setAtelier($atelier);
+        $newLike->setUser($user);
+        $newLike->setIsLiked($isLike);
+        $entityManager->persist($newLike);
+    }
+
+    $entityManager->flush();
+
+    $likesCount = $atelierLikeRepo->count(['atelier' => $atelier, 'isLike' => true]);
+    $dislikesCount = $atelierLikeRepo->count(['atelier' => $atelier, 'isLike' => false]);
+
+    return $this->json([
+        'likes' => $likesCount,
+        'dislikes' => $dislikesCount,
+    ]);
+}
+
     
 }

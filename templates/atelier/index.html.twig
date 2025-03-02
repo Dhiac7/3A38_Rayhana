@@ -12,7 +12,7 @@
                         <div class="col-xl-4 col-md-6 single-item">
                             <div class="blog-style-one">
                                 <div class="thumb">
-                                    <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" />
+<img src="{{ asset('img/atelier/' ~ atelier.photo) }}" style="width: 300px; height: 200px; object-fit: cover; border-radius: 10px;" />
                                 </div>
                                 <div>
                                     <div class="meta-title">
@@ -34,12 +34,72 @@
                                         <p><strong>Nom:</strong> {{ atelier.nom }}</p>
                                         <p><strong>Date:</strong> {{ atelier.dateAtelier|date('d M Y') }}</p>
                                         <p><strong>Prix:</strong> {{ atelier.prix }} €</p>
-                                        <a href="{{ path('app_vente_atelier_new', { 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Réserver</a>
+                                        
+                                       {# <a href="{{ path('app_vente_atelier_new', { 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Réserver</a>#}
+<a href="{{ path('choose_seat', { 'id': atelier.id, 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary"> Choisir votre place </a>
+
 
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <form id="like-form" action="{{ path('app_atelier_like', {'id': atelier.id}) }}" method="POST">
+    <button type="submit" name="like" value="true" class="btn btn-success">👍 Like</button>
+    <button type="submit" name="like" value="false" class="btn btn-danger">👎 Dislike</button>
+    <a href="{{ path('admin_statistics_atelier', {'id': atelier.id}) }}" class="btn btn-primary">Voir les statistiques</a>
+</form>
+
+
+
+<p>👍 Likes : <span id="likes-count">{{ atelier.getLikesCount() }}</span></p>
+<p>👎 Dislikes : <span id="dislikes-count">{{ atelier.getDislikesCount() }}</span></p>
+
+{% block javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    // Gestion du clic sur le bouton "Like"
+    document.getElementById('like-btn').addEventListener('click', function () {
+        handleLikeDislike(true);
+    });
+
+    // Gestion du clic sur le bouton "Dislike"
+    document.getElementById('dislike-btn').addEventListener('click', function () {
+        handleLikeDislike(false);
+    });
+
+    // Fonction pour gérer le like ou dislike
+    function handleLikeDislike(isLike) {
+        const atelierId = document.getElementById(isLike ? 'like-btn' : 'dislike-btn').getAttribute('data-atelier-id');
+
+        fetch(`/atelier/${atelierId}/like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                like: isLike ? 'true' : 'false',
+            }),
+            credentials: 'same-origin' // Cette ligne envoie les cookies (session) avec la requête
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                // Mettre à jour les comptes des likes et dislikes
+                document.getElementById('likes-count').innerText = data.likes;
+                document.getElementById('dislikes-count').innerText = data.dislikes;
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+});
+
+    </script>
+{% endblock %}
+
+
+
                     {% endfor %}
                 </div>
             </div>

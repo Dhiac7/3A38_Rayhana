@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\AtelierLikes;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AtelierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,6 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert ;
 #[ORM\Entity(repositoryClass: AtelierRepository::class)]
 class Atelier
 {
+    #[ORM\OneToMany(mappedBy: 'atelier', targetEntity: AtelierLikes::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $likes;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -95,13 +99,20 @@ class Atelier
     #[ORM\Column(type: "datetime", nullable: true)]
     private ?\DateTimeInterface $endAt = null;
 
+    /**
+     * @var Collection<int, AtelierLikes>
+     */
+    #[ORM\OneToMany(targetEntity: AtelierLikes::class, mappedBy: 'atelier')]
+    private Collection $atelierLikes;
+
  
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->nbrplacedispo = $this->capacite_max;
-        $this->dechet = new ArrayCollection(); 
+        $this->dechet = new ArrayCollection();
+        $this->atelierLikes = new ArrayCollection(); 
     }
 
 
@@ -306,27 +317,71 @@ class Atelier
            return $this;
        }
    
-       public function getStartAt(): \DateTimeInterface
+       public function getStartAt(): \DateTime
        {
            return $this->startAt;
        }
    
-       public function setStartAt(\DateTimeInterface $startAt): self
+       public function setStartAt(\DateTime $startAt): self
        {
            $this->startAt = $startAt;
            return $this;
        }
    
-       public function getEndAt(): ?\DateTimeInterface
+       public function getEndAt(): ?\DateTime
        {
            return $this->endAt;
        }
    
-       public function setEndAt(?\DateTimeInterface $endAt): self
+       public function setEndAt(?\DateTime $endAt): self
        {
            $this->endAt = $endAt;
            return $this;
        }
+
+       /**
+        * @return Collection<int, AtelierLikes>
+        */
+       public function getAtelierLikes(): Collection
+       {
+           return $this->atelierLikes;
+       }
+
+       public function addAtelierLike(AtelierLikes $atelierLike): static
+       {
+           if (!$this->atelierLikes->contains($atelierLike)) {
+               $this->atelierLikes->add($atelierLike);
+               $atelierLike->setAtelier($this);
+           }
+
+           return $this;
+       }
+
+       public function removeAtelierLike(AtelierLikes $atelierLike): static
+       {
+           if ($this->atelierLikes->removeElement($atelierLike)) {
+               // set the owning side to null (unless already changed)
+               if ($atelierLike->getAtelier() === $this) {
+                   $atelierLike->setAtelier(null);
+               }
+           }
+
+           return $this;
+       }
+       public function getLikesCount(): int
+        {
+    return $this->atelierLikes->count();
+    }
+
+public function getDislikesCount(): int
+{
+    return $this->atelierLikes->filter(function (AtelierLikes $like) {
+        return $like->isLiked() === false; // Compte uniquement les dislikes
+    })->count();
+}
+
+
+
    
 
 }

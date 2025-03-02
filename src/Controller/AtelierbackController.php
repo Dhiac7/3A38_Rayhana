@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Entity\Atelier;
 use App\Form\AtelierType;
 use App\Repository\AtelierRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -335,6 +336,46 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     
         return new JsonResponse(['success' => false, 'message' => 'Atelier non trouvé ou ID invalide'], 400);
     }*/
-    
+    #[Route('/admin/statistics/atelier/{id}', name: 'admin_statistics_atelier')]
+public function statisticsAtelier(
+    UserRepository $userRepository,
+    EntityManagerInterface $entityManager,
+    SessionInterface $session,
+    int $id
+): Response {
+    $loggedInUserId = $session->get('user_id');
+
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    // Récupérer l'atelier par son ID
+    $atelier = $entityManager->getRepository(Atelier::class)->find($id);
+
+    if (!$atelier) {
+        throw $this->createNotFoundException('Atelier non trouvé');
+    }
+
+    // Récupérer les statistiques des participants par genre et âge
+    $genderStats = $userRepository->getUserStatisticsByAtelier($atelier);
+    $ageStats = $userRepository->getAgeStatisticsByAtelier($atelier);
+
+    // Debugging: Check the data
+    dump($genderStats);
+    dump($ageStats);
+
+    return $this->render('user/statistics_atelier.html.twig', [
+        'genderStats' => $genderStats,
+        'ageStats' => $ageStats,
+        'loggedInUser' => $loggedInUser,
+        'atelier' => $atelier,
+    ]);
+}
 
 }

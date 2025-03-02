@@ -37,6 +37,7 @@
     </div>
 
     <p id="reservation-message"></p>
+   <a href="{{ path('app_vente_atelier_new', { 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Réserver</a>
 
     <style>
         #seats-container {

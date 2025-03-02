@@ -25,22 +25,23 @@ class CalendarController extends AbstractController
         return $this->render('calendar/index.html.twig');
     }
 
-    #[Route('/api/events', name: 'api_events')]
+    #[Route('/api/events', name: 'api_events', methods: ['GET'])]
     public function getEvents(AtelierRepository $atelierRepository): JsonResponse
     {
         $ateliers = $atelierRepository->findAll();
-
         $events = [];
+    
         foreach ($ateliers as $atelier) {
             $events[] = [
-                'title' => $atelier->getNom(),
-                'start' => $atelier->getStartAt()->format('Y-m-d H:i:s'),
-                'end' => $atelier->getEndAt()->format('Y-m-d H:i:s'),
+                'title' => $atelier->getTitle(), // Assure-toi que getTitle() existe bien
+                'start' => $atelier->getStartAt()->format('Y-m-d\TH:i:s'),
+                'end' => $atelier->getEndAt() ? $atelier->getEndAt()->format('Y-m-d\TH:i:s') : null,
             ];
         }
-
+    
         return new JsonResponse($events);
     }
+    
 
 
 }

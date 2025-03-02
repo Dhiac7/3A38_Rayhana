@@ -226,6 +226,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $SessionId = null;
 
+    /**
+     * @var Collection<int, AtelierLikes>
+     */
+    #[ORM\OneToMany(targetEntity: AtelierLikes::class, mappedBy: 'user')]
+    private Collection $atelierLikes;
+
 
 
     public function __construct()
@@ -238,6 +244,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->employes = new ArrayCollection();
         $this->cultureAgricoles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->atelierLikes = new ArrayCollection();
 
 
     }
@@ -779,6 +786,36 @@ public function getPassword(): ?string
     public function setSessionId(?string $SessionId): static
     {
         $this->SessionId = $SessionId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AtelierLikes>
+     */
+    public function getAtelierLikes(): Collection
+    {
+        return $this->atelierLikes;
+    }
+
+    public function addAtelierLike(AtelierLikes $atelierLike): static
+    {
+        if (!$this->atelierLikes->contains($atelierLike)) {
+            $this->atelierLikes->add($atelierLike);
+            $atelierLike->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAtelierLike(AtelierLikes $atelierLike): static
+    {
+        if ($this->atelierLikes->removeElement($atelierLike)) {
+            // set the owning side to null (unless already changed)
+            if ($atelierLike->getUser() === $this) {
+                $atelierLike->setUser(null);
+            }
+        }
 
         return $this;
     }
