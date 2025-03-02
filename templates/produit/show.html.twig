@@ -24,31 +24,26 @@
                                             <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
                                         {% endif %}
                                     </div>
-                                    <div class="carousel-item product-item">
-                                        <a href="assets/img/products/2.png" class="item popup-gallery">
-                                             <img src="{{ asset('img/stock/' ~ produit.image) }}" alt="Image du produit" >
-                                        </a>
-                                        {% if produit.enPromotion %}
-                                            <span class="onsale theme">-{{ produit.pourcentagePromo }}%</span>
-                                        {% endif %}
-                                    </div>
+                                  
                                    
                                 </div>
 
                                  <!-- Carousel Indicators -->
-  <div class="carousel-indicators">
+                                <div class="carousel-indicators">
                                     <div class="product-gallery-carousel swiper">
                                         <!-- Additional required wrapper -->
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
                                                 <div class="item active" data-bs-target="#timeline-carousel" data-bs-slide-to="0" aria-current="true">
-                                                      <img src="{{ asset('img/stock/' ~ produit.image) | imagine_filter('thumbnail') }}" alt="Image du produit">
+                                            <img src="{{ asset('img/stock/' ~ produit.image) | imagine_filter('produit_resize') }}" alt="Image du produit" style="max-width: 150px; height: auto;">
+
                                                 </div>
                                             </div>
                                            
                                         </div>
                                     </div>
                                 </div>
+
                                 
                                 <!-- End Carousel Content -->
                                
@@ -90,9 +85,9 @@
                             </p>
                             <div class="product-purchase-list">
                                
-                                <a href="app_vente_new" class="btn secondary btn-theme btn-sm animation">
+                                 <a href="{{ path('panier_ajouter', {'id': produit.id}) }}" class="btn secondary btn-theme btn-sm animation">
                                     <i class="fas fa-shopping-cart"></i>
-                                    Add to cart
+                                    ajouter au panier
                                 </a>
                               
                             </div>

@@ -15,7 +15,9 @@ use Pagerfanta\View\TwitterBootstrap5View;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+
+
+
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
@@ -57,8 +59,9 @@ final class ProduitController extends AbstractController
         ]);
     }
 
+
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
-    public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager, CacheManager $cacheManager): Response
+    public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         $loggedInUserId = $session->get('user_id');
     
@@ -72,22 +75,17 @@ final class ProduitController extends AbstractController
             return $this->redirectToRoute('app_user_login');
         }
     
-        // Generate filtered image path for 'thumbnail' filter
-        $imagePath = $cacheManager->getBrowserPath('img/stock/' . $produit->getImage(), 'thumbnail');
-        
-        // Generate original image path for backup
-        $originalImagePath = $this->getParameter('kernel.project_dir') . '/public/img/stock/' . $produit->getImage();
-        $imageExists = file_exists($originalImagePath);
-        
-        // Get related products (you may want to implement this method in your repository)
-        // Example: $relatedProducts = $produitRepository->findRelatedProducts($produit->getId(), $produit->getCategory(), 4);
-        
+        // Récupérer le chemin de l'image (assume que $produit->getImage() renvoie juste le nom de l'image)
+        $imagePath = 'img/stock/' . $produit->getImage();
+    
         return $this->render('produit/show.html.twig', [
             'produit' => $produit,
             'loggedInUser' => $loggedInUser,
-            'imagePath' => $imagePath,
-            'imageExists' => $imageExists,
-            // 'relatedProducts' => $relatedProducts, // Uncomment if you implement this
+            'imagePath' => $imagePath, // On passe le chemin de l'image à la vue
         ]);
     }
+    
+        
+    
+
 }
