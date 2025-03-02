@@ -50,6 +50,9 @@ class Reservation
     #[Assert\Choice(choices : ['agriculteur','client','employee'],message: "le role doit étre 'agriculteur','client','employee' ")]
     private ?string $Role = null;
 
+    #[ORM\OneToOne(inversedBy: 'Place', cascade: ['persist', 'remove'])]
+    private ?Place $place = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -144,5 +147,17 @@ class Reservation
                 $this->Role = $Role;
                 return $this;
 
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): static
+    {
+        $this->place = $place;
+
+        return $this;
     }
 }

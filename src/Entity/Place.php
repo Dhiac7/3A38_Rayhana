@@ -19,6 +19,9 @@ class Place
     #[ORM\Column]
     private ?bool $isAvailable = null;
 
+    #[ORM\OneToOne(mappedBy: 'place', cascade: ['persist', 'remove'])]
+    private ?Reservation $Place = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,6 +46,28 @@ class Place
     public function setIsAvailable(bool $isAvailable): static
     {
         $this->isAvailable = $isAvailable; // Utilise la valeur passée en paramètre
+        return $this;
+    }
+
+    public function getPlace(): ?Reservation
+    {
+        return $this->Place;
+    }
+
+    public function setPlace(?Reservation $Place): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($Place === null && $this->Place !== null) {
+            $this->Place->setPlace(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($Place !== null && $Place->getPlace() !== $this) {
+            $Place->setPlace($this);
+        }
+
+        $this->Place = $Place;
+
         return $this;
     }
 }

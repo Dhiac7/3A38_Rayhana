@@ -34,15 +34,14 @@ final class AtelierController extends AbstractController
         $pagination = $paginator->paginate(
             $query, // Donneili bch namlou pagination
             $request->query->getInt('page', 1), // Num page 
-            6 // nbr element par page 
+            4 // nbr element par page 
         );
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
 
         return $this->render('atelier/index.html.twig', [
-            'pagination' => $pagination,
+            'pagination' => $pagination, // La pagination est bien passée
             'MAPBOX_API_KEY' => $mapboxApiKey,
             'loggedInUser' => $loggedInUser,
-
         ]);
         
     }
