@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var calendar = new Calendar(calendarEl, {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: 'dayGridMonth',
-            events: '/api/events', // Mets ici ton endpoint Symfony pour récupérer les événements
+            events: '/api/events',  // Assurez-vous que cette route renvoie bien les événements
             editable: true,
             selectable: true,
         });

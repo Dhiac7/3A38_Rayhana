@@ -1,30 +1,25 @@
 {# templates/calendar/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/main.min.css">
-{% endblock %}
-
-{% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.10/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: '/api/events', // Endpoint pour récupérer les événements
-            });
-            calendar.render();
-        });
-    </script>
-{% endblock %}
+{% block title %}Calendrier des ateliers{% endblock %}
 
 {% block body %}
-    <h1>Calendrier des Ateliers</h1>
+    <h1>Calendrier des ateliers</h1>
+    
+    {# Le conteneur du calendrier où FullCalendar sera rendu #}
     <div id="calendar"></div>
+
+    {# Inclusion des fichiers CSS nécessaires pour FullCalendar #}
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.css" rel="stylesheet">
+
+    {# Inclusion des fichiers JavaScript nécessaires pour FullCalendar #}
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction/main.js"></script>
+    
+    {# Inclure le JavaScript personnalisé pour initialiser FullCalendar #}
+    <script src="{{ asset('build/calendar.js') }}"></script>
 {% endblock %}
