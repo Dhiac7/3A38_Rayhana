@@ -1,16 +1,17 @@
+{# templates/calendar/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('node_modules/@fullcalendar/core/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('node_modules/@fullcalendar/daygrid/main.css') }}">
-    <link rel="stylesheet" href="{{ asset('node_modules/@fullcalendar/timegrid/main.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/main.min.css">
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('node_modules/@fullcalendar/core/main.js') }}"></script>
-    <script src="{{ asset('node_modules/@fullcalendar/daygrid/main.js') }}"></script>
-    <script src="{{ asset('node_modules/@fullcalendar/timegrid/main.js') }}"></script>
-    <script src="{{ asset('node_modules/@fullcalendar/interaction/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.10/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.10/main.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');

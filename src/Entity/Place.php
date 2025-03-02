@@ -32,19 +32,17 @@ class Place
     public function setCode(string $code): static
     {
         $this->code = $code;
-
         return $this;
     }
 
-    public function isAvailable(): ?bool
+    public function getIsAvailable(): ?bool
     {
         return $this->isAvailable;
     }
 
     public function setIsAvailable(bool $isAvailable): static
     {
-        $this->isAvailable = True;
-
+        $this->isAvailable = $isAvailable; // Utilise la valeur passée en paramètre
         return $this;
     }
 }

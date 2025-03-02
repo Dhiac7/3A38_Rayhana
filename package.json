@@ -5,10 +5,10 @@
     "webpack-notifier": "^1.15.0"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/interaction": "^6.1.15",
-    "@fullcalendar/timegrid": "^6.1.15",
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/interaction": "^6.1.10",
+    "@fullcalendar/timegrid": "^6.1.10",
     "chart.js": "^4.4.8",
     "select2": "^4.1.0-rc.0"
   },

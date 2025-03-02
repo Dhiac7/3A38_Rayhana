@@ -1,5 +1,9 @@
 import './bootstrap.js';
 import './calendar';
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 /*
  * Welcome to your app's main JavaScript file!
@@ -9,4 +13,12 @@ import './calendar';
  */
 import './styles/app.css';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new Calendar(calendarEl, {
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        initialView: 'dayGridMonth',
+        events: '/api/events', // Endpoint pour récupérer les événements
+    });
+    calendar.render();
+});
