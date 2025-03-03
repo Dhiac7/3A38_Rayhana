@@ -1970,28 +1970,28 @@
         },
         {
             "name": "endroid/qr-code-bundle",
-            "version": "5.0.2",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/qr-code-bundle.git",
-                "reference": "74cf5dbaed4f05f369f04f25dc1a34ff83668cae"
+                "reference": "aa42fbfe654134ac2ec58896ce19379ba9da4d9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/qr-code-bundle/zipball/74cf5dbaed4f05f369f04f25dc1a34ff83668cae",
-                "reference": "74cf5dbaed4f05f369f04f25dc1a34ff83668cae",
+                "url": "https://api.github.com/repos/endroid/qr-code-bundle/zipball/aa42fbfe654134ac2ec58896ce19379ba9da4d9d",
+                "reference": "aa42fbfe654134ac2ec58896ce19379ba9da4d9d",
                 "shasum": ""
             },
             "require": {
                 "endroid/installer": "^1.2.2",
                 "endroid/qr-code": "^5.0",
                 "php": "^8.1",
-                "symfony/framework-bundle": "^5.4||^6.4||^7.0",
-                "symfony/twig-bundle": "^5.4||^6.4||^7.0",
-                "symfony/yaml": "^5.4||^6.4||^7.0"
+                "symfony/framework-bundle": "^5.4||^6.0",
+                "symfony/twig-bundle": "^5.4||^6.0",
+                "symfony/yaml": "^5.4||^6.0"
             },
             "require-dev": {
-                "endroid/quality": "dev-main"
+                "endroid/quality": "dev-master"
             },
             "suggest": {
                 "roave/security-advisories": "Avoids installation of package versions with vulnerabilities"
@@ -2000,7 +2000,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-main": "4.x-dev"
-
                 }
             },
             "autoload": {
@@ -2051,7 +2050,7 @@
             ],
             "support": {
                 "issues": "https://github.com/endroid/qr-code-bundle/issues",
-                "source": "https://github.com/endroid/qr-code-bundle/tree/5.0.2"
+                "source": "https://github.com/endroid/qr-code-bundle/tree/5.0.0"
             },
             "funding": [
                 {
@@ -2060,7 +2059,6 @@
                 }
             ],
             "time": "2024-08-03T13:50:37+00:00"
-
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -2785,16 +2783,16 @@
         },
         {
             "name": "knplabs/knp-menu",
-            "version": "v3.7.0",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpMenu.git",
-                "reference": "328bb430a0afad0b6eae2bd4bfea8e15db616fd6"
+                "reference": "ac96b711cf7b4178747b0ecde79d7e5e05dbcd28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/328bb430a0afad0b6eae2bd4bfea8e15db616fd6",
-                "reference": "328bb430a0afad0b6eae2bd4bfea8e15db616fd6",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/ac96b711cf7b4178747b0ecde79d7e5e05dbcd28",
+                "reference": "ac96b711cf7b4178747b0ecde79d7e5e05dbcd28",
                 "shasum": ""
             },
             "require": {
@@ -2852,9 +2850,9 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/KnpMenu/issues",
-                "source": "https://github.com/KnpLabs/KnpMenu/tree/v3.7.0"
+                "source": "https://github.com/KnpLabs/KnpMenu/tree/v3.6.0"
             },
-            "time": "2025-02-28T08:21:46+00:00"
+            "time": "2024-12-20T10:10:51+00:00"
         },
         {
             "name": "knplabs/knp-menu-bundle",
