@@ -414,6 +414,7 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
         'atelier' => $atelier,  // Passer l'atelier à la vue
     ]);
 }
+
 }
 
 

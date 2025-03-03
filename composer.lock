@@ -4,7 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+
     "content-hash": "8d11e891ff5a8573ab0d72e397c9992e",
+
     "packages": [
         {
             "name": "async-aws/core",
@@ -2039,7 +2041,9 @@
             },
             "autoload": {
                 "psr-4": {
+
                     "FOS\\CKEditorBundle\\": "src/",
+
                     "EWZ\\Bundle\\RecaptchaBundle\\": "src"
                 }
             },
@@ -2049,7 +2053,6 @@
             ],
             "authors": [
                 {
-
                     "name": "Michael H. Arieli",
                     "email": "excelwebzone@gmail.com",
                     "homepage": "http://excelwebzone.com/"

@@ -8,8 +8,6 @@ parameters:
     users_image_path: '%kernel.project_dir%/public/img/users'
     files_directory: '%kernel.project_dir%/public/img/files'
     # config/services.yaml
-
-  
     stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
     stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'   # Secret key for server-side
 
