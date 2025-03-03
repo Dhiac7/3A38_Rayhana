@@ -2,11 +2,11 @@ parameters:
     uploads_directory: '%kernel.project_dir%/public/img/users'
     image_directory: '%kernel.project_dir%/public/img/stock'
     atelier_directory: '%kernel.project_dir%/public/img/atelier'
-    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     twilio_sid: '%env(TWILIO_SID)%'
     face_recognition_script: '%kernel.project_dir%/python/recognize_faces.py'
     users_image_path: '%kernel.project_dir%/public/img/users'
+    files_directory: '%kernel.project_dir%/public/img/files'
     # config/services.yaml
 
   
@@ -20,6 +20,7 @@ parameters:
             classes:
                 model: App\Entity\Produit
                 repository: App\Repository\ProduitRepository
+
 
 
 services:
@@ -49,7 +50,10 @@ services:
     App\Service\WeatherService:
         arguments:
             $apiKey: '%env(OPENWEATHER_API_KEY)%'
-        
+    App\Service\NotificationService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
     
 
 

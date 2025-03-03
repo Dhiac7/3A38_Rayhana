@@ -26,6 +26,9 @@ class Message
     #[ORM\ManyToOne(inversedBy: 'receivedMessages')]
     private ?User $recipient = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $FileUrl = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Message
     public function setRecipient(?User $recipient): static
     {
         $this->recipient = $recipient;
+
+        return $this;
+    }
+
+    public function getFileUrl(): ?string
+    {
+        return $this->FileUrl;
+    }
+
+    public function setFileUrl(?string $FileUrl): static
+    {
+        $this->FileUrl = $FileUrl;
 
         return $this;
     }
