@@ -2004,6 +2004,7 @@
             "time": "2024-08-03T13:50:37+00:00"
         },
         {
+
             "name": "excelwebzone/recaptcha-bundle",
             "version": "v1.5.42",
             "source": {
@@ -2038,6 +2039,7 @@
             },
             "autoload": {
                 "psr-4": {
+                    "FOS\\CKEditorBundle\\": "src/",
                     "EWZ\\Bundle\\RecaptchaBundle\\": "src"
                 }
             },
@@ -2047,6 +2049,7 @@
             ],
             "authors": [
                 {
+
                     "name": "Michael H. Arieli",
                     "email": "excelwebzone@gmail.com",
                     "homepage": "http://excelwebzone.com/"
