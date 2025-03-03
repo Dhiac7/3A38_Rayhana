@@ -64,19 +64,28 @@ final class ProduitController extends AbstractController
     public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         $loggedInUserId = $session->get('user_id');
-
+    
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
         }
-
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
+    
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
+    
+        // Récupérer le chemin de l'image (assume que $produit->getImage() renvoie juste le nom de l'image)
+        $imagePath = 'img/stock/' . $produit->getImage();
+    
         return $this->render('produit/show.html.twig', [
             'produit' => $produit,
             'loggedInUser' => $loggedInUser,
+            'imagePath' => $imagePath, // On passe le chemin de l'image à la vue
         ]);
     }
+    
+        
+    
+
 }
