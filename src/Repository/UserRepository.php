@@ -51,8 +51,8 @@ class UserRepository extends ServiceEntityRepository
     public function findByRole(string $role)
     {
         return $this->createQueryBuilder('u')
-            ->where('u.role LIKE :role')
-            ->setParameter('role', '%"'.$role.'"%')
+            ->where('u.role = :role') // Direct comparison
+            ->setParameter('role', $role) // No need for wildcards
             ->getQuery()
             ->getResult();
     }
@@ -64,19 +64,24 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();  
     }
-    
-     public function getUserStatistics()
-     {
-         return $this->createQueryBuilder('u')
-             ->select('u.genre AS genre, COUNT(u.id) AS user_count')
-             ->groupBy('u.genre')
-             ->getQuery()
-             ->getResult();
-     }
-     
-    public function getAgeStatistics()
+    public function getGenderStatisticsByRole(string $role)
+{
+    return $this->createQueryBuilder('u')
+        ->select('u.genre AS genre, COUNT(u.id) AS user_count')
+        ->where('u.role = :role')
+        ->setParameter('role', $role)
+        ->groupBy('u.genre')
+        ->getQuery()
+        ->getResult();
+}
+    public function getAgeStatisticsByRole(string $role)
     {
-        $users = $this->findAll(); 
+        $users = $this->createQueryBuilder('u')
+            ->where('u.role = :role')
+            ->setParameter('role', $role)
+            ->getQuery()
+            ->getResult();
+    
         $ageGroups = [
             ['age_range' => '0-18', 'user_count' => 0],
             ['age_range' => '19-35', 'user_count' => 0],
@@ -85,7 +90,7 @@ class UserRepository extends ServiceEntityRepository
         ];
     
         foreach ($users as $user) {
-            $age = $user->getAge(); 
+            $age = $user->getAge();
     
             if ($age <= 18) {
                 $ageGroups[0]['user_count']++;
@@ -101,6 +106,45 @@ class UserRepository extends ServiceEntityRepository
         return $ageGroups;
     }
     
-
-
+    public function getEmployeeAgeStatistics()
+    {
+        $users = $this->createQueryBuilder('u')
+            ->where('u.role IN (:roles)')
+            ->setParameter('roles', ['fermier', 'livreur', 'inspecteur'])
+            ->getQuery()
+            ->getResult();
+    
+        $ageGroups = [
+            ['age_range' => '0-18', 'user_count' => 0],
+            ['age_range' => '19-35', 'user_count' => 0],
+            ['age_range' => '36-50', 'user_count' => 0],
+            ['age_range' => '50+', 'user_count' => 0]
+        ];
+    
+        foreach ($users as $user) {
+            $age = $user->getAge();
+    
+            if ($age <= 18) {
+                $ageGroups[0]['user_count']++;
+            } elseif ($age <= 35) {
+                $ageGroups[1]['user_count']++;
+            } elseif ($age <= 50) {
+                $ageGroups[2]['user_count']++;
+            } else {
+                $ageGroups[3]['user_count']++;
+            }
+        }
+    
+        return $ageGroups;
+    }
+public function getEmployeeGenderStatistics()
+{
+    return $this->createQueryBuilder('u')
+        ->select('u.genre AS genre, u.role AS role, COUNT(u.id) AS user_count')
+        ->where('u.role IN (:roles)')
+        ->setParameter('roles', ['fermier', 'livreur', 'inspecteur'])
+        ->groupBy('u.genre, u.role')
+        ->getQuery()
+        ->getResult();
+}
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Fruits & Légumes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        #error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Uploader une Image pour la Classification</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="fileInput">Sélectionnez une image :</label>
+        <input type="file" id="fileInput" name="file" accept=".jpg, .jpeg, .png" required>
+        <button type="submit">Prédire</button>
+    </form>
+    <h2>Résultat : <span id="result"></span></h2>
+    <p id="error"></p>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();
+
+            // Réinitialiser les messages d'erreur et de résultat
+            document.getElementById('result').innerText = '';
+            document.getElementById('error').innerText = '';
+
+            // Récupérer le fichier sélectionné
+            let fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                document.getElementById('error').innerText = 'Veuillez sélectionner un fichier.';
+                return;
+            }
+
+            // Créer un FormData et ajouter le fichier
+            let formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                // Envoyer la requête POST au serveur
+                let response = await fetch('/model1/predict_model1', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Vérifier si la réponse est OK
+                if (!response.ok) {
+                    let errorData = await response.json();
+                    document.getElementById('error').innerText = errorData.error || 'Erreur lors de la prédiction.';
+                    return;
+                }
+
+                // Afficher le résultat de la prédiction
+                let data = await response.json();
+                document.getElementById('result').innerText = data.prediction;
+            } catch (error) {
+                // Gérer les erreurs réseau ou autres
+                document.getElementById('error').innerText = 'Erreur de connexion au serveur.';
+                console.error('Erreur :', error);
+            }
+        };
+    </script>
+</body>
+</html>

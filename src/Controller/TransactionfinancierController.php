@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Controller;
-
-
 use App\Entity\User;
 use App\Entity\Transactionfinancier;
 use App\Form\TransactionfinancierType;
 use App\Repository\TransactionfinancierRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,8 +35,15 @@ final class TransactionfinancierController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
-        $query = $transactionfinancierRepository->findAll();
+    
+        // Vérifier si l'utilisateur possède le rôle 'ROLE_AGRICULTEUR'
+        if (in_array('ROLE_AGRICULTEUR', $loggedInUser->getRoles(), true)) {
+            // Si l'utilisateur est agriculteur, récupérer toutes les transactions
+            $query = $transactionfinancierRepository->findAll();
+        } else {
+            // Sinon, ne récupérer que les transactions de l'utilisateur connecté
+            $query = $transactionfinancierRepository->findBy(['user' => $loggedInUser]);
+        }
         
         // Pagination
         $transactions = $paginator->paginate(
@@ -45,53 +51,76 @@ final class TransactionfinancierController extends AbstractController
             $request->query->getInt('page', 1), // Page actuelle, par défaut 1
             5 // Nombre d'éléments par page
         );
-
+    
         return $this->render('transactionfinancier/index.html.twig', [
             'transactionfinanciers' => $transactions,
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
-
+    
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        SessionInterface $session, 
+        UserRepository $userRepository
+    ): Response {
         $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
+        // 🔹 Retrieve user ID from the URL parameter
+        $userId = $request->query->get('id');
+    
+        if (!$userId) {
+            $this->addFlash('error', 'Aucun employé sélectionné.');
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+    
+        // 🔹 Get user from the repository
+        $user = $userRepository->find($userId);
+    
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+    
+        // ✅ Set the montant based on the user’s salary
         $transactionfinancier = new Transactionfinancier();
+        $transactionfinancier->setMontant($user->getSalaire());
+        $transactionfinancier->setUser($user); // Set the selected user
+    
+        // 🔹 Create form with the pre-filled montant
         $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $transactionfinancier->setDate(new \DateTime());
             $entityManager->persist($transactionfinancier);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_transactionfinancier_index');
         }
-
-        $users = $entityManager->getRepository(User::class)->findAll(); // Récupérer tous les utilisateurs
-
+    
         return $this->render('transactionfinancier/new.html.twig', [
             'form' => $form->createView(),
             'loggedInUser' => $loggedInUser,
-            'users' => $users, // Passer les utilisateurs au template
+            'user' => $user,
         ]);
     }
-
-    #[Route('/salaire', name: 'salaire', methods: ['GET'])]
-    public function userDetails(User $user): JsonResponse
-    {
-        return $this->json(['salaire' => $user->getSalaire()]);
-    }
+    
+   
+    
+   
+    
+   
     
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
     public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response

@@ -109,106 +109,101 @@ final class UserBackController extends AbstractController
     
 
     #[Route('/listclientback', name: 'app_user_listclient', methods: ['GET'])]
-public function listclient(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
-{
-    $loggedInUserId = $session->get('user_id');
-    
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_loginback');
+    public function listclient(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+    {
+        $loggedInUserId = $session->get('user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+        if ($loggedInUser->getRole() !== 'agriculteur') {
+            return $this->redirectToRoute('app_dashboard'); 
+        }
+
+        $query = $userRepository->createQueryBuilder('u')
+            ->where('u.role = :role') 
+            ->setParameter('role', 'client')  
+            ->getQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1), 
+            4  
+        );
+
+        return $this->render('user/listclient.html.twig', [
+            'pagination' => $pagination,
+            'loggedInUser' => $loggedInUser, 
+        ]);
     }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-    if ($loggedInUser->getRole() !== 'agriculteur') {
-        return $this->redirectToRoute('app_dashboard'); 
-    }
-
-    $query = $userRepository->createQueryBuilder('u')
-        ->where('u.role = :role') 
-        ->setParameter('role', 'client')  
-        ->getQuery();
-
-    $pagination = $paginator->paginate(
-        $query,
-        $request->query->getInt('page', 1), 
-        4  
-    );
-
-    return $this->render('user/listclient.html.twig', [
-        'pagination' => $pagination,
-        'loggedInUser' => $loggedInUser, 
-    ]);
-}
 
     #[Route('/loginback', name: 'app_user_loginback', methods: ['GET', 'POST'])]
     public function loginback(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $error = null;
-        $allowedRoles = ['agriculteur', 'inspecteur'];
-    
+        $allowedRoles = ['agriculteur', 'inspecteur', 'livreur', 'fermier'];
+
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $password = $request->request->get('password');
-    
+
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-    
+
             if (!$user || !password_verify($password, $user->getPassword())) {
                 $error = 'Invalid email or password';
             } elseif (!in_array($user->getRole(), $allowedRoles)) {
                 $error = 'Accès refusé. Seuls les utilisateurs avec les rôles suivants peuvent se connecter : ' . implode(', ', $allowedRoles) . '.';
+            } elseif (User::getCurrentUser()!=null) { 
+                $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
+            } elseif ($session->get('user_id')!=null) { 
+                $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
             } else {
-                // If another session is active, force logout previous session
-                if ($user->getSessionId() !== null && $user->getSessionId() !== $session->getId()) {
-                    $error = 'Une session est déjà active pour cet utilisateur.';
-                } else {
-                    // Ensure no other user is logged in
-                    if ($session->has('user_id') && $session->get('user_id') !== $user->getId()) {
-                        $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
-                    } else {
-                        // Set session data
                         $session->set('user_id', $user->getId());
-                        $user->setSessionId($session->getId());
                         $user->setStatut('actif');
-    
+                        User::setCurrentUser($user);
                         $entityManager->flush();
-    
+
                         return $this->redirectToRoute('app_dashboard');
                     }
-                }
-            }
         }
-    
+
         return $this->render('user/loginback.html.twig', [
             'error' => $error,
         ]);
     }
-    
-
-
     #[Route('/logoutback', name: 'app_user_logoutback')]
-public function logoutback(EntityManagerInterface $entityManager, SessionInterface $session): Response
-{
-    $loggedInUserId = $session->get('user_id');
+    public function logoutback(EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('user_id');
+        User::setCurrentUser(null);
 
-    if ($loggedInUserId) {
-        $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
-        if ($user) {
-            $user->setSessionId(null);
-            $user->setStatut('inactif');
-            $entityManager->flush();
-        }
+        /*if ($loggedInUserId) {
+            $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
+            if ($user) {
+                $entityManager->createQueryBuilder()
+                ->update(User::class, 'u')
+                ->set('u.SessionId', ':nullValue')
+                ->set('u.statut', ':statut')
+                ->where('u.id = :userId')
+                ->setParameter('nullValue', null)
+                ->setParameter('statut', 'inactif')
+                ->setParameter('userId', $loggedInUserId)
+                ->getQuery()
+                ->execute();
+                $entityManager->flush();
+            }
+        }*/
+        $session->set('user_id', null);
+
+        //$session->clear();
+        return $this->redirectToRoute('app_user_loginback');
     }
-
-    $session->clear();
-    User::setCurrentUser(null);
-
-    return $this->redirectToRoute('app_user_loginback');
-}
-
-    
     
     #[Route('/newback', name: 'app_user_newback', methods: ['GET', 'POST'])]
     public function newback(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
@@ -453,34 +448,40 @@ public function logoutback(EntityManagerInterface $entityManager, SessionInterfa
     }
 
     #[Route('/admin/statistics', name: 'admin_statistics')]
-public function statistics(UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
-{
-    $loggedInUserId = $session->get('user_id');
-
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_loginback');
+    public function statistics(UserRepository $userRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('user_id');
+    
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        // Get statistics for clients
+        $clientGenderStats = $userRepository->getGenderStatisticsByRole('client');
+        $clientAgeStats = $userRepository->getAgeStatisticsByRole('client');
+    
+        // Get statistics for all employees (fermier, livreur, inspecteur)
+        $employeeGenderStats = $userRepository->getEmployeeGenderStatistics();
+        $employeeAgeStats = $userRepository->getEmployeeAgeStatistics();
+    
+        return $this->render('user/statistics.html.twig', [
+            // Client statistics
+            'clientGenderStats' => $clientGenderStats,
+            'clientAgeStats' => $clientAgeStats,
+    
+            // Employee statistics
+            'employeeGenderStats' => $employeeGenderStats,
+            'employeeAgeStats' => $employeeAgeStats,
+    
+            'loggedInUser' => $loggedInUser,
+        ]);
     }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    $genderStats = $userRepository->getUserStatistics();
-    $ageStats = $userRepository->getAgeStatistics();
-
-    // Debugging: Check the data
-    dump($genderStats);
-    dump($ageStats);
-
-    return $this->render('user/statistics.html.twig', [
-        'genderStats' => $genderStats,
-        'ageStats' => $ageStats,
-        'loggedInUser' => $loggedInUser,
-    ]);
-}
-
 #[Route('/notif', name: 'notif')]
 public function dashboard(NotificationService $notificationService, EntityManagerInterface $entityManager, SessionInterface $session): Response
 {

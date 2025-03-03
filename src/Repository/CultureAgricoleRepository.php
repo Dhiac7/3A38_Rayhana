@@ -16,6 +16,7 @@ class CultureAgricoleRepository extends ServiceEntityRepository
         parent::__construct($registry, CultureAgricole::class);
     }
 
+    
     //    /**
     //     * @return CultureAgricole[] Returns an array of CultureAgricole objects
     //     */

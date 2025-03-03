@@ -15,6 +15,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="{{ asset('assetsback/vendors/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assetsback/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- endinject -->
 
@@ -80,12 +82,13 @@
               <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
             </a>
           </li>
+          
           <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="{{ path('admin_chat') }}" {#data-bs-toggle="dropdown" aria-expanded="false"#}>
               <i class="mdi mdi-email-outline"></i>
               <span class="count-symbol bg-warning"></span>
             </a>
-            <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="messageDropdown">
+            {#<div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="messageDropdown">
               <h6 class="p-3 mb-0">Messages</h6>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item preview-item">
@@ -119,55 +122,44 @@
               </a>
               <div class="dropdown-divider"></div>
               <h6 class="p-3 mb-0 text-center">4 new messages</h6>
-            </div>
+            </div>#}
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
-              <i class="mdi mdi-bell-outline"></i>
-              <span class="count-symbol bg-danger"></span>
+                <i class="mdi mdi-bell-outline"></i>
+                <span class="count-symbol bg-danger"></span>
             </a>
             <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-              <h6 class="p-3 mb-0">Notifications</h6>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-success">
-                    <i class="mdi mdi-calendar"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                  <h6 class="preview-subject font-weight-normal mb-1">Event today</h6>
-                  <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-warning">
-                    <i class="mdi mdi-cog"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                  <h6 class="preview-subject font-weight-normal mb-1">Settings</h6>
-                  <p class="text-gray ellipsis mb-0"> Update dashboard </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-info">
-                    <i class="mdi mdi-link-variant"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                  <h6 class="preview-subject font-weight-normal mb-1">Launch Admin</h6>
-                  <p class="text-gray ellipsis mb-0"> New admin wow! </p>
-                </div>
-              </a>
-              <div class="dropdown-divider"></div>
-              <h6 class="p-3 mb-0 text-center">See all notifications</h6>
+                <h6 class="p-3 mb-0">Notifications</h6>
+                <div class="dropdown-divider"></div>
+
+                {% for notification in notifications.getUnreadNotifications() %}
+                    <a class="dropdown-item preview-item">
+                        <div class="preview-thumbnail">
+                            <div class="preview-icon bg-success">
+                                <i class="mdi mdi-calendar"></i>
+                            </div>
+                        </div>
+                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6 class="preview-subject font-weight-normal mb-1">{{ notification.message }}</h6>
+                            <p class="text-gray ellipsis mb-0">{{ notification.createdAt|date('Y-m-d H:i:s') }}</p>
+                            {% if not notification.isRead %}
+                                <a href="{{ path('notification_mark_as_read', {id: notification.id}) }}">Mark as Read</a>
+                            {% endif %}
+                        </div>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                {% else %}
+                    <a class="dropdown-item preview-item">
+                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6 class="preview-subject font-weight-normal mb-1">No new notifications.</h6>
+                        </div>
+                    </a>
+                {% endfor %}
+                <h6 class="p-3 mb-0 text-center">See all notifications</h6>
             </div>
           </li>
+
           <li class="nav-item nav-logout d-none d-lg-block">
             <a class="nav-link" href="{{ path('app_user_logoutback') }}">
               <i class="mdi mdi-power"></i>
@@ -224,7 +216,10 @@
                     <a class="nav-link" href="{{ path('app_culture_agricole_dashboard_index') }}">Culture Agricole</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/ui-features/typography.html')}}">Typography</a>
+                    <a class="nav-link" href="{{ path('predict_model1') }}">model1</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('predict_model2') }}">model2</a>
                   </li>
                 </ul>
               </div>
@@ -245,6 +240,9 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ path('app_produitback_index') }}">Produit</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_code_promo_index') }}">Code promo</a>
+      </li>
     </ul>
   </div>
 </li>
@@ -263,9 +261,9 @@
                    <li class="nav-item">
                     <a class="nav-link" href=" {{ path('app_dechet_index')}}">dechet</a>
                   </li>
-                  <li class="nav-item">
+                  {#<li class="nav-item">
                     <a class="nav-link" href=" {{ path('api_statistiques')}}">statistique sur les participants</a>
-                  </li>
+                  </li>#}
                 </ul>
               </div>
             </li>
@@ -302,13 +300,7 @@
                     <a class="nav-link" href="{{ path('app_user_listclient') }}"> Clients </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/samples/register.html')}}"> Register </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/samples/error-404.html')}}"> 404 </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('assetsback/pages/samples/error-500.html')}}"> 500 </a>
+                    <a class="nav-link" href="{{ path('admin_statistics') }}"> Statistiques </a>
                   </li>
                 </ul>
               </div>
@@ -725,7 +717,7 @@
       </div>
       <!-- page-body-wrapper ends -->
     </div>
-          {% block js %}
+    {% block js %}
 
     <!-- container-scroller -->
     <!-- plugins:js -->
@@ -747,6 +739,17 @@
     <script src="{{ asset('assetsback/js/dashboard.js')}}"></script>
     <!-- End custom js for this page -->
     <!-- Popper.js and Bootstrap JS -->
+
+    <script src="{{ asset('assetsback/vendors/select2/select2.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('.select2-multiple').select2({
+                placeholder: "Sélectionnez les parcelles",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
 
     {% endblock %}
 

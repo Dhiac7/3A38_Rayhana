@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailTrait;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Email deja utilisé.')]
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['cin'], message: 'Cin deja utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -226,6 +228,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $SessionId = null;
 
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
+    private Collection $messages;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'recipient')]
+    private Collection $receivedMessages;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isVerified = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastWheelPlay = null;
+
 
 
     public function __construct()
@@ -238,6 +258,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->employes = new ArrayCollection();
         $this->cultureAgricoles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->receivedMessages = new ArrayCollection();
 
 
     }
@@ -782,4 +804,104 @@ public function getPassword(): ?string
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getReceivedMessages(): Collection
+    {
+        return $this->receivedMessages;
+    }
+
+    public function addReceivedMessage(Message $receivedMessage): static
+    {
+        if (!$this->receivedMessages->contains($receivedMessage)) {
+            $this->receivedMessages->add($receivedMessage);
+            $receivedMessage->setRecipient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedMessage(Message $receivedMessage): static
+    {
+        if ($this->receivedMessages->removeElement($receivedMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedMessage->getRecipient() === $this) {
+                $receivedMessage->setRecipient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(?bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getLastWheelPlay(): ?\DateTimeInterface
+    {
+        return $this->lastWheelPlay;
+    }
+
+    public function setLastWheelPlay(?\DateTimeInterface $lastWheelPlay): static
+    {
+        $this->lastWheelPlay = $lastWheelPlay;
+
+        return $this;
+    }
+    public function canPlayWheel(): bool
+    {
+        if ($this->lastWheelPlay === null) {
+            return true;
+        }
+
+        // Ensure lastWheelPlay is a DateTime instance
+        $lastPlay = $this->lastWheelPlay instanceof \DateTime ? 
+            clone $this->lastWheelPlay : 
+            \DateTime::createFromInterface($this->lastWheelPlay);
+
+        $nextPlayTime = $lastPlay->modify('+1 day');
+
+        return new \DateTime() >= $nextPlayTime;
+    }
+
 }
