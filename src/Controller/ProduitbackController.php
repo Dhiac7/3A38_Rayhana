@@ -37,56 +37,86 @@ final class ProduitbackController extends AbstractController
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
     #[Route('/new', name: 'app_produitback_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, SessionInterface $session): Response
     {  
         $loggedInUserId = $session->get('user_id');
         
+        // Vérification de l'authentification
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             // Vérification de l'unicité du produit
             $nom = $form->get('nom')->getData();
             $existingProduit = $produitRepository->findOneBy(['nom' => $nom]);
-
+    
             if ($existingProduit) {
                 $form->get('nom')->addError(new FormError('Ce produit existe déjà.'));
             } else {
-                // Gestion de l’image
+                // Gestion de l'image
                 $photoFile = $form->get('image')->getData();
-
+    
                 if ($photoFile instanceof UploadedFile) {
                     $uploadsDirectory = $this->getParameter('image_directory'); 
                     $newFilename = uniqid().'.'.$photoFile->guessExtension();
                     $photoFile->move($uploadsDirectory, $newFilename);
                     $produit->setImage($newFilename);
                 }
-
+    
+                // Appel à l'API de prédiction
+                $article = $produit->getNom();
+                $unitPrice = $produit->getPrixVente();
+                $totalPrice = $produit->getPrixVente();
+                $dayOfWeek = date('N');
+                $month = date('n');
+    
+                $client = new \GuzzleHttp\Client();
+                try {
+                    $response = $client->post('http://localhost:5000/predict', [
+                        'form_params' => [
+                            'article' => $article,
+                            'unit_price' => $unitPrice,
+                            'total_price' => $totalPrice,
+                            'day_of_week' => $dayOfWeek,
+                            'month' => $month,
+                        ]
+                    ]);
+    
+                    $data = json_decode($response->getBody(), true);
+                    if ($data['status'] === 'success') {
+                        $predictedQuantity = $data['quantity'];
+                        $produit->setQuantitePredite($predictedQuantity);
+                        $this->addFlash('prediction', 'Prédiction de vente : '.$predictedQuantity.' unités cette heure');
+                    } else {
+                        $this->addFlash('error', 'Erreur de prédiction : '.$data['message']);
+                    }
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur de connexion à l\'API : '.$e->getMessage());
+                }
+    
                 $entityManager->persist($produit);
                 $entityManager->flush();
                 return $this->redirectToRoute('app_produitback_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('produit/new.html.twig', [
             'produit' => $produit,
             'form' => $form,
             'loggedInUser' => $loggedInUser,
         ]);
     }
-
     #[Route('/{id}', name: 'app_produitback_show', methods: ['GET'])]
     public function show(Produit $produit, SessionInterface $session, EntityManagerInterface $entityManager): Response
     { 

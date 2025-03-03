@@ -118,6 +118,10 @@ final class TransactionfinancierController extends AbstractController
     
    
     
+   
+    
+   
+    
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
     public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {

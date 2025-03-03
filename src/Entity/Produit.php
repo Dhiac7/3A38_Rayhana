@@ -84,7 +84,8 @@ class Produit
 
     #[ORM\Column(length: 255)]
     private ?string $categorie = null;
-
+    #[ORM\Column(nullable: true)] // Ajoutez cette ligne
+    private ?int $quantitePredite = null; // Ajoutez cette propriété
 
 
     
@@ -110,7 +111,17 @@ class Produit
 
         return $this;
     }
+    public function getQuantitePredite(): ?int
+    {
+        return $this->quantitePredite;
+    }
 
+    public function setQuantitePredite(?int $quantitePredite): self
+    {
+        $this->quantitePredite = $quantitePredite;
+
+        return $this;
+    }
     public function getPrixVente(): ?float
     {
         return $this->prix_vente;

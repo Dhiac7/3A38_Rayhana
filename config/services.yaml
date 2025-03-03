@@ -8,12 +8,22 @@ parameters:
     uploads_directory: '%kernel.project_dir%/public/img/users'
     image_directory: '%kernel.project_dir%/public/img/stock'
     atelier_directory: '%kernel.project_dir%/public/img/atelier'
-    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
+   
     face_recognition_script: '%kernel.project_dir%/python/recognize_faces.py'
     users_image_path: '%kernel.project_dir%/public/img/users'
+    # config/services.yaml
+
+  
+    stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
+    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'   # Secret key for server-side
 
 
-    
+    sylius_product:
+    resources:
+        product:
+            classes:
+                model: App\Entity\Produit
+                repository: App\Repository\ProduitRepository
 
 services:
     # default configuration for services in *this* file

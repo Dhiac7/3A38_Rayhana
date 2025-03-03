@@ -1,13 +1,13 @@
 <?php
 
 // src/Entity/Transactionfinancier.php
+// src/Entity/Transactionfinancier.php
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TransactionfinancierRepository;
 
-use App\Repository\TransactionfinancierRepository; // Ensure this use statement is present
-
-#[ORM\Entity(repositoryClass: TransactionfinancierRepository::class)] // Ensure this is correct
+#[ORM\Entity(repositoryClass: TransactionfinancierRepository::class)]
 class Transactionfinancier
 {
     #[ORM\Id]
@@ -29,11 +29,11 @@ class Transactionfinancier
     private ?Vente $vente = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactionfinanciers')]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
     private ?User $user = null;
-    
 
-    
     // Getters and Setters
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,7 +53,7 @@ class Transactionfinancier
     #[ORM\PrePersist]
     public function setDateAutomatically(): void
     {
-        $this->date = new \DateTime(); // Set the current date and time
+        $this->date = new \DateTime();
     }
 
     public function getDate(): ?\DateTimeInterface
@@ -66,7 +66,6 @@ class Transactionfinancier
         $this->date = $date;
         return $this;
     }
-
 
     public function getType(): ?string
     {
@@ -95,12 +94,9 @@ class Transactionfinancier
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
-        $this->User = $user;
-
+        $this->user = $user;
         return $this;
     }
-   
-
 }
