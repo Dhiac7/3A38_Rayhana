@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailTrait;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Email deja utilisé.')]
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['cin'], message: 'Cin deja utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -237,6 +239,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'recipient')]
     private Collection $receivedMessages;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isVerified = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastWheelPlay = null;
 
 
 
@@ -856,4 +864,44 @@ public function getPassword(): ?string
 
         return $this;
     }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(?bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getLastWheelPlay(): ?\DateTimeInterface
+    {
+        return $this->lastWheelPlay;
+    }
+
+    public function setLastWheelPlay(?\DateTimeInterface $lastWheelPlay): static
+    {
+        $this->lastWheelPlay = $lastWheelPlay;
+
+        return $this;
+    }
+    public function canPlayWheel(): bool
+    {
+        if ($this->lastWheelPlay === null) {
+            return true;
+        }
+
+        // Ensure lastWheelPlay is a DateTime instance
+        $lastPlay = $this->lastWheelPlay instanceof \DateTime ? 
+            clone $this->lastWheelPlay : 
+            \DateTime::createFromInterface($this->lastWheelPlay);
+
+        $nextPlayTime = $lastPlay->modify('+1 day');
+
+        return new \DateTime() >= $nextPlayTime;
+    }
+
 }

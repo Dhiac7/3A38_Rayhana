@@ -99,8 +99,10 @@ class UserAdminType extends AbstractType
                 'Homme' => 'Homme',
                 'Femme' => 'Femme',
             ],
-            'placeholder' => 'Choisir un genre',
-            'attr' => ['class' => 'form-select']
+            'placeholder' => 'Choisir un genre', // This will be ignored for checkboxes
+            'expanded' => true, // Render as checkboxes
+            'multiple' => false, // Allow only one selection (radio buttons)
+            'attr' => ['class' => 'form-check-input'], // Add a class for styling
         ])
         ->add('AnneeNaissance', ChoiceType::class, [
             'choices' => $years,
