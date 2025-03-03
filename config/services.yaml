@@ -11,7 +11,7 @@ parameters:
     stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     face_recognition_script: '%kernel.project_dir%/python/recognize_faces.py'
     users_image_path: '%kernel.project_dir%/public/img/users'
-
+    files_directory: '%kernel.project_dir%/public/img/files'
 
     
 
@@ -39,7 +39,10 @@ services:
     App\Service\WeatherService:
         arguments:
             $apiKey: '%env(OPENWEATHER_API_KEY)%'
-        
+    App\Service\NotificationService:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
     
 
     # add more service definitions when explicit configuration is needed

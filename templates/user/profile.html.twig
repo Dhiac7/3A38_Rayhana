@@ -62,7 +62,7 @@
                             </li>
                         </ul>
                         <div class="social">
-                            <a class="btn circle btn-sm btn-dark animation me-2" href="{{ path('app_user_edit', {'id': loggedInUser.id}) }}">Modifier</a>
+                            <a class="btn circle btn-sm btn-dark animation me-2"href="{{ path('app_user_edit', {'id': loggedInUser.id}) }}">Modifier</a>
                             <form method="post" action="{{ path('app_user_delete', {'id': loggedInUser.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ loggedInUser.id) }}">
                                 <a type="submit" class="btn circle btn-sm btn-dark animation">Supprimer</a> 
