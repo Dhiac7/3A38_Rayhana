@@ -1,0 +1,10 @@
+vich_uploader:
+    db_driver: orm
+    mappings:
+        product_image: # Nom du mapping (doit correspondre à l'annotation dans l'entité)
+            uri_prefix: /uploads/images/products
+            upload_destination: '%kernel.project_dir%/public/uploads/images/products'
+            namer: Vich\UploaderBundle\Naming\UniqidNamer
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true

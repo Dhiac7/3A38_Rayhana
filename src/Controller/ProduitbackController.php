@@ -14,10 +14,16 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Form\FormError;
 use App\Entity\User;
+use App\Service\StockService; // Assure-toi que c'est bien StockService ici
 
 #[Route('/produitback')]
 final class ProduitbackController extends AbstractController
 {
+
+
+    
+   
+
     #[Route(name: 'app_produitback_index', methods: ['GET'])]
     public function index(ProduitRepository $produitRepository, SessionInterface $session, EntityManagerInterface $entityManager): Response
     { 
@@ -197,6 +203,5 @@ final class ProduitbackController extends AbstractController
 
         return $this->redirectToRoute('app_produitback_index', [], Response::HTTP_SEE_OTHER);
     }
-      
-    
+  
 }
