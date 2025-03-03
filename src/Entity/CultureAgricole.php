@@ -181,14 +181,18 @@ class CultureAgricole
     public function addParcelle(Parcelle $parcelle): self {
         if (!$this->parcelles->contains($parcelle)) {
             $this->parcelles[] = $parcelle;
+            $parcelle->addCultureAgricole($this); // Mise à jour de l'autre côté
         }
         return $this;
     }
     
     public function removeParcelle(Parcelle $parcelle): self {
-        $this->parcelles->removeElement($parcelle);
+        if ($this->parcelles->removeElement($parcelle)) {
+            $parcelle->removeCultureAgricole($this); // Mise à jour de l'autre côté
+        }
         return $this;
     }
+    
 
 
 

@@ -83,6 +83,18 @@
                         </div>
                     </div>
 
+                    <!-- Parcelles Selection -->
+                    <div class="form-group">
+                        {{ form_label(form.parcelles, null, {'label_attr': {'class': 'form-label'}}) }}
+                        <div class="input-group">
+                            {{ form_widget(form.parcelles, { 'attr': {'class': 'select2-multiple form-control'} }) }}
+                        </div>
+                        <div {{ form_errors(form.parcelles) ? 'class="text-danger"' : '' }}>
+                            {{ form_errors(form.parcelles) }}
+                        </div>
+                    </div>
+
+
                     <!-- Boutons -->
                     <button type="submit" class="btn btn-gradient-primary me-2">
                         <i class="fas fa-save"></i> Enregistrer
@@ -97,4 +109,103 @@
         </div>
     </div>
 </div>
+
+
+{% block stylesheets %}
+    <!-- Select2 CSS -->
+    <link href="{{ asset('assetsback/vendors/select2/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assetsback/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}" rel="stylesheet">
+    <style>
+        /* Custom styles for Select2 */
+        .select2-container {
+            border-radius: 0.375rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .select2-selection {
+            border: 1px solid #ced4da;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            background-color: #fff;
+            font-size: 1rem;
+        }
+
+        .select2-dropdown {
+            border-radius: 0.375rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ced4da;
+        }
+
+        .select2-dropdown .select2-results__option {
+            padding: 8px 12px;
+            font-size: 1rem;
+        }
+
+        .select2-dropdown .select2-results__option[aria-selected=true] {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Custom styles for selected items */
+        .select2-selection__choice {
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            margin: 0.125rem;
+            display: inline-block;
+        }
+
+        /* Hover effect for dropdown items */
+        .select2-results__option:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Custom scrollbar for dropdown */
+        .select2-results {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .select2-results::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .select2-results::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .select2-results::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .select2-results::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+{% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    let selectElement = $('.select2-multiple');
+
+    // Initialize Select2
+    selectElement.select2({
+        placeholder: "Sélectionnez les parcelles",
+        allowClear: true,
+        width: '100%'
+    });
+
+    // Handle the button click to add a new option
+    document.getElementById('add-option').addEventListener('click', function () {
+        let newOptionValue = prompt("Entrez le nom de la nouvelle parcelle:");
+
+        if (newOptionValue) {
+            let newOption = new Option(newOptionValue, newOptionValue, true, true);
+            selectElement.append(newOption).trigger('change');
+        }
+    });
+});
+
+</script>
 {% endblock %}

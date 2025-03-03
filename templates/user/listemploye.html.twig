@@ -81,6 +81,9 @@
                                 <i class="mdi mdi-delete"></i> Supprimer
                             </button>
                         </form>
+                         <a href="{{ path('app_transactionfinancier_new', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Payer
+                        </a>
                     </td>
                 </tr>
             {% else %}

@@ -80,6 +80,16 @@ final class CultureAgricoleDashboardController extends AbstractController
             if ($cultureAgricole->getDateSemi() === null) {
                 $cultureAgricole->setDateSemi(new \DateTime()); // Définit une date par défaut si nécessaire
             }
+
+            // Get selected Parcelles
+            $selectedParcelles = $form->get('parcelles')->getData();
+
+            // Add Parcelles to CultureAgricole
+            foreach ($selectedParcelles as $parcelle) {
+                $cultureAgricole->addParcelle($parcelle);
+                $parcelle->addCultureAgricole($cultureAgricole); // Ensure bi-directional relation
+                $entityManager->persist($parcelle); // Persist Parcelle
+            }
             $entityManager->persist($cultureAgricole);
             $entityManager->flush();
 
@@ -121,7 +131,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     public function edit(Request $request, CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $loggedInUserId = $session->get('user_id');
-
+    
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
@@ -129,23 +139,40 @@ final class CultureAgricoleDashboardController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-
+    
         $form = $this->createForm(CultureAgricoleType::class, $cultureAgricole);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
 
+            $selectedParcelles = $form->get('parcelles')->getData();
+    
+            foreach ($cultureAgricole->getParcelles() as $parcelle) {
+                if (!$selectedParcelles->contains($parcelle)) {
+                    $cultureAgricole->removeParcelle($parcelle);
+                }
+            }
+    
+            foreach ($selectedParcelles as $parcelle) {
+                $cultureAgricole->addParcelle($parcelle);
+            }
+    
+            $entityManager->persist($cultureAgricole);
+            $entityManager->flush();
+    
             return $this->redirectToRoute('app_culture_agricole_dashboard_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('culture_agricole_dashboard/edit.html.twig', [
             'culture_agricole' => $cultureAgricole,
             'form' => $form,
             'loggedInUser' => $loggedInUser,
-
         ]);
     }
+    
+    
+    
+    
 
     #[Route('/{id}', name: 'app_culture_agricole_dashboard_delete', methods: ['POST'])]
     public function delete(Request $request, CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager): Response
@@ -155,7 +182,7 @@ final class CultureAgricoleDashboardController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_culture_agricole_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_culture_agricole_dashboard_index', [], Response::HTTP_SEE_OTHER);
     }
 
 
@@ -186,7 +213,7 @@ final class CultureAgricoleDashboardController extends AbstractController
         // Traiter le formulaire d'assignation
         if ($request->isMethod('POST')) {
             $selectedParcelles = $request->request->get('parcelles'); // Liste des parcelles sélectionnées
-
+/*
             // Assigner les parcelles
             foreach ($selectedParcelles as $parcelleId) {
                 $parcelle = $entityManager->getRepository(Parcelle::class)->find($parcelleId);
@@ -194,7 +221,7 @@ final class CultureAgricoleDashboardController extends AbstractController
                     $cultureAgricole->addParcelle($parcelle);
                 }
             }
-
+*/
             // Sauvegarder les modifications
             $entityManager->flush();
 

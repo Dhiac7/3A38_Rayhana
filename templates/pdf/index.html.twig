@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Culture Agricole - {{ culture_agricole.nom }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Assure que le body prend toute la hauteur de la page */
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1; /* Permet de pousser le footer en bas */
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .header img {
+            width: 100px;
+            margin-bottom: 20px; /* Ajuster la marge pour centrer le logo */
+        }
+        h1, h2 {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .section-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        .section-content {
+            margin-left: 30px;
+            font-size: 16px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            border-top: 2px solid #e9ecef;
+            padding-top: 10px;
+            color: #7f8c8d;
+            margin-top: auto; /* Pousse le footer vers le bas */
+            width: 100%;
+            background-color: #fff;
+            padding: 20px 0;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        .text-primary {
+            color: #3498db !important;
+        }
+        .text-warning {
+            color: #f1c40f !important;
+        }
+        .alert-light {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+        }
+        .header-report {
+            text-align: center;
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 3px solid #2c5f2d;
+
+            position: relative;
+        }
+
+        .report-logo {
+            width: 100%;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+    <img src="{{ absolute_url(asset('assetsback/images/logo.png')) }}" 
+                alt="Logo" 
+                class="w-40 mx-auto p-2 bg-white border-2 border-blue-500 rounded-lg shadow-lg report-logo">
+        <div class="header-report">
+            <br>
+            <h1>Rapport Culture Agricole</h1>
+            <h2>{{ culture_agricole.nom }}</h2>
+        </div>
+
+        <!-- Section Détails Techniques -->
+        <div class="section">
+            <div class="section-title">
+                <i class="mdi mdi-information-outline"></i>
+                Détails Techniques
+            </div>
+            <div class="section-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Type :</strong> {{ culture_agricole.type }}</p>
+                        <p><strong>Superficie :</strong> {{ culture_agricole.superficie }} ha</p>
+                        <p><strong>Rendement Estimé :</strong> {{ culture_agricole.rendementEstime }} kg/ha</p>
+                        <p><strong>Statut :</strong> {{ culture_agricole.statut }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Date de Semis :</strong> {{ culture_agricole.dateSemi|date('d M Y') }}</p>
+                        <p><strong>Climat recommandé :</strong> {{ culture_agricole.climat }}</p>
+                        <p><strong>Type de sol :</strong> {{ culture_agricole.typeSol }}</p>
+                        <p><strong>Fréquence d'irrigation :</strong> {{ culture_agricole.irrigation }}</p>
+                        <p><strong>Engrais recommandé :</strong> {{ culture_agricole.engrais }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Parcelles Associées -->
+        <div class="section">
+            <div class="section-title">
+                <i class="mdi mdi-map-marker-outline"></i>
+                Parcelles Associées
+            </div>
+            <div class="section-content">
+                {% if culture_agricole.parcelles is not empty %}
+                    <div class="list-group">
+                        {% for parcelle in culture_agricole.parcelles %}
+                            <a href="{{ path('app_parcelle_show2', { id: parcelle.id }) }}" 
+                               class="list-group-item list-group-item-action d-flex align-items-center py-3">
+                                <i class="mdi mdi-map-marker-outline text-primary me-3 h4"></i>
+                                <div>
+                                    <h6 class="mb-1">{{ parcelle.nom }}</h6>
+                                    <small class="text-muted">Superficie: {{ parcelle.superficie }} ha</small>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-light border" role="alert">
+                        Aucune parcelle associée
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Section Chronologie -->
+        <div class="section">
+            <div class="section-title">
+                <i class="mdi mdi-timeline-outline"></i>
+                Chronologie
+            </div>
+            <div class="section-content">
+                <div class="timeline">
+                    <div class="timeline-item border-start border-primary ps-4 pb-4 position-relative">
+                        <div class="timeline-point bg-primary position-absolute top-0 start-0 translate-middle"></div>
+                        <div class="timeline-content">
+                            <h6 class="text-primary mb-1">Semis</h6>
+                            <p class="text-muted mb-0">{{ culture_agricole.dateSemi|date('d M Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item border-start border-warning ps-4 pb-4 position-relative">
+                        <div class="timeline-point bg-warning position-absolute top-0 start-0 translate-middle"></div>
+                        <div class="timeline-content">
+                            <h6 class="text-warning mb-1">Traitement</h6>
+                            <p class="text-muted mb-0">15 Mars 2024</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Généré le {{ "now"|date('d M Y') }} - Tous droits réservés.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

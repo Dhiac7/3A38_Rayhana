@@ -33,7 +33,6 @@
                                         </div>
                                     </div>
 
-
                                     <!-- Prix (From Réservation) -->
                                     <div class="col-lg-12">
                                         <div class="form-group">
@@ -60,6 +59,7 @@
                                 <p><strong>Nom de l'atelier:</strong> {{ atelier.nom }}</p>
                                 <p><strong>Date:</strong> {{ atelier.dateAtelier|date('d M Y') }}</p>
                                 <p><strong>Prix par place:</strong> {{ atelier.prix }} €</p>
+                                <p><strong>Places restantes:</strong> {{ atelier.nbrplacedispo }}</p> {# Affichage du nombre de places disponibles #}
                             {% else %}
                                 <p class="text-danger">Aucun atelier sélectionné.</p>
                             {% endif %}
@@ -75,7 +75,6 @@
 </div>
 
 {% block javascripts %}
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const quantiteInput = document.getElementById("vente_quantite"); // Champ quantité

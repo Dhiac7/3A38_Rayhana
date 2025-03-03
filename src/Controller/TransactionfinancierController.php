@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\User;
 use App\Entity\Transactionfinancier;
+use App\Form\TransactionfinancierType;
 use App\Repository\TransactionfinancierRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,37 +53,65 @@ final class TransactionfinancierController extends AbstractController
 
 
     #[Route('/new', name: 'app_transactionfinancier_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager,SessionInterface $session): Response
-{
-    $loggedInUserId = $session->get('user_id');
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        SessionInterface $session, 
+        UserRepository $userRepository
+    ): Response {
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
+    
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
-    $transactionfinancier = new Transactionfinancier();
-    $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Set the date manually
-        $transactionfinancier->setDate(new \DateTime());
-
-        $entityManager->persist($transactionfinancier);
-        $entityManager->flush();
-
-        return $this->redirectToRoute('app_transactionfinancier_index');
+    
+        // 🔹 Retrieve user ID from the URL parameter
+        $userId = $request->query->get('id');
+    
+        if (!$userId) {
+            $this->addFlash('error', 'Aucun employé sélectionné.');
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+    
+        // 🔹 Get user from the repository
+        $user = $userRepository->find($userId);
+    
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur introuvable.');
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+    
+        // ✅ Set the montant based on the user’s salary
+        $transactionfinancier = new Transactionfinancier();
+        $transactionfinancier->setMontant($user->getSalaire());
+        $transactionfinancier->setUser($user); // Set the selected user
+    
+        // 🔹 Create form with the pre-filled montant
+        $form = $this->createForm(TransactionfinancierType::class, $transactionfinancier);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $transactionfinancier->setDate(new \DateTime());
+            $entityManager->persist($transactionfinancier);
+            $entityManager->flush();
+    
+            return $this->redirectToRoute('app_transactionfinancier_index');
+        }
+    
+        return $this->render('transactionfinancier/new.html.twig', [
+            'form' => $form->createView(),
+            'loggedInUser' => $loggedInUser,
+            'user' => $user,
+        ]);
     }
-
-    return $this->render('transactionfinancier/new.html.twig', [
-        'form' => $form->createView(),
-        'loggedInUser' => $loggedInUser,
-    ]);
-}
-
+    
+   
+    
     #[Route('/{id}', name: 'app_transactionfinancier_show', methods: ['GET'])]
     public function show(Transactionfinancier $transactionfinancier,SessionInterface $session,EntityManagerInterface $entityManager): Response
     {

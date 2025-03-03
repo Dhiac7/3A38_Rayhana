@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choisir votre place{% endblock %}
+
+{% block body %}
+    <h1>Choisissez votre place</h1>
+
+    <!-- Conteneur du plan des sièges -->
+    <div id="seat-map">
+        <img src="{{ asset('img/seat/seat.png') }}" alt="Plan des sièges">
+        
+        <!-- Zones cliquables avec les coordonnées fournies -->
+        
+        <div class="seat" data-seat="A1" style="top: 155px; left: 42px;"></div>
+        <div class="seat" data-seat="A2" style="top: 168px; left: 91px;"></div>
+        <div class="seat" data-seat="B1" style="top: 152px; left: 147px;"></div>
+        <div class="seat" data-seat="B2" style="top: 152px; left: 205px;"></div>
+        <div class="seat" data-seat="B3" style="top: 150px; left: 205px;"></div>
+        <div class="seat" data-seat="B4" style="top: 149px; left: 262px;"></div>
+    </div>
+
+    <p>Place sélectionnée : <span id="selected-seat">Aucune</span></p>
+
+    <script>
+        document.querySelectorAll('.seat').forEach(seat => {
+            seat.addEventListener('click', function() {
+                let seatCode = this.getAttribute('data-seat');
+                document.getElementById('selected-seat').textContent = seatCode;
+
+                // Envoyer la requête de réservation
+                reservePlace(seatCode);
+            });
+        });
+
+        function reservePlace(placeCode) {
+            fetch('/reserve-place', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: placeCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la réservation.');
+            });
+        }
+    </script>
+
+    <style>
+        #seat-map {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .seat {
+            position: absolute;
+            width: 30px; /* Ajuste la taille en fonction des sièges */
+            height: 30px;
+            background: rgba(255, 0, 0, 0.5); /* Rouge transparent pour tester */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .seat:hover {
+            background: rgba(0, 255, 0, 0.5); /* Passe au vert au survol */
+        }
+    </style>
+
+{% endblock %}

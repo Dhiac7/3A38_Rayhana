@@ -13,11 +13,14 @@ app_atelier_delete_ajax:
 predict:
   path: /predict
   controller: App\Controller\PredictController::predict
-api_statistiques:
-    path: /api/statistiques
-    controller: App\Controller\StatistiquesController::statistiques
-    methods: [GET]
+#api_statistiques:
+ #   path: /api/statistiques
+  #  controller: App\Controller\StatistiquesController::statistiques
+   # methods: [GET]
 
+reserve_place:
+    path: /reserve-place
+    controller: App\Controller\SeatController::reservePlace
 
     
 #some_endpoint:

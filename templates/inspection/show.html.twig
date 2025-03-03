@@ -23,24 +23,12 @@
                             <th>Id</th>
                             <td>{{ inspection.id }}</td>
                         </tr>
-                        <!--
-                        <tr>
-                            <th>Id_avis</th>
-                            <td>{{ inspection.idAvis }}</td>
-                        </tr>
+                        
                         <tr>
                             <th>Date_inspection</th>
-                            <td>{{ inspection.dateInspection ? inspection.dateInspection|date('Y-m-d') : '' }}</td>
+                            <td> {{ inspection.dateInspection ? inspection.dateInspection|date('d/m/Y H:i:s') : 'N/A' }} </td>
                         </tr>
-                        <tr>
-                            <th>Type_inspection</th>
-                            <td>{{ inspection.typeInspection }}</td>
-                        </tr>
-                        <tr>
-                            <th>Inspecteur_id</th>
-                            <td>{{ inspection.inspecteurId }}</td>
-                        </tr>
-                        -->
+
                         <tr>
                             <th>Resultat</th>
                             <td>{{ inspection.resultat }}</td>
