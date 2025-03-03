@@ -183,22 +183,7 @@ final class UserBackController extends AbstractController
         $loggedInUserId = $session->get('user_id');
         User::setCurrentUser(null);
 
-        /*if ($loggedInUserId) {
-            $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
-            if ($user) {
-                $entityManager->createQueryBuilder()
-                ->update(User::class, 'u')
-                ->set('u.SessionId', ':nullValue')
-                ->set('u.statut', ':statut')
-                ->where('u.id = :userId')
-                ->setParameter('nullValue', null)
-                ->setParameter('statut', 'inactif')
-                ->setParameter('userId', $loggedInUserId)
-                ->getQuery()
-                ->execute();
-                $entityManager->flush();
-            }
-        }*/
+
         $session->set('user_id', null);
 
         //$session->clear();
@@ -445,6 +430,35 @@ final class UserBackController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_listclient');
+    }
+
+    #[Route('/ban/{id}', name: 'admin_ban_employe')]
+    public function banemploye(int $id, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            $this->addFlash('danger', 'Utilisateur non trouvé.');
+            return $this->redirectToRoute('app_user_listemploye');
+        }
+
+        if ($user->getStatut() === 'banni') {
+            $this->addFlash('info', 'Cet utilisateur est déjà banni.');
+            return $this->redirectToRoute('app_user_listemploye');
+        }
+
+        $user->setStatut('banni');
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur banni avec succès.');
+
+        if ($session->get('user_id') == $user->getId()) {
+            $session->remove('user_id');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        return $this->redirectToRoute('app_user_listemploye');
     }
 
     #[Route('/admin/statistics', name: 'admin_statistics')]

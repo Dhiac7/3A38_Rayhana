@@ -89,7 +89,23 @@
                                         {{ form_widget(form.tel, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
                                     </div>
                                 </div>
-                            </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.genre) }}
+                                        {{ form_widget(form.genre, {'attr': {'class': 'form-select', 'placeholder': 'Genre'}}) }}
+                                    </div>
+                                </div>
+                            </div><br>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        {{ form_errors(form.AnneeNaissance) }}
+                                        {{ form_widget(form.AnneeNaissance, {'attr': {'class': 'form-select', 'placeholder': 'AnneeNaissance'}}) }}
+                                    </div>
+                                </div>
+                            </div><br>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
@@ -98,6 +114,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <br>
                             <div class="row">
                                 <div class="col-lg-12">

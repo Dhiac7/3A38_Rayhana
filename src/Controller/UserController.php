@@ -203,28 +203,26 @@ public function verifyUserEmail(Request $request, UserRepository $userRepository
 }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session, int $id): Response
-    {
-      /*  $loggedInUserId = $session->get('user_id');
+    public function edit(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher, 
+        SessionInterface $session
+    ): Response {
+        $loggedInUserId = $session->get('user_id');
     
         if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_login');
+            throw new \Exception("User ID is missing from the session.");
         }
     
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     
         if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_login');
+            throw new \Exception("User with ID $loggedInUserId not found.");
         }
     
-        $user = $entityManager->getRepository(User::class)->find($id);
-    
-        if (!$user) {
-            throw $this->createNotFoundException('User not found');
-        }*/
-    
-    
-        $form = $this->createForm(UserEditType::class, $user);
+        
+        $form = $this->createForm(UserEditType::class, $loggedInUser);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
@@ -233,24 +231,24 @@ public function verifyUserEmail(Request $request, UserRepository $userRepository
                 $uploadsDirectory = $this->getParameter('uploads_directory'); 
                 $newFilename = uniqid().'.'.$photoFile->guessExtension();
                 $photoFile->move($uploadsDirectory, $newFilename);
-                $user->setPhoto($newFilename);
+                $loggedInUser->setPhoto($newFilename);
             }
     
             $plainPassword = $form->get('mdp')->getData();
             if (!empty($plainPassword)) { 
-                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($hashedPassword);
+                $hashedPassword = $passwordHasher->hashPassword($loggedInUser, $plainPassword);
+                $loggedInUser->setPassword($hashedPassword);
             }
     
             $entityManager->flush();
     
-            return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('user_profile', ['slug' => $loggedInUser->getSlug()]);//, [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('user/edit.html.twig', [
-            'user' => $user,
+            'user' => $loggedInUser,
             'form' => $form,
-           // 'loggedInUser' => $loggedInUser,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
     
