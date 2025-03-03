@@ -18,7 +18,7 @@ class MessageType extends AbstractType
             ->add('recipient', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'email', 
-                'label' => 'Select Employee',
+                'label' => 'Choisir un employee',
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'Message',

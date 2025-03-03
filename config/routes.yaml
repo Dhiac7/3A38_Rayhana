@@ -23,19 +23,19 @@ reserve_place:
     controller: App\Controller\SeatController::reservePlace
 
     
-#some_endpoint:
- #   path: /some-endpoint
-  #  controller: App\Controller\InterfaceController::someEndpointAction
+some_endpoint:
+    path: /some-endpoint
+    controller: App\Controller\InterfaceController::someEndpointAction
 
-#send_message:
-#    path: /send-message
- #   controller: App\Controller\InterfaceController::sendMessage
-  #  methods: POST
+send_message:
+    path: /send-message
+    controller: App\Controller\InterfaceController::sendMessage
+    methods: POST
 
-#fetch_messages:
- #   path: /fetch-messages
-   # controller: App\Controller\InterfaceController::fetchMessages
-   # methods: GET
+fetch_messages:
+    path: /fetch-messages
+    controller: App\Controller\InterfaceController::fetchMessages
+    methods: GET
 
 
 connect_google:
@@ -45,3 +45,7 @@ connect_google:
 connect_google_check:
     path: /connect/google/check
     controller: App\Controller\SecurityController::connectGoogleCheck
+
+app_verify_email:
+    path: /verify/email
+    controller: App\Controller\UserController::verifyUserEmail
