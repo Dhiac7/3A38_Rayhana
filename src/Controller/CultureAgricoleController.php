@@ -22,7 +22,7 @@ final class CultureAgricoleController extends AbstractController
     #[Route(name: 'app_culture_agricole_index', methods: ['GET'])]
     public function index(Request $request, CultureAgricoleRepository $cultureAgricoleRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
