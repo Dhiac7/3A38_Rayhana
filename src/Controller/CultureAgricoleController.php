@@ -57,7 +57,7 @@ final class CultureAgricoleController extends AbstractController
     #[Route('/new', name: 'app_culture_agricole_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -89,7 +89,7 @@ final class CultureAgricoleController extends AbstractController
     #[Route('/{id}', name: 'app_culture_agricole_show', methods: ['GET'])]
     public function show(CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -98,6 +98,7 @@ final class CultureAgricoleController extends AbstractController
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_login');
         }
+
 
         return $this->render('culture_agricole/show.html.twig', [
             'culture_agricole' => $cultureAgricole,
@@ -109,7 +110,7 @@ final class CultureAgricoleController extends AbstractController
     #[Route('/{id}/edit', name: 'app_culture_agricole_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, CultureAgricole $cultureAgricole, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
-        $loggedInUserId = $session->get('client_user_id');
+        $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_login');
@@ -145,5 +146,19 @@ final class CultureAgricoleController extends AbstractController
         }
 
         return $this->redirectToRoute('app_culture_agricole_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+    //Calcul des rendements
+    #[Route('/{id}/calculer-rendement', name: 'app_culture_agricole_calculer_rendement', methods: ['GET'])]
+    public function calculerRendement(CultureAgricole $cultureAgricole): Response
+    {
+        $rendementTotal = $cultureAgricole->calculerRendementTotal(); // Assurez-vous que cette méthode existe dans l'entité CultureAgricole
+
+        return $this->render('culture_agricole_dashboard/rendement.html.twig', [
+            'culture_agricole' => $cultureAgricole,
+            'rendementTotal' => $rendementTotal,
+        ]);
     }
 }

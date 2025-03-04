@@ -17,8 +17,6 @@ class Avis
     #[ORM\Column]
     private ?int $id = null;
 
-
-
     #[ORM\Column]
     #[Assert\NotBlank(message: 'La note ne peut pas être vide.')]
     #[Assert\Range(min: 0, max: 10, notInRangeMessage: 'La note doit être entre 0 et 10.')]
@@ -37,18 +35,18 @@ class Avis
     /**
      * @var Collection<int, Inspection>
      */
-    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis')]
+    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis', cascade: ['remove'], orphanRemoval: true)]
     private Collection $reponse;
 
     /**
      * @var Collection<int, Inspection>
      */
-    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis')]
+    #[ORM\OneToMany(targetEntity: Inspection::class, mappedBy: 'avis', cascade: ['remove'], orphanRemoval: true)]
     private Collection $inspections;
 
     public function __construct()
     {
-        $this->date = new \DateTimeImmutable(); // Définit la date et l'heure actuelles automatiquement
+        $this->date = new \DateTimeImmutable(); // Définit la date actuelle automatiquement
         $this->reponse = new ArrayCollection();
         $this->inspections = new ArrayCollection();
     }
@@ -57,10 +55,6 @@ class Avis
     {
         return $this->id;
     }
-
-
-
-
 
     public function getRate(): ?float
     {
@@ -97,7 +91,6 @@ class Avis
     public function setClient(?User $client): static
     {
         $this->client = $client;
-
         return $this;
     }
 
@@ -115,19 +108,16 @@ class Avis
             $this->reponse->add($reponse);
             $reponse->setAvis($this);
         }
-
         return $this;
     }
 
     public function removeReponse(Inspection $reponse): static
     {
         if ($this->reponse->removeElement($reponse)) {
-            // set the owning side to null (unless already changed)
             if ($reponse->getAvis() === $this) {
                 $reponse->setAvis(null);
             }
         }
-
         return $this;
     }
 
@@ -145,19 +135,16 @@ class Avis
             $this->inspections->add($inspection);
             $inspection->setAvis($this);
         }
-
         return $this;
     }
 
     public function removeInspection(Inspection $inspection): static
     {
         if ($this->inspections->removeElement($inspection)) {
-            // set the owning side to null (unless already changed)
             if ($inspection->getAvis() === $this) {
                 $inspection->setAvis(null);
             }
         }
-
         return $this;
     }
 }

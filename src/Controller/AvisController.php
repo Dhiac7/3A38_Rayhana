@@ -18,6 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 #[Route('/avis')]
 final class AvisController extends AbstractController{
     #[Route(name: 'app_avis_index', methods: ['GET'])]
@@ -50,37 +53,57 @@ final class AvisController extends AbstractController{
     }
 
     #[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-    {
-        $loggedInUserId = $session->get('user_id');
-    
+public function new(
+    Request $request, 
+    EntityManagerInterface $entityManager, 
+    SessionInterface $session,
+    \App\Service\CommentAnalyzer $commentAnalyzer,
+    MailerInterface $mailer
+): Response {
+    $loggedInUserId = $session->get('user_id');
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
     }
-
-    // Récupérer l'utilisateur connecté
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
         return $this->redirectToRoute('app_user_login');
     }
-        $avi = new Avis();
-        $form = $this->createForm(AvisType::class, $avi);
-        $form->handleRequest($request);
+    
+    $avi = new Avis();
+    $form = $this->createForm(AvisType::class, $avi);
+    $form->handleRequest($request);
+    
+    if ($form->isSubmitted() && $form->isValid()) {
+        // (Optionnel) Vérifier via CommentAnalyzer, etc...
+        // Par exemple, appeler l'API pour analyser le commentaire, etc.
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $avi->setClient($loggedInUser);
+        $avi->setClient($loggedInUser);
+        $entityManager->persist($avi);
+        $entityManager->flush();
+        
+        // Création et envoi de l'email automatique
+        $email = (new Email())
+            ->from('no-reply@votredomaine.com')
+            ->to($loggedInUser->getEmail())
+            ->subject('Votre avis est en cours de traitement')
+            ->html('<p>Nous avons bien reçu votre réclamation. Nous la traitons.</p>');
 
-            $entityManager->persist($avi);
-            $entityManager->flush();
-            return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('avis/new.html.twig', [
-            'avi' => $avi,
-            'form' => $form,
-            'loggedInUser' => $loggedInUser,
-        ]);
+        $mailer->send($email);
+        
+        return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
     }
+    
+    return $this->render('avis/new.html.twig', [
+        'avi' => $avi,
+        'form' => $form->createView(),
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
+    
+
+
+
+
 
     #[Route('/{id}', name: 'app_avis_show', methods: ['GET'], requirements: ['id' => '\d+'])]
 public function show(Avis $avi, SessionInterface $session, EntityManagerInterface $entityManager): Response

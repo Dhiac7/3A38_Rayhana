@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 from app1 import app1
 from app2 import app2
+from app3 import app3
+
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -9,6 +11,8 @@ app = Flask(__name__)
 # Enregistrer les applications (Blueprints)
 app.register_blueprint(app1, url_prefix='/model1')
 app.register_blueprint(app2, url_prefix='/model2')
+app.register_blueprint(app3, url_prefix='/model3')
+
 
 # Ajouter une route `/predict` personnalisée
 @app.route('/predict', methods=['POST'])

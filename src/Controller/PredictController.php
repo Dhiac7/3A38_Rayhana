@@ -129,4 +129,56 @@ class PredictController extends AbstractController
 
         ]);
     }
+
+#[Route('/predict/model3', name: 'predict_model3', methods: ['GET', 'POST'])]
+public function predictModel3(Request $request, SessionInterface $session, EntityManagerInterface $entityManager): Response
+{
+    $loggedInUserId = $session->get('user_id');
+
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    $prediction = null;
+    $error = null;
+
+    if ($request->isMethod('POST')) {
+        $file = $request->files->get('file');
+        $tempPath = $file->getPathname(); // Chemin temporaire
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $newFilePath = sys_get_temp_dir() . '/' . $originalFilename . '.' . $file->guessExtension();
+
+        if (!$file) {
+            $error = "Aucun fichier envoyé.";
+        } else {
+            $client = HttpClient::create();
+            try {
+                $response = $client->request('POST', 'http://127.0.0.1:5000/model3/predict', [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
+                    'body' => [
+                        'file' => fopen($newFilePath, 'r'),
+                    ],
+                ]);
+
+                $data = $response->toArray();
+                $prediction = $data['prediction'];
+            } catch (\Exception $e) {
+                $error = "Erreur lors de la prédiction : " . $e->getMessage();
+            }
+        }
+    }
+
+    return $this->render('predict/model3.html.twig', [
+        'prediction' => $prediction,
+        'error' => $error,
+        'loggedInUser' => $loggedInUser,
+
+    ]);
+}
 }

@@ -8,18 +8,23 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "babdev/pagerfanta-bundle": "^4.5",
+        "botman/botman": "^2.8",
+        "botman/driver-web": "^1.5",
+        "cmfcmf/openweathermap-php-api": "^3.3",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "endroid/qr-code-bundle": "^5.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
+        "friendsofsymfony/ckeditor-bundle": "^2.6",
         "guzzlehttp/guzzle": "^7.9",
         "knplabs/knp-menu-bundle": "*",
         "knplabs/knp-paginator-bundle": "^6.6",
         "knplabs/knp-snappy-bundle": "^1.10",
         "knpuniversity/oauth2-client-bundle": "^2.18",
         "league/oauth2-google": "^4.0",
+        "lexik/translation-bundle": "^6.0",
         "liip/imagine-bundle": "^2.13",
         "neo4j/neo4j-bundle": "*",
         "pagerfanta/doctrine-orm-adapter": "^4.7",
@@ -54,7 +59,7 @@
         "symfony/string": "6.4.*",
         "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
-        "symfony/ux-turbo": "^2.22",
+        "symfony/ux-turbo": "^2.23",
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",
         "symfony/webpack-encore-bundle": "^2.2",
@@ -68,6 +73,7 @@
     },
     "config": {
         "allow-plugins": {
+            "endroid/installer": true,
             "php-http/discovery": true,
             "symfony/flex": true,
             "symfony/runtime": true,
@@ -98,7 +104,8 @@
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
-            "importmap:install": "symfony-cmd"
+            "importmap:install": "symfony-cmd",
+            "ckeditor:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
