@@ -6,6 +6,7 @@ import sys
 from PIL import Image
 import time
 
+
 def load_known_faces(folder_path):
     known_faces = []
     known_names = []
@@ -64,6 +65,7 @@ def recognize_faces(known_faces, known_names):
                 best_match_index = np.argmin(face_recognition.face_distance(known_faces, face_encoding))
                 
                 video_capture.release()
+                cv2.waitKey(1)
                 cv2.destroyAllWindows()
                 return True
 

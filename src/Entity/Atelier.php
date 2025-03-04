@@ -49,7 +49,7 @@ class Atelier
     #[Assert\NotBlank(message: "La capacite maximal de l'atelier ne peut pas être vide.")]
     #[Assert\Range(
         min: 1, 
-        max: 500, 
+        max: 30,
         notInRangeMessage: "La capacité doit être comprise entre {{ min }} et {{ max }}."
     )]//controle de saisie 
     private ?int $capacite_max = null;
