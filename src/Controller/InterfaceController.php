@@ -181,15 +181,15 @@ class InterfaceController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
     
-        //$loggedInUser = $entityManager->getRepository(User::class)->find($userId);
-        $loggedInUser = $entityManager->getRepository(User::class)->findOneBy(['slug' => $slug]);
+        $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
+        //$loggedInUser = $entityManager->getRepository(User::class)->findOneBy(['slug' => $slug]);
 
-        if (!$loggedInUser) {
+    /* if (!$loggedInUser) {
             $session->remove('user_id');
             return $this->redirectToRoute('app_user_login');
-        }
+        }*/
     
-        User::setCurrentUser($loggedInUser);
+       // User::setCurrentUser($loggedInUser);
 
         return $this->render('user/profile.html.twig', [
             'loggedInUser' => $loggedInUser,

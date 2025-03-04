@@ -56,6 +56,7 @@ class CultureAgricole
     #[ORM\ManyToOne(inversedBy: 'cultureAgricoles')]
     private ?User $user = null;
 
+
     /**
      * @var Collection<int, Parcelle>
      */
@@ -68,6 +69,8 @@ class CultureAgricole
         $this->parcelles = new ArrayCollection();
     }
 
+    
+    // Dans le service DateCalculator
 
     public function getId(): ?int
     {
@@ -192,8 +195,68 @@ class CultureAgricole
         }
         return $this;
     }
-    
 
+    public function calculerRendementTotal()
+    {
+        // implementation of the method goes here
+        // for example:
+        return $this->rendementEstime * $this->superficie;
+    }
+
+    // CultureAgricole.php
+
+public function getDureeCroissance(): int
+{
+    // Exemple de mapping type/durée (à adapter selon vos besoins)
+    $durees = [
+        'Blé' => 90,
+        'Maïs' => 120,
+        'Riz' => 150,
+        'Légumes' => 60
+    ];
+
+    return $durees[$this->type] ?? 100; // Durée par défaut si type non trouvé
+}
+
+public function getDateRecolteEstimee(): ?\DateTimeInterface
+{
+    if (!$this->dateSemi) {
+        return null;
+    }
+
+    // Conversion explicite en DateTime mutable
+    $dateRecolte = \DateTime::createFromInterface($this->dateSemi);
+    $dateRecolte->modify('+' . $this->getDureeCroissance() . ' days');
+    
+    return $dateRecolte;
+}
+
+public function getTraitementsPlanifies(): array
+{
+    $traitements = [];
+    if ($this->dateSemi) {
+        $intervals = [
+            15 => 'Traitement précoce',
+            45 => 'Traitement intermédiaire',
+            75 => 'Traitement final'
+        ];
+
+        foreach ($intervals as $days => $label) {
+            // Crée une instance mutable à partir de l'interface
+            $date = \DateTime::createFromInterface($this->dateSemi);
+            
+            // Annotation pour l'IDE
+            /** @var \DateTime $date */
+            $date->modify("+$days days");
+            
+            $traitements[] = [
+                'date' => $date,
+                'label' => $label
+            ];
+        }
+    }
+    return $traitements;
+}
 
 
 }

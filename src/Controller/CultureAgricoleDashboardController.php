@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\User;
+use App\Service\WeatherService;
+
 
 
 #[Route('/culturedash')]
@@ -105,7 +107,7 @@ final class CultureAgricoleDashboardController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_culture_agricole_dashboard_show', methods: ['GET'])]
-    public function show(CultureAgricole $cultureAgricole, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function show(CultureAgricole $cultureAgricole, SessionInterface $session, EntityManagerInterface $entityManager, WeatherService $weatherService): Response
     {
         $loggedInUserId = $session->get('user_id');
 
@@ -117,12 +119,37 @@ final class CultureAgricoleDashboardController extends AbstractController
             return $this->redirectToRoute('app_user_loginback');
         }
 
+        $rendementTotal = $cultureAgricole->calculerRendementTotal(); // Assurez-vous que cette méthode existe dans l'entité CultureAgricole
+        $parcelle= $cultureAgricole->getParcelles()->first();
+        $weather = $weatherService->getWeatherByCoordinates($parcelle->getLatitude(), $parcelle->getLongitude());
+
         
         $user = $session->get('user');
+
+
+        // Nouvelles données calculées
+        $dateRecolteEstimee = $cultureAgricole->getDateRecolteEstimee();
+        $traitementsPlanifies = $cultureAgricole->getTraitementsPlanifies();
+        $nextIntervention = null;
+
+        // Calcul de la prochaine intervention
+        $now = new \DateTime();
+        foreach ($traitementsPlanifies as $traitement) {
+            if ($traitement['date'] > $now) {
+                $nextIntervention = $traitement;
+                break;
+            }
+        }
 
         return $this->render('culture_agricole_dashboard/show.html.twig', [
             'culture_agricole' => $cultureAgricole,
             'loggedInUser' => $loggedInUser,
+            'rendementTotal' => $rendementTotal,
+            'weather' => $weather,
+            'date_recolte_estimee' => $dateRecolteEstimee,
+            'traitements_planifies' => $traitementsPlanifies,
+            'next_intervention' => $nextIntervention,
+            'now' => new \DateTime() // Pour les calculs de dates dans Twig
 
         ]);
     }

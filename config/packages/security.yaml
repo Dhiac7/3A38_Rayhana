@@ -14,8 +14,9 @@ security:
             custom_authenticators:
                 - App\Service\GoogleAuthenticator
             logout:
-                path: /logout
-                target: /
+                path: app_user_logout
+                target: app_user_login
+
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }

@@ -7,41 +7,75 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\CultureAgricole;
+use Doctrine\ORM\EntityManagerInterface;
 
 class PdfController extends AbstractController
 {
     private $snappy;
+    private $entityManager;
 
-    public function __construct(Pdf $snappy)
+    public function __construct(Pdf $snappy, EntityManagerInterface $entityManager)
     {
         $this->snappy = $snappy;
+        $this->entityManager = $entityManager;
     }
 
-    #[Route('/pdf/{id}', name: 'pdf')] 
+    #[Route('/pdf/{id}', name: 'pdf')]
     public function generatePdf(Request $request, $id): Response
     {
-        // Simuler ou récupérer les données de la culture agricole avec des détails supplémentaires
-        $culture_agricole = [
-            'id' => $id,
-            'nom' => 'Maïs',
-            'rendementEstime' => 5000,
-            'statut' => 'En croissance',
-            'dateSemi' => new \DateTime('2023-03-01'),
-            'type' => 'Céréale',
-            'superficie' => 120,
-            'climat' => 'Tempéré chaud',
-            'typeSol' => 'Sol limoneux',
-            'irrigation' => 'Tous les 3 jours',
-            'engrais' => 'Engrais azoté NPK',
-            'parcelles' => [
-                ['id' => 1, 'nom' => 'Parcelle A', 'superficie' => 50],
-                ['id' => 2, 'nom' => 'Parcelle B', 'superficie' => 70]
-            ]
+        // Récupérer l'entité CultureAgricole depuis la base de données
+        $cultureAgricole = $this->entityManager->getRepository(CultureAgricole::class)->find($id);
+
+        if (!$cultureAgricole) {
+            throw $this->createNotFoundException('Culture agricole non trouvée pour l\'id ' . $id);
+        }
+
+        // Préparer les données pour le template Twig
+        $data = [
+            'id' => $cultureAgricole->getId(),
+            'nom' => $cultureAgricole->getNom(),
+            'rendementEstime' => $cultureAgricole->getRendementEstime(),
+            'statut' => $cultureAgricole->getStatut(),
+            'dateSemi' => $cultureAgricole->getDateSemi(),
+            'type' => $cultureAgricole->getType(),
+            'superficie' => $cultureAgricole->getSuperficie(),
+            'climat' => 'Tempéré chaud', // Exemple de donnée supplémentaire
+            'typeSol' => 'Sol limoneux', // Exemple de donnée supplémentaire
+            'irrigation' => 'Tous les 3 jours', // Exemple de donnée supplémentaire
+            'engrais' => 'Engrais azoté NPK', // Exemple de donnée supplémentaire
+            'parcelles' => [], // Vous pouvez remplir ce tableau avec les parcelles associées
         ];
 
-        // Générer la vue HTML avec les données mises à jour
+        // Récupérer les parcelles associées
+        foreach ($cultureAgricole->getParcelles() as $parcelle) {
+            $data['parcelles'][] = [
+                'id' => $parcelle->getId(),
+                'nom' => $parcelle->getNom(),
+                'superficie' => $parcelle->getSuperficie(),
+            ];
+        }
+
+        $dateRecolteEstimee = $cultureAgricole->getDateRecolteEstimee();
+        $traitementsPlanifies = $cultureAgricole->getTraitementsPlanifies();
+        $nextIntervention = null;
+
+        // Calcul de la prochaine intervention
+        $now = new \DateTime();
+        foreach ($traitementsPlanifies as $traitement) {
+            if ($traitement['date'] > $now) {
+                $nextIntervention = $traitement;
+                break;
+            }
+        }
+
+        // Générer la vue HTML avec les données
         $html = $this->renderView('pdf/index.html.twig', [
-            'culture_agricole' => $culture_agricole,
+            'culture_agricole' => $data,
+            'date_recolte_estimee' => $dateRecolteEstimee,
+            'traitements_planifies' => $traitementsPlanifies,
+            'next_intervention' => $nextIntervention,
+            'now' => new \DateTime() // Pour les calculs de dates dans Twig
         ]);
 
         // Convertir le HTML en PDF
@@ -54,7 +88,7 @@ class PdfController extends AbstractController
         // Retourner la réponse avec le PDF
         return new Response($pdf, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="rapport_culture_' . $id . '.pdf"'
+            'Content-Disposition' => 'attachment; filename="rapport_culture_' . $id . '.pdf"',
         ]);
     }
 }
