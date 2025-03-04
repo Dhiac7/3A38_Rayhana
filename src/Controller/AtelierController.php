@@ -9,7 +9,6 @@ use App\Entity\AtelierLikes;
 use App\Form\AtelierType;
 use App\Repository\AtelierRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,6 +16,13 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RedirectRoute;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+
+
+
 #[Route('/atelier')]
 final class AtelierController extends AbstractController
 {
@@ -105,48 +111,52 @@ final class AtelierController extends AbstractController
 
 
     #[Route('/{id}/like', name: 'app_atelier_like', methods: ['POST'])]
-public function likeAtelier($id, Request $request, EntityManagerInterface $entityManager): JsonResponse
-{
-    $atelier = $entityManager->getRepository(Atelier::class)->find($id);
-    if (!$atelier) {
-        return $this->json(['error' => 'Atelier not found'], 404);
-    }
-
-    $user = $this->getUser();
-    if (!$user) {
-        return $this->json(['error' => 'User not authenticated'], 401);
-    }
-
-    $isLike = $request->request->get('like') === 'true';
-
-    $atelierLikeRepo = $entityManager->getRepository(AtelierLikes::class);
-    $existingLike = $atelierLikeRepo->findOneBy(['atelier' => $atelier, 'user' => $user]);
-
-    if ($existingLike) {
-        if ($existingLike->getIsLike() === $isLike) {
-            $entityManager->remove($existingLike);
-        } else {
-            $existingLike->setIsLiked($isLike);
-            $entityManager->persist($existingLike);
+    public function likeAtelier($id, Request $request, EntityManagerInterface $entityManager, SessionInterface $session): RedirectResponse
+    {
+        // Récupérer l'atelier
+        $atelier = $entityManager->getRepository(Atelier::class)->find($id);
+        if (!$atelier) {
+            throw $this->createNotFoundException('Atelier not found');
         }
-    } else {
-        $newLike = new AtelierLikes();
-        $newLike->setAtelier($atelier);
-        $newLike->setUser($user);
-        $newLike->setIsLiked($isLike);
-        $entityManager->persist($newLike);
+    
+        // Récupérer l'utilisateur connecté
+        $loggedInUserId = $session->get('user_id');
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            throw $this->createNotFoundException('User not found');
+        }
+    
+        // Déterminer si c'est un like ou un dislike
+        $isLike = $request->request->get('like') === 'true';
+    
+        // Vérifier si l'utilisateur a déjà liké/disliké cet atelier
+        $atelierLikeRepo = $entityManager->getRepository(AtelierLikes::class);
+        $existingLike = $atelierLikeRepo->findOneBy(['atelier' => $atelier, 'user' => $loggedInUser]);
+    
+        if ($existingLike) {
+            // Si l'utilisateur clique à nouveau sur le même bouton, supprimer le like/dislike
+            if ($existingLike->isLiked() === $isLike) {
+                $entityManager->remove($existingLike);
+            } else {
+                // Sinon, mettre à jour le like/dislike
+                $existingLike->setIsLiked($isLike);
+                $entityManager->persist($existingLike);
+            }
+        } else {
+            // Créer un nouveau like/dislike
+            $newLike = new AtelierLikes();
+            $newLike->setAtelier($atelier);
+            $newLike->setUser($loggedInUser);
+            $newLike->setIsLiked($isLike);
+            $entityManager->persist($newLike);
+        }
+    
+        // Sauvegarder les modifications
+        $entityManager->flush();
+    
+        // Rediriger vers la page précédente
+        return $this->redirect($request->headers->get('referer'));
     }
-
-    $entityManager->flush();
-
-    $likesCount = $atelierLikeRepo->count(['atelier' => $atelier, 'isLike' => true]);
-    $dislikesCount = $atelierLikeRepo->count(['atelier' => $atelier, 'isLike' => false]);
-
-    return $this->json([
-        'likes' => $likesCount,
-        'dislikes' => $dislikesCount,
-    ]);
-}
 
     
 }

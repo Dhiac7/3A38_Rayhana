@@ -105,6 +105,12 @@ class Atelier
     #[ORM\OneToMany(targetEntity: AtelierLikes::class, mappedBy: 'atelier')]
     private Collection $atelierLikes;
 
+    /**
+     * @var Collection<int, Place>
+     */
+    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'atelier')]
+    private Collection $places;
+
  
 
     public function __construct()
@@ -112,7 +118,8 @@ class Atelier
         $this->users = new ArrayCollection();
         $this->nbrplacedispo = $this->capacite_max;
         $this->dechet = new ArrayCollection();
-        $this->atelierLikes = new ArrayCollection(); 
+        $this->atelierLikes = new ArrayCollection();
+        $this->places = new ArrayCollection(); 
     }
 
 
@@ -368,16 +375,50 @@ class Atelier
 
            return $this;
        }
-       public function getLikesCount(): int
-        {
-    return $this->atelierLikes->count();
-    }
+// src/Entity/Atelier.php
+
+public function getLikesCount(): int
+{
+    return $this->atelierLikes->filter(function (AtelierLikes $like) {
+        return $like->isLiked() === true;
+    })->count();
+}
 
 public function getDislikesCount(): int
 {
     return $this->atelierLikes->filter(function (AtelierLikes $like) {
-        return $like->isLiked() === false; // Compte uniquement les dislikes
+        return $like->isLiked() === false;
     })->count();
+}
+
+/**
+ * @return Collection<int, Place>
+ */
+public function getPlaces(): Collection
+{
+    return $this->places;
+}
+
+public function addPlace(Place $place): static
+{
+    if (!$this->places->contains($place)) {
+        $this->places->add($place);
+        $place->setAtelier($this);
+    }
+
+    return $this;
+}
+
+public function removePlace(Place $place): static
+{
+    if ($this->places->removeElement($place)) {
+        // set the owning side to null (unless already changed)
+        if ($place->getAtelier() === $this) {
+            $place->setAtelier(null);
+        }
+    }
+
+    return $this;
 }
 
 

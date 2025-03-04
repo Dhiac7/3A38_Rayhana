@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 use App\Entity\User;
+use App\Entity\Place;
 use App\Entity\Atelier;
 use App\Form\AtelierType;
 use App\Repository\AtelierRepository;
 use App\Repository\UserRepository;
+use App\Repository\PlaceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,38 +82,44 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
             'date_atelier' => $atelier->getDateAtelier()
         ]);
 
-       /* if ($existingAtelier) {
-            $this->addFlash('error', "Il existe déjà un atelier le " . $atelier->getDateAtelier()->format('Y-m-d') . " avec le nom : " . $existingAtelier->getNom());
-            return $this->redirectToRoute('app_atelier_new');
-        }*/
-
         // Gestion de l'upload de la photo
         $photoFile = $form->get('photo')->getData();
 
         if ($photoFile instanceof UploadedFile) {
-            dump($photoFile); 
-            
-            $uploadsDirectory = $this->getParameter('atelier_directory'); // Vérifie que ce paramètre est bien défini dans services.yaml
+            $uploadsDirectory = $this->getParameter('atelier_directory'); 
             $newFilename = uniqid().'.'.$photoFile->guessExtension();
 
             try {
                 $photoFile->move($uploadsDirectory, $newFilename);
-                $atelier->setPhoto($newFilename); // On stocke le nom du fichier dans l'entité Atelier
+                $atelier->setPhoto($newFilename);
             } catch (FileException $e) {
                 $this->addFlash('error', "Erreur lors de l'upload de l'image.");
             }
-        } else {
-            dump('No file uploaded'); 
         }
+
         $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
 
         // Sauvegarde de l’atelier en base de données
         $em->persist($atelier);
-        $em->flush();
+        $em->flush(); // Flush to generate the atelier ID
 
-        $this->addFlash('success', "L'atelier a été ajouté avec succès.");
+        // Now create the places for this atelier
+        $placeCodes = ['A', 'B', 'C'];
+        $numPlacesPerCode = 10;
+
+        foreach ($placeCodes as $code) {
+            for ($i = 1; $i <= $numPlacesPerCode; $i++) {
+                $place = new Place();
+                $place->setCode($code . $atelier->getId() . "." . $i);
+                $place->setAtelier($atelier); // Assuming Place has a ManyToOne relation with Atelier
+                $em->persist($place);
+            }
+        }
+
+        $em->flush(); // Persist places in database
+
+        $this->addFlash('success', "L'atelier a été ajouté avec succès avec ses places.");
         return $this->redirectToRoute('app_atelier_indexBack', [], Response::HTTP_SEE_OTHER);
-
     }
 
     return $this->render('atelier/new.html.twig', [
@@ -336,7 +344,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     
         return new JsonResponse(['success' => false, 'message' => 'Atelier non trouvé ou ID invalide'], 400);
     }*/
-    #[Route('/admin/statistics/atelier/{id}', name: 'admin_statistics_atelier')]
+    #[Route('statistics/atelier/{id}', name: 'atelier_statistics')]
 public function statisticsAtelier(
     UserRepository $userRepository,
     EntityManagerInterface $entityManager,
@@ -377,5 +385,30 @@ public function statisticsAtelier(
         'atelier' => $atelier,
     ]);
 }
+
+#[Route('/place/stats', name: 'place_stats')]
+public function statistics(PlaceRepository $placeRepository, EntityManagerInterface $entityManager, SessionInterface $session): Response
+{
+    $loggedInUserId = $session->get('user_id');
+            
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    // Récupération de l'utilisateur
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+    $takenSeatsStats = $placeRepository->countTakenSeatsByAtelier();
+
+    return $this->render('atelier/place_stats.html.twig', [
+        'takenSeatsStats' => $takenSeatsStats,
+        'loggedInUser' => $loggedInUser,
+
+    ]);
+}
+
 
 }

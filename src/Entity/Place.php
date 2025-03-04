@@ -22,6 +22,9 @@ class Place
     #[ORM\OneToOne(mappedBy: 'place', cascade: ['persist', 'remove'])]
     private ?Reservation $Place = null;
 
+    #[ORM\ManyToOne(inversedBy: 'places')]
+    private ?Atelier $atelier = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,6 +70,18 @@ class Place
         }
 
         $this->Place = $Place;
+
+        return $this;
+    }
+
+    public function getAtelier(): ?Atelier
+    {
+        return $this->atelier;
+    }
+
+    public function setAtelier(?Atelier $atelier): static
+    {
+        $this->atelier = $atelier;
 
         return $this;
     }

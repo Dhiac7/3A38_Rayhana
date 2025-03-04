@@ -20,24 +20,57 @@
             {# Ajout des places au bon groupe #}
             {% set grouped_places = grouped_places|merge({ (row): grouped_places[row]|merge([place]) }) %}
         {% endfor %}
-
         {# Affichage des places par rangée #}
+{# ... Votre code existant ... #}
+
+{# Formulaire de sélection de place #}
+<form method="GET" action="{{ path('app_vente_atelier_new') }}">
+    {# Champs cachés pour les paramètres requis #}
+    <input type="hidden" name="nom" value="{{ atelier.nom }}">
+    <input type="hidden" name="prix" value="{{ atelier.prix }}">
+    <input type="hidden" name="dateAtelier" value="{{ atelier.dateAtelier|date('Y-m-d') }}">
+
+    {# Grille des places #}
+    <div class="seat-grid">
         {% for row, row_places in grouped_places %}
             <div class="seat-row">
                 {% for place in row_places %}
                     <button 
-                        class="seat-button {% if not place.isAvailable %}disabled{% endif %}" 
+                        type="submit" 
+                        name="place" 
+                        value="{{ place.code }}" 
                         data-code="{{ place.code }}" 
-                        onclick="selectSeat(this)">
+                        onclick="selectSeat(this)"
+                        class="seat-button {% if not place.isAvailable %}disabled{% endif %} {% if app.request.query.get('place') == place.code %}selected{% endif %}" 
+                        {% if not place.isAvailable %}disabled{% endif %}
+                    >
                         {{ place.code }}
                     </button>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+</form>
+
+
+{# Message de réservation #}
+{% if app.request.query.get('place') %}
+    <p class="success-message">Place sélectionnée : {{ app.request.query.get('place') }}</p>
+    <a href="{{ path('app_vente_atelier_new', { 
+        'nom': atelier.nom, 
+        'prix': atelier.prix, 
+        'dateAtelier': atelier.dateAtelier|date('Y-m-d'),
+        'place': app.request.query.get('place') 
+    }) }}" class="btn btn-primary">
+        Réserver
+    </a>
+{% else %}
+   <!-- <p class="error-message">Veuillez sélectionner une place.</p>
+    <button class="btn btn-disabled" disabled>Réserver</button> -->
+{% endif %}
+    </div>
 
     <p id="reservation-message"></p>
-   <a href="{{ path('app_vente_atelier_new', { 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Réserver</a>
 
     <style>
         #seats-container {
@@ -66,6 +99,21 @@
             cursor: not-allowed;
         }
     </style>
+    <script>
+        let selectedPlace = false;  // Variable JavaScript pour suivre la sélection de la place
+
+        function selectSeat(button) {
+            // Si une place est sélectionnée, on définit selectedPlace à true
+            selectedPlace = true;
+
+            // Ajout d'un style pour indiquer la sélection
+            button.classList.add('selected');
+
+            // Optionnel : afficher la place sélectionnée dans la console ou un autre endroit
+            console.log('Place sélectionnée: ' + button.getAttribute('data-code'));
+        }
+    </script>
+
     <script src="{{ asset('assetsback/js/seat-selection.js') }}"></script>
 
 {% endblock %}

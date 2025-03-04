@@ -1,0 +1,73 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block body %}
+
+<style>
+.chart-container {
+    height: 500px; 
+    width: 100%;    
+    position: relative;
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important; 
+}
+</style>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            {# Atelier Taken Seats Chart #}
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Atelier Taken Seats Statistics</h2>
+                        <div class="chart-container">
+                            <canvas id="takenSeatsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Extracting Atelier IDs and Taken Seats Data
+        const atelierLabels = {{ takenSeatsStats|map(v => v['atelier_id'])|json_encode()|raw }};
+        const takenSeatsData = {{ takenSeatsStats|map(v => v['taken_seats'])|json_encode()|raw }};
+
+        var takenSeatsChartData = {
+            labels: atelierLabels,
+            datasets: [{
+                label: 'Taken Seats per Atelier',
+                data: takenSeatsData,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        var takenSeatsChartOptions = {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        if (document.getElementById("takenSeatsChart")) {
+            var takenSeatsChartCanvas = document.getElementById("takenSeatsChart").getContext("2d");
+            new Chart(takenSeatsChartCanvas, {
+                type: 'bar',
+                data: takenSeatsChartData,
+                options: takenSeatsChartOptions
+            });
+        }
+    });
+</script>
+
+{% endblock %}
