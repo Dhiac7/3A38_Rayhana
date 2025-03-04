@@ -1,0 +1,6 @@
+lexik_translation:
+    fallback_locale: ['en']  # Langue par défaut
+    managed_locales: ['en', 'fr', 'es']  # Langues gérées
+    resources_registration: true
+    storage:
+        type: orm  # Utilisation de Doctrine ORM pour stocker les traductions

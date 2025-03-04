@@ -20,6 +20,5 @@ return [
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
     Knp\Bundle\SnappyBundle\KnpSnappyBundle::class => ['all' => true],
-
-
+    Lexik\Bundle\TranslationBundle\LexikTranslationBundle::class => ['all' => true],
 ];

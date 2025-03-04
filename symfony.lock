@@ -56,6 +56,9 @@
             "./config/packages/knpu_oauth2_client.yaml"
         ]
     },
+    "lexik/translation-bundle": {
+        "version": "v6.0"
+    },
     "liip/imagine-bundle": {
         "version": "2.13",
         "recipe": {

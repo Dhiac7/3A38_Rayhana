@@ -18,6 +18,13 @@ api_statistiques:
     controller: App\Controller\StatistiquesController::statistiques
     methods: [GET]
 
+chat:
+  path: /chat
+  controller: App\Controller\ChatbotController::chat
+
+chatbot:
+  path: /chatbot
+  controller: App\Controller\ChatbotController::chatbot
 
     
 #some_endpoint:

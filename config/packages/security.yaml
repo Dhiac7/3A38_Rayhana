@@ -17,6 +17,7 @@ security:
                 path: /logout
                 target: /
 
+
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/connect, roles: PUBLIC_ACCESS }
