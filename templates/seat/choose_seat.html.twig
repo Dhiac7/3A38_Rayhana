@@ -3,74 +3,117 @@
 {% block title %}Choisir votre place{% endblock %}
 
 {% block body %}
+
     <h1>Choisissez votre place</h1>
 
-    <!-- Conteneur du plan des sièges -->
-    <div id="seat-map">
-        <img src="{{ asset('img/seat/seat.png') }}" alt="Plan des sièges">
-        
-        <!-- Zones cliquables avec les coordonnées fournies -->
-        
-        <div class="seat" data-seat="A1" style="top: 155px; left: 42px;"></div>
-        <div class="seat" data-seat="A2" style="top: 168px; left: 91px;"></div>
-        <div class="seat" data-seat="B1" style="top: 152px; left: 147px;"></div>
-        <div class="seat" data-seat="B2" style="top: 152px; left: 205px;"></div>
-        <div class="seat" data-seat="B3" style="top: 150px; left: 205px;"></div>
-        <div class="seat" data-seat="B4" style="top: 149px; left: 262px;"></div>
+    <div id="seats-container">
+        {% set grouped_places = {} %}
+
+        {% for place in places %}
+            {% set row = place.code|first %}
+
+            {# Initialisation correcte du tableau pour éviter l'erreur #}
+            {% if grouped_places[row] is not defined %}
+                {% set grouped_places = grouped_places|merge({ (row): [] }) %}
+            {% endif %}
+
+            {# Ajout des places au bon groupe #}
+            {% set grouped_places = grouped_places|merge({ (row): grouped_places[row]|merge([place]) }) %}
+        {% endfor %}
+        {# Affichage des places par rangée #}
+{# ... Votre code existant ... #}
+
+{# Formulaire de sélection de place #}
+<form method="GET" action="{{ path('app_vente_atelier_new') }}">
+    {# Champs cachés pour les paramètres requis #}
+    <input type="hidden" name="nom" value="{{ atelier.nom }}">
+    <input type="hidden" name="prix" value="{{ atelier.prix }}">
+    <input type="hidden" name="dateAtelier" value="{{ atelier.dateAtelier|date('Y-m-d') }}">
+
+    {# Grille des places #}
+    <div class="seat-grid">
+        {% for row, row_places in grouped_places %}
+            <div class="seat-row">
+                {% for place in row_places %}
+                    <button 
+                        type="submit" 
+                        name="place" 
+                        value="{{ place.code }}" 
+                        data-code="{{ place.code }}" 
+                        onclick="selectSeat(this)"
+                        class="seat-button {% if not place.isAvailable %}disabled{% endif %} {% if app.request.query.get('place') == place.code %}selected{% endif %}" 
+                        {% if not place.isAvailable %}disabled{% endif %}
+                    >
+                        {{ place.code }}
+                    </button>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</form>
+
+
+{# Message de réservation #}
+{% if app.request.query.get('place') %}
+    <p class="success-message">Place sélectionnée : {{ app.request.query.get('place') }}</p>
+    <a href="{{ path('app_vente_atelier_new', { 
+        'nom': atelier.nom, 
+        'prix': atelier.prix, 
+        'dateAtelier': atelier.dateAtelier|date('Y-m-d'),
+        'place': app.request.query.get('place') 
+    }) }}" class="btn btn-primary">
+        Réserver
+    </a>
+{% else %}
+   <!-- <p class="error-message">Veuillez sélectionner une place.</p>
+    <button class="btn btn-disabled" disabled>Réserver</button> -->
+{% endif %}
     </div>
 
-    <p>Place sélectionnée : <span id="selected-seat">Aucune</span></p>
+    <p id="reservation-message"></p>
 
+    <style>
+        #seats-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .seat-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .seat-button {
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid black;
+            background-color: green;
+            color: white;
+        }
+
+        .seat-button.disabled {
+            background-color: red;
+            cursor: not-allowed;
+        }
+    </style>
     <script>
-        document.querySelectorAll('.seat').forEach(seat => {
-            seat.addEventListener('click', function() {
-                let seatCode = this.getAttribute('data-seat');
-                document.getElementById('selected-seat').textContent = seatCode;
+        let selectedPlace = false;  // Variable JavaScript pour suivre la sélection de la place
 
-                // Envoyer la requête de réservation
-                reservePlace(seatCode);
-            });
-        });
+        function selectSeat(button) {
+            // Si une place est sélectionnée, on définit selectedPlace à true
+            selectedPlace = true;
 
-        function reservePlace(placeCode) {
-            fetch('/reserve-place', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: placeCode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la réservation.');
-            });
+            // Ajout d'un style pour indiquer la sélection
+            button.classList.add('selected');
+
+            // Optionnel : afficher la place sélectionnée dans la console ou un autre endroit
+            console.log('Place sélectionnée: ' + button.getAttribute('data-code'));
         }
     </script>
 
-    <style>
-        #seat-map {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .seat {
-            position: absolute;
-            width: 30px; /* Ajuste la taille en fonction des sièges */
-            height: 30px;
-            background: rgba(255, 0, 0, 0.5); /* Rouge transparent pour tester */
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .seat:hover {
-            background: rgba(0, 255, 0, 0.5); /* Passe au vert au survol */
-        }
-    </style>
+    <script src="{{ asset('assetsback/js/seat-selection.js') }}"></script>
 
 {% endblock %}

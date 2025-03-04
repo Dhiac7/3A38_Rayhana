@@ -33,6 +33,7 @@ public function index(SessionInterface $session, EntityManagerInterface $entityM
     return $this->render('baseAdmin.html.twig', [
         'controller_name' => 'DashboardController',
         'loggedInUser' => User::getCurrentUser(),
+        
     ]);
 }
 

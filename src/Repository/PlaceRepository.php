@@ -40,4 +40,14 @@ class PlaceRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countTakenSeatsByAtelier(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('a.id AS atelier_id, COUNT(p.id) AS taken_seats')
+            ->innerJoin('p.atelier', 'a') 
+            ->where('p.isAvailable = 1')
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
