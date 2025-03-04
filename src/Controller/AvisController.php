@@ -18,8 +18,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-use Symfony\Component\Mailer\MailerInterface;
+
+
+use Symfony\Component\Messenger\MessageBusInterface;
+use App\Message\SendEmailMessage;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+
+
 
 #[Route('/avis')]
 final class AvisController extends AbstractController{
@@ -52,58 +58,101 @@ final class AvisController extends AbstractController{
         ]);
     }
 
-    #[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
-public function new(
-    Request $request, 
-    EntityManagerInterface $entityManager, 
-    SessionInterface $session,
-    \App\Service\CommentAnalyzer $commentAnalyzer,
-    MailerInterface $mailer
-): Response {
+    
+
+   
+    /*#[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, MailerInterface $mailer): Response
+{
     $loggedInUserId = $session->get('user_id');
+    
     if (!$loggedInUserId) {
         return $this->redirectToRoute('app_user_login');
     }
+
+    // Récupérer l'utilisateur connecté
     $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
     if (!$loggedInUser) {
         return $this->redirectToRoute('app_user_login');
     }
-    
+
     $avi = new Avis();
     $form = $this->createForm(AvisType::class, $avi);
     $form->handleRequest($request);
-    
-    if ($form->isSubmitted() && $form->isValid()) {
-        // (Optionnel) Vérifier via CommentAnalyzer, etc...
-        // Par exemple, appeler l'API pour analyser le commentaire, etc.
 
+    if ($form->isSubmitted() && $form->isValid()) {
         $avi->setClient($loggedInUser);
         $entityManager->persist($avi);
         $entityManager->flush();
-        
-        // Création et envoi de l'email automatique
+
+        // Envoi de l'email après avoir persisté l'avis
         $email = (new Email())
-            ->from('no-reply@votredomaine.com')
-            ->to($loggedInUser->getEmail())
-            ->subject('Votre avis est en cours de traitement')
-            ->html('<p>Nous avons bien reçu votre réclamation. Nous la traitons.</p>');
+            ->from('noreply@example.com') // Changez l'adresse d'envoi si nécessaire
+            ->to($loggedInUser->getEmail()) // L'email de l'utilisateur connecté
+            ->subject('Avis bien reçu')
+            ->text('Votre avis a bien été reçu. Merci pour votre retour !');
 
         $mailer->send($email);
-        
+
         return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
     return $this->render('avis/new.html.twig', [
         'avi' => $avi,
-        'form' => $form->createView(),
+        'form' => $form,
         'loggedInUser' => $loggedInUser,
     ]);
 }
+*/
+
+
+#[Route('/new', name: 'app_avis_new', methods: ['GET', 'POST'])]
+public function new(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    SessionInterface $session,
+    MailerInterface $mailer
+): Response {
+    $loggedInUserId = $session->get('user_id');
     
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_login');
+    }
 
+    // Récupérer l'utilisateur connecté
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_login');
+    }
 
+    $avi = new Avis();
+    $form = $this->createForm(AvisType::class, $avi);
+    $form->handleRequest($request);
 
+    if ($form->isSubmitted() && $form->isValid()) {
+        $avi->setClient($loggedInUser);
+        $entityManager->persist($avi);
+        $entityManager->flush();
 
+        // Envoi de l'email après avoir persisté l'avis
+        $email = (new Email())
+            ->from('iheb.1603@hotmail.com') // Changez l'adresse d'envoi si nécessaire
+            ->to($loggedInUser->getEmail()) // L'email de l'utilisateur connecté
+            ->subject('Avis bien reçu')
+            ->text('Votre avis a bien été reçu. Merci pour votre retour !');
+
+        // Use the custom Mailtrap transport
+        $mailer->send($email, null, 'mailtrap');
+
+        return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('avis/new.html.twig', [
+        'avi' => $avi,
+        'form' => $form,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_avis_show', methods: ['GET'], requirements: ['id' => '\d+'])]
 public function show(Avis $avi, SessionInterface $session, EntityManagerInterface $entityManager): Response
