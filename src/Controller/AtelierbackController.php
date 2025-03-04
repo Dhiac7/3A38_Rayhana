@@ -98,6 +98,13 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         }
 
         $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
+        $atelier->setTitle($atelier->getNom());
+        $atelier->setStartAt($atelier->getDateAtelier());
+        $atelier->setStartAt($atelier->getDateAtelier());
+        $atelier->setEndAt($atelier->getDateAtelier());  
+       // $atelier->setIsAvailable($atelier->getDateAtelier());
+
+
 
         // Sauvegarde de l’atelier en base de données
         $em->persist($atelier);
@@ -112,6 +119,8 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
                 $place = new Place();
                 $place->setCode($code . $atelier->getId() . "." . $i);
                 $place->setAtelier($atelier); // Assuming Place has a ManyToOne relation with Atelier
+                $place->setIsAvailable(true);
+
                 $em->persist($place);
             }
         }

@@ -34,8 +34,12 @@
                                         <p><strong>Nom:</strong> {{ atelier.nom }}</p>
                                         <p><strong>Date:</strong> {{ atelier.dateAtelier|date('d M Y') }}</p>
                                         <p><strong>Prix:</strong> {{ atelier.prix }} €</p>
-                                        <a href="{{ path('choose_seat', { 'id': atelier.id, 'nom': atelier.nom, 'prix': atelier.prix, 'dateAtelier': atelier.dateAtelier|date('Y-m-d') }) }}" class="btn btn-primary">Choisir votre place</a>
-                                    </div>
+                                <a href="{{ path('choose_seat', { 
+                                    'id': atelier.id, 
+                                    'nom': atelier.nom, 
+                                    'prix': atelier.prix, 
+                                    'dateAtelier': atelier.dateAtelier|date('Y-m-d') 
+                                }) }}" class="btn btn-primary">Choisir votre place</a>                                    </div>
                                 </div>
                             </div>
 

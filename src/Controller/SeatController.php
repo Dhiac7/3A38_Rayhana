@@ -13,32 +13,28 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SeatController extends AbstractController
-{#[Route('/choisir-place', name: 'choose_seat')]
-    public function index(Request $request, EntityManagerInterface $entityManager,PlaceRepository $placeRepository): Response
+{
+    #[Route('/choisir-place/{id}/{nom}/{prix}/{dateAtelier}', name: 'choose_seat')]
+    public function index(Request $request, EntityManagerInterface $entityManager, PlaceRepository $placeRepository, int $id, string $nom, float $prix, string $dateAtelier): Response
     {
-        $places = $placeRepository->findAll();
-        $nom = $request->query->get('nom');
-        $prix = $request->query->get('prix');
-        $dateAtelier = $request->query->get('dateAtelier');
-    
-        // Récupérer l'atelier depuis la base de données
-        $atelier = $entityManager->getRepository(Atelier::class)->findOneBy([
-            'nom' => $nom,
-            'prix' => $prix,
-            'date_atelier' => new \DateTime($dateAtelier) // Assurez-vous que le champ est correct
-        ]);
+        // Find the Atelier by its ID
+        $atelier = $entityManager->getRepository(Atelier::class)->find($id);
     
         if (!$atelier) {
-            // Gérer le cas où l'atelier n'existe pas
+            // Handle the case where the Atelier is not found
             $this->addFlash('error', 'Atelier non trouvé.');
             return $this->redirectToRoute('app_vente_index');
         }
+    
+        // Retrieve all places associated with this Atelier
+        $places = $placeRepository->findBy(['atelier' => $atelier]);
+    
+        // Render the template with the places and atelier data
         return $this->render('seat/choose_seat.html.twig', [
             'places' => $places,
             'atelier' => $atelier,
         ]);
-    }
-    
+    } 
     #[Route('/reserve-place', name: 'reserve_seat', methods: ['POST'])]
 public function reservePlace(Request $request, PlaceRepository $placeRepository, EntityManagerInterface $entityManager): JsonResponse
 {

@@ -1,6 +1,8 @@
+{% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-    <h1 class="calendar-title">Calendrier des ateliers</h1>
+
+    <h1 class="calendar-title">🌿 Calendrier des Ateliers</h1>
 
     <div id="calendar" class="calendar-container"></div>
 
@@ -10,17 +12,30 @@
     {# Inclusion des fichiers JS nécessaires #}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 
-    {# Inclure le fichier JS qui initialise FullCalendar #}
+    {# Initialisation de FullCalendar #}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',  // Vue par défaut
-                events: '/api/events',        // URL de l'API qui renvoie les événements
-                eventColor: '#378006',        // Personnalisation de la couleur des événements
+                initialView: 'dayGridMonth',
+                events: '/api/events',
+                eventColor: '#66BB6A',
+                eventTextColor: '#ffffff',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                buttonText: {
+                    today: 'Aujourd’hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour',
+                    list: 'Agenda'
+                },
                 eventClick: function(info) {
-                    alert('Atelier: ' + info.event.title + '\nDate: ' + info.event.start.toISOString());
+                    alert('📝 Atelier : ' + info.event.title + '\n📅 Date : ' + info.event.start.toLocaleString());
                 }
             });
 
@@ -28,22 +43,58 @@
         });
     </script>
 
-    {# Ajouter des styles personnalisés #}
+    {# Styles personnalisés #}
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #E3F2FD, #E8F5E9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
         .calendar-title {
-            font-size: 2rem;           /* Taille du titre */
-            color: #4CAF50;            /* Couleur du texte */
-            text-align: center;        /* Centrer le texte */
-            margin-bottom: 20px;       /* Marge en bas du titre */
+            font-size: 2.5rem;
+            color: #388E3C;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .calendar-container {
-            max-width: 900px;          /* Largeur maximale du calendrier */
-            margin: 0 auto;            /* Centrer le calendrier sur la page */
-            padding: 20px;             /* Padding autour du calendrier */
-            border: 1px solid #ddd;   /* Bordure autour du calendrier */
-            border-radius: 10px;       /* Coins arrondis */
-            background-color: #f9f9f9; /* Fond léger */
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .calendar-container:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .fc-toolbar {
+            font-weight: bold;
+        }
+
+        .fc-daygrid-event {
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .fc-daygrid-event:hover {
+            transform: scale(1.05);
+            background: #4CAF50 !important;
         }
     </style>
 {% endblock %}
