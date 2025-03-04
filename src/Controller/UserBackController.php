@@ -161,6 +161,7 @@ final class UserBackController extends AbstractController
                 $error = 'Accès refusé. Seuls les utilisateurs avec les rôles suivants peuvent se connecter : ' . implode(', ', $allowedRoles) . '.';
             } elseif (User::getCurrentUser()!=null) { 
                 $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
+               // return $this->redirectToRoute('app_dashboard');
             } elseif ($session->get('user_id')!=null) { 
                 $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
             } else {
@@ -169,8 +170,12 @@ final class UserBackController extends AbstractController
                         User::setCurrentUser($user);
                         $entityManager->flush();
 
-                        return $this->redirectToRoute('app_dashboard');
-                    }
+                        return $this->render('baseAdmin.html.twig', [
+                            'controller_name' => 'DashboardController',
+                            'loggedInUser' => User::getCurrentUser(),
+                            
+                        ]);                    
+                }
         }
 
         return $this->render('user/loginback.html.twig', [
