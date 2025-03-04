@@ -15,26 +15,8 @@ final class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
 public function index(SessionInterface $session, EntityManagerInterface $entityManager): Response 
 {
-    $userId = $session->get('user_id');
-
-    if (!$userId) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($userId);
-
-    if (!$loggedInUser) {
-        $session->remove('user_id');
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    User::setCurrentUser($loggedInUser);
-
-    return $this->render('baseAdmin.html.twig', [
-        'controller_name' => 'DashboardController',
-        'loggedInUser' => User::getCurrentUser(),
-        
-    ]);
+    
+    return $this->redirectToRoute('app_user_loginback');
 }
 
 }
