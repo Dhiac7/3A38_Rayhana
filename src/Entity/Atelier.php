@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use App\Entity\AtelierLikes;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AtelierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,6 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert ;
 #[ORM\Entity(repositoryClass: AtelierRepository::class)]
 class Atelier
 {
+    #[ORM\OneToMany(mappedBy: 'atelier', targetEntity: AtelierLikes::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $likes;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -74,10 +78,6 @@ class Atelier
     /**
      * @var Collection<int, User>
      */
-
-
-
-
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'ateliers')]
     private Collection $users;
 
@@ -90,11 +90,36 @@ class Atelier
     #[ORM\OneToMany(targetEntity: Dechet::class, mappedBy: 'dechet')]
     private Collection $dechet;
 
+    #[ORM\Column(type: "string", length: 255)]
+    private string $title;
+
+    #[ORM\Column(type: "datetime")]
+    private \DateTimeInterface $startAt;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $endAt = null;
+
+    /**
+     * @var Collection<int, AtelierLikes>
+     */
+    #[ORM\OneToMany(targetEntity: AtelierLikes::class, mappedBy: 'atelier')]
+    private Collection $atelierLikes;
+
+    /**
+     * @var Collection<int, Place>
+     */
+    #[ORM\OneToMany(targetEntity: Place::class, mappedBy: 'atelier')]
+    private Collection $places;
+
+ 
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->nbrplacedispo = $this->capacite_max;
-        $this->dechet = new ArrayCollection(); 
+        $this->dechet = new ArrayCollection();
+        $this->atelierLikes = new ArrayCollection();
+        $this->places = new ArrayCollection(); 
     }
 
 
@@ -286,5 +311,118 @@ class Atelier
 
         return $this;
     }
+       // Getters et Setters
+  
+       public function getTitle(): string
+       {
+           return $this->title;
+       }
+   
+       public function setTitle(string $title): self
+       {
+           $this->title = $title;
+           return $this;
+       }
+   
+       public function getStartAt(): \DateTime
+       {
+           return $this->startAt;
+       }
+   
+       public function setStartAt(\DateTime $startAt): self
+       {
+           $this->startAt = $startAt;
+           return $this;
+       }
+   
+       public function getEndAt(): ?\DateTime
+       {
+           return $this->endAt;
+       }
+   
+       public function setEndAt(?\DateTime $endAt): self
+       {
+           $this->endAt = $endAt;
+           return $this;
+       }
+
+       /**
+        * @return Collection<int, AtelierLikes>
+        */
+       public function getAtelierLikes(): Collection
+       {
+           return $this->atelierLikes;
+       }
+
+       public function addAtelierLike(AtelierLikes $atelierLike): static
+       {
+           if (!$this->atelierLikes->contains($atelierLike)) {
+               $this->atelierLikes->add($atelierLike);
+               $atelierLike->setAtelier($this);
+           }
+
+           return $this;
+       }
+
+       public function removeAtelierLike(AtelierLikes $atelierLike): static
+       {
+           if ($this->atelierLikes->removeElement($atelierLike)) {
+               // set the owning side to null (unless already changed)
+               if ($atelierLike->getAtelier() === $this) {
+                   $atelierLike->setAtelier(null);
+               }
+           }
+
+           return $this;
+       }
+// src/Entity/Atelier.php
+
+public function getLikesCount(): int
+{
+    return $this->atelierLikes->filter(function (AtelierLikes $like) {
+        return $like->isLiked() === true;
+    })->count();
+}
+
+public function getDislikesCount(): int
+{
+    return $this->atelierLikes->filter(function (AtelierLikes $like) {
+        return $like->isLiked() === false;
+    })->count();
+}
+
+/**
+ * @return Collection<int, Place>
+ */
+public function getPlaces(): Collection
+{
+    return $this->places;
+}
+
+public function addPlace(Place $place): static
+{
+    if (!$this->places->contains($place)) {
+        $this->places->add($place);
+        $place->setAtelier($this);
+    }
+
+    return $this;
+}
+
+public function removePlace(Place $place): static
+{
+    if ($this->places->removeElement($place)) {
+        // set the owning side to null (unless already changed)
+        if ($place->getAtelier() === $this) {
+            $place->setAtelier(null);
+        }
+    }
+
+    return $this;
+}
+
+
+
+   
 
 }

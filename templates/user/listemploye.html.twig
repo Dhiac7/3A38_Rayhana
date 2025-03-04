@@ -84,6 +84,9 @@
                          <a href="{{ path('app_transactionfinancier_new', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
                             <i class="mdi mdi-pencil"></i> Payer
                         </a>
+                         <a href="{{ path('admin_ban_employe', {'id': user.id}) }}" class="btn btn-sm" style="background-color: #fff; color: #2F4F4F;">  {# Consistent button styling #}
+                            <i class="mdi mdi-pencil"></i> Banner compte
+                        </a>
                     </td>
                 </tr>
             {% else %}

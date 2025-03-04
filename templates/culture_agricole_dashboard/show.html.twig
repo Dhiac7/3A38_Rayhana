@@ -47,6 +47,13 @@
                                          aria-valuemax="1000">
                                     </div>
                                 </div>
+                                <br>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Rendement Totale</h4>
+                                        <h2 class="text-primary">{{ rendementTotal }} <small class="h5">kg</small></h2>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,29 +83,128 @@
                     </div>
 
                     <!-- Timeline -->
-                    <div class="col-12 grid-margin">
-                        <div class="card shadow border-0">
-                            <div class="card-body">
-                                <h4 class="card-title mb-4">Chronologie</h4>
-                                <div class="timeline">
-                                    <div class="timeline-item border-start border-primary ps-4 pb-4 position-relative">
-                                        <div class="timeline-point bg-primary position-absolute top-0 start-0 translate-middle"></div>
-                                        <div class="timeline-content">
-                                            <h6 class="text-primary mb-1">Semis</h6>
-                                            <p class="text-muted mb-0">{{ culture_agricole.dateSemi|date('d M Y') }}</p>
+<!-- Timeline -->
+<div class="col-12 grid-margin">
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Chronologie des opérations</h4>
+            <div class="timeline">
+
+                {# Création d'un tableau unique d'événements triés #}
+                {% set all_events = [] %}
+                
+                {# Ajout du semis #}
+                {% set all_events = all_events|merge([{
+                    date: culture_agricole.dateSemi,
+                    type: 'semis',
+                    label: 'Semis initial',
+                    icon: 'mdi-seed',
+                    color: 'success'
+                }]) %}
+
+                {# Ajout des traitements #}
+                {% for traitement in traitements_planifies %}
+                    {% set all_events = all_events|merge([{
+                        date: traitement.date,
+                        type: 'traitement',
+                        label: traitement.label,
+                        icon: 'mdi-spray',
+                        color: 'warning',
+                        done: traitement.date < now
+                    }]) %}
+                {% endfor %}
+
+                {# Ajout de la récolte estimée #}
+                {% if date_recolte_estimee %}
+                    {% set all_events = all_events|merge([{
+                        date: date_recolte_estimee,
+                        type: 'recolte',
+                        label: 'Récolte estimée',
+                        icon: 'mdi-sack',
+                        color: 'danger',
+                        rendement: culture_agricole.rendementEstime * culture_agricole.superficie
+                    }]) %}
+                {% endif %}
+
+                {# Tri des événements par date #}
+                {% set sorted_events = all_events|sort((a, b) => a.date <=> b.date) %}
+
+                {# Affichage de la timeline triée #}
+                {% for event in sorted_events %}
+                    <div class="timeline-item border-start border-{{ event.color }} ps-4 pb-4 position-relative">
+                        <div class="timeline-point bg-{{ event.color }} position-absolute top-0 start-0 translate-middle"></div>
+                        <div class="timeline-content">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="text-{{ event.color }} mb-1">
+                                        <i class="mdi {{ event.icon }} me-2"></i>
+                                        {{ event.label }}
+                                    </h6>
+                                    <p class="text-muted mb-0">
+                                        {{ event.date|date('d M Y') }}
+                                    </p>
+                                    {% if event.type == 'traitement' %}
+                                        <div class="mt-2">
+                                            <span class="badge bg-{{ event.done ? 'success' : 'warning' }}-light text-{{ event.done ? 'success' : 'warning' }}">
+                                                {{ event.done ? '✓ Terminé' : '⌛ En attente' }}
+                                            </span>
+                                            {% if not event.done %}
+                                                <small class="text-muted ms-2">
+                                                    (dans {{ event.date.diff(now).days }} jours)
+                                                </small>
+                                            {% endif %}
                                         </div>
-                                    </div>
-                                    <div class="timeline-item border-start border-warning ps-4 pb-4 position-relative">
-                                        <div class="timeline-point bg-warning position-absolute top-0 start-0 translate-middle"></div>
-                                        <div class="timeline-content">
-                                            <h6 class="text-warning mb-1">Traitement</h6>
-                                            <p class="text-muted mb-0">15 Mars 2024</p>
-                                        </div>
-                                    </div>
+                                    {% endif %}
                                 </div>
+                                {% if event.type == 'recolte' %}
+                                    <div class="text-end">
+                                        <div class="badge bg-danger-light text-danger">
+                                            {{ event.rendement|number_format }} kg
+                                        </div>
+                                        <div class="progress mt-2" style="height: 5px; width: 100px">
+                                            {% set progress = ((now.timestamp - culture_agricole.dateSemi.timestamp) / (event.date.timestamp - culture_agricole.dateSemi.timestamp)) * 100 %}
+                                            <div class="progress-bar bg-danger" 
+                                                 role="progressbar" 
+                                                 style="width: {{ progress|round }}%"
+                                                 aria-valuenow="{{ progress|round }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
+                {% endfor %}
+
+                {# Bloc prochaine intervention fixe en bas #}
+                <div class="timeline-item border-start border-info ps-4 pb-4 position-relative">
+                    <div class="timeline-point bg-info position-absolute top-0 start-0 translate-middle"></div>
+                    <div class="timeline-content">
+                        <h6 class="text-info mb-1">
+                            <i class="mdi mdi-alert-circle-outline me-2"></i>
+                            {% if next_intervention %}
+                                Prochaine intervention : {{ next_intervention.label }}
+                            {% else %}
+                                Aucune intervention planifiée
+                            {% endif %}
+                        </h6>
+                        {% if next_intervention %}
+                            <p class="text-muted mb-0">
+                                {{ next_intervention.date|date('d M Y') }}
+                                <span class="ms-2 badge bg-info-light text-info">
+                                    J-{{ next_intervention.date.diff(now).days }}
+                                </span>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
                     <!-- Section Parcelles associées -->
                     <div class="col-12 grid-margin">
@@ -166,7 +272,34 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <!-- Météo -->
+                <div class="card shadow border-0">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Météo à {{ weather.name }}</h4>
+                        <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                            <div class="bg-gradient-primary p-3 rounded-circle me-3">
+                                <i class="mdi mdi-thermometer text-white h4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Température</small>
+                                <h5 class="mb-0">{{ weather.main.temp }}°C</h5>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="bg-gradient-primary p-3 rounded-circle me-3">
+                                <i class="mdi mdi-weather-cloudy text-white h4"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Conditions</small>
+                                <h5 class="mb-0">{{ weather.weather[0].description }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
         </div>
 
         <!-- Section Actions -->

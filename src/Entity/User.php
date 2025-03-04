@@ -229,6 +229,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $SessionId = null;
 
     /**
+     * @var Collection<int, AtelierLikes>
+     */
+    #[ORM\OneToMany(targetEntity: AtelierLikes::class, mappedBy: 'user')]
+    private Collection $atelierLikes;
+
+    /**
      * @var Collection<int, Message>
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'sender')]
@@ -258,6 +264,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->employes = new ArrayCollection();
         $this->cultureAgricoles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->atelierLikes = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->receivedMessages = new ArrayCollection();
 
@@ -806,6 +813,31 @@ public function getPassword(): ?string
     }
 
     /**
+     * @return Collection<int, AtelierLikes>
+     */
+    public function getAtelierLikes(): Collection
+    {
+        return $this->atelierLikes;
+    }
+
+    public function addAtelierLike(AtelierLikes $atelierLike)
+    {
+        if (!$this->atelierLikes->contains($atelierLike)) {
+            $this->atelierLikes->add($atelierLike);
+            $atelierLike->setUser($this);
+        }
+    }
+    public function removeAtelierLike(AtelierLikes $atelierLike)
+    {
+        if ($this->atelierLikes->removeElement($atelierLike)) {
+            // set the owning side to null (unless already changed)
+            if ($atelierLike->getUser() === $this) {
+                $atelierLike->setUser(null);
+            }
+        }
+
+    }
+      /**
      * @return Collection<int, Message>
      */
     public function getMessages(): Collection
@@ -823,6 +855,7 @@ public function getPassword(): ?string
         return $this;
     }
 
+   
     public function removeMessage(Message $message): static
     {
         if ($this->messages->removeElement($message)) {
@@ -834,6 +867,7 @@ public function getPassword(): ?string
 
         return $this;
     }
+
 
     /**
      * @return Collection<int, Message>

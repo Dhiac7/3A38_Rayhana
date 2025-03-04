@@ -1,5 +1,49 @@
-{% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="calendar"></div>
+    <h1 class="calendar-title">Calendrier des ateliers</h1>
+
+    <div id="calendar" class="calendar-container"></div>
+
+    {# Inclusion des fichiers CSS #}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" rel="stylesheet">
+
+    {# Inclusion des fichiers JS nécessaires #}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+
+    {# Inclure le fichier JS qui initialise FullCalendar #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',  // Vue par défaut
+                events: '/api/events',        // URL de l'API qui renvoie les événements
+                eventColor: '#378006',        // Personnalisation de la couleur des événements
+                eventClick: function(info) {
+                    alert('Atelier: ' + info.event.title + '\nDate: ' + info.event.start.toISOString());
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+
+    {# Ajouter des styles personnalisés #}
+    <style>
+        .calendar-title {
+            font-size: 2rem;           /* Taille du titre */
+            color: #4CAF50;            /* Couleur du texte */
+            text-align: center;        /* Centrer le texte */
+            margin-bottom: 20px;       /* Marge en bas du titre */
+        }
+
+        .calendar-container {
+            max-width: 900px;          /* Largeur maximale du calendrier */
+            margin: 0 auto;            /* Centrer le calendrier sur la page */
+            padding: 20px;             /* Padding autour du calendrier */
+            border: 1px solid #ddd;   /* Bordure autour du calendrier */
+            border-radius: 10px;       /* Coins arrondis */
+            background-color: #f9f9f9; /* Fond léger */
+        }
+    </style>
 {% endblock %}

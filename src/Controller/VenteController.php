@@ -405,6 +405,13 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
         // Message de succès
         $this->addFlash('success', 'Vente et transaction enregistrées avec succès.');
         return $this->redirectToRoute('app_vente_index');
+        
+    }
+    // Vérification de la sélection de la place
+    $placeavailable= $request->query->get('place');
+    if (!$placeavailable) {
+        $this->addFlash('error', 'Vous devez choisir une place avant de réserver.');
+        return $this->redirectToRoute('app_atelier_index');
     }
 
     // Rendu du template avec les données

@@ -106,6 +106,7 @@ class UserRepository extends ServiceEntityRepository
         return $ageGroups;
     }
     
+
     public function getEmployeeAgeStatistics()
     {
         $users = $this->createQueryBuilder('u')
