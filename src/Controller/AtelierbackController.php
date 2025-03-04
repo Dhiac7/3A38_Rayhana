@@ -24,37 +24,56 @@ final class AtelierbackController extends AbstractController
 {
 
     #[Route(name: 'app_atelier_indexBack', methods: ['GET'])]
-    // public function index(AtelierRepository $atelierRepository): Response
-    public function indexBack(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator , SessionInterface $session,EntityManagerInterface $entityManager): Response
-     {
+    public function indexBack(Request $request, AtelierRepository $atelierRepository, PaginatorInterface $paginator, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    {
         $loggedInUserId = $session->get('user_id');
         
         if (!$loggedInUserId) {
             return $this->redirectToRoute('app_user_loginback');
         }
+        
         $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        
         if (!$loggedInUser) {
             return $this->redirectToRoute('app_user_loginback');
         }
+        
         if ($loggedInUser->getRole() !== 'agriculteur') {
             return $this->redirectToRoute('app_dashboard'); 
         }
-         $query = $atelierRepository->findAll();
-         $pagination = $paginator->paginate(
-             $query, // Donneili bch namlou pagination
-             $request->query->getInt('page', 1), // Num page 
-             6 // nbr element par page 
-         );
-         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Load from .env
+    
+        // Get sort direction and field to sort by
+        $sort = $request->query->get('sort', 'asc'); // Default sort order is 'asc'
+        $field = $request->query->get('field', 'nom'); // Default field to sort by is 'nom'
+    
+        // Ensure that the sort direction is either 'asc' or 'desc'
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc'; // Default to 'asc' if invalid
+        }
+    
+        // Build the query to sort by the selected field
+        $query = $atelierRepository->createQueryBuilder('a')
+            ->orderBy('a.' . $field, $sort)
+            ->getQuery();
+    
+        // Pagination
+        $pagination = $paginator->paginate(
+            $query, // Query with sorting
+            $request->query->getInt('page', 1), // Current page
+            6 // Number of items per page
+        );
+    
+        // Load Mapbox API key from .env
+        $mapboxApiKey = $_ENV['MAPBOX_API_KEY'];
+    
+        return $this->render('atelier/indexBack.html.twig', [
+            'pagination' => $pagination,
+            'MAPBOX_API_KEY' => $mapboxApiKey,
+            'loggedInUser' => $loggedInUser,
+        ]);
+    }
+    
 
-         return $this->render('atelier/indexBack.html.twig', [
-             'pagination' => $pagination,
-             'MAPBOX_API_KEY' => $mapboxApiKey,
-             'loggedInUser' => $loggedInUser,
-
-         ]);
-         
-     }
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $em, SessionInterface $session , EntityManagerInterface $entityManager): Response
@@ -99,6 +118,7 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
 
         $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
         $atelier->setTitle($atelier->getNom());
+        //$atelier->setCapaciteMax(30);
         $atelier->setStartAt($atelier->getDateAtelier());
         $atelier->setStartAt($atelier->getDateAtelier());
         $atelier->setEndAt($atelier->getDateAtelier());  
@@ -261,59 +281,65 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         ]);
     }*/
     #[Route('/atelier/list', name: 'atelier_list_ajax')]
-    public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
-    {   
-        // Vérification de la session de l'utilisateur
-        $loggedInUserId = $session->get('user_id');
-            
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-    
-        // Récupération de l'utilisateur
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-     
-        // Récupération des paramètres de tri et de recherche
-        $sortOrder = $request->query->get('sort', '');
-        $searchQuery = $request->query->get('search', '');
-    
-        // Récupération des ateliers avec un tri et une recherche si nécessaire
-        $atelierRepository = $entityManager->getRepository(Atelier::class);
-        $queryBuilder = $atelierRepository->createQueryBuilder('a');
-    
-        if (!empty($searchQuery)) {
-            $queryBuilder->andWhere('a.nom LIKE :search')
-                         ->setParameter('search', '%' . $searchQuery . '%');
-        }
-    
-        if ($sortOrder === "asc") {
-            $queryBuilder->orderBy('a.nom', 'ASC');
-        } elseif ($sortOrder === "desc") {
-            $queryBuilder->orderBy('a.nom', 'DESC');
-        }
-    
-        // Pagination avec KnpPaginator
+public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
+{   
+    // Vérification de la session de l'utilisateur
+    $loggedInUserId = $session->get('user_id');
         
-        $pagination = $paginator->paginate(
-            $queryBuilder, // La requête avec les filtres de recherche et tri
-            $request->query->getInt('page', 1), // Le numéro de la page
-            4 // Le nombre d'éléments par page
-        );
-        // Récupération de la clé API de Mapbox
-        $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
-        
-        // Rendu de la vue avec les données
-        return $this->render('atelier/_list.html.twig', [
+    if (!$loggedInUserId) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+
+    // Récupération de l'utilisateur
+    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+
+    if (!$loggedInUser) {
+        return $this->redirectToRoute('app_user_loginback');
+    }
+ 
+    // Récupération des paramètres de tri et de recherche
+    $sortOrder = $request->query->get('sort', '');
+    $searchQuery = $request->query->get('search', '');
+
+    // Récupération des ateliers avec un tri et une recherche si nécessaire
+    $atelierRepository = $entityManager->getRepository(Atelier::class);
+    $queryBuilder = $atelierRepository->createQueryBuilder('a');
+
+    if (!empty($searchQuery)) {
+        $queryBuilder->andWhere('a.nom LIKE :search')
+                     ->setParameter('search', '%' . $searchQuery . '%');
+    }
+
+    if ($sortOrder === "asc") {
+        $queryBuilder->orderBy('a.nom', 'ASC');
+    } elseif ($sortOrder === "desc") {
+        $queryBuilder->orderBy('a.nom', 'DESC');
+    }
+
+    // Pagination avec KnpPaginator
+    $pagination = $paginator->paginate(
+        $queryBuilder, // La requête avec les filtres de recherche et tri
+        $request->query->getInt('page', 1), // Le numéro de la page
+        4 // Le nombre d'éléments par page
+    );
+
+    // Récupération de la clé API de Mapbox
+    $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
+    
+    // Si la requête est AJAX, on renvoie uniquement la vue partielle avec les ateliers paginés
+    if ($request->isXmlHttpRequest()) {
+        return $this->render('atelier/_atelier_list.html.twig', [
             'pagination' => $pagination,
-            'MAPBOX_API_KEY' => $mapboxApiKey,
-            'loggedInUser' => $loggedInUser,
         ]);
     }
 
+    // Sinon, on rend la vue complète
+    return $this->render('atelier/_list.html.twig', [
+        'pagination' => $pagination,
+        'MAPBOX_API_KEY' => $mapboxApiKey,
+        'loggedInUser' => $loggedInUser,
+    ]);
+}
 
     /*public function deleteAtelierAjax(Request $request, AtelierRepository $atelierRepository, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
     {
