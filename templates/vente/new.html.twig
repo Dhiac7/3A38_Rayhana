@@ -55,9 +55,15 @@
                                             {{ form_errors(form.methodepayement) }}
                                         </div>
                                     </div>
-                                </div>
 
-                              
+                                    <div class="col-lg-12" id="card-element-container" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="card-element">Informations de carte de crédit</label>
+                                            <div id="card-element"></div>
+                                            <div id="card-errors" role="alert"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
                             {{ form_end(form) }}
                         </div>
@@ -88,6 +94,7 @@
 </div>
 
 {% block javascripts %}
+<script src="https://js.stripe.com/v3/"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let quantiteInput = document.getElementById("vente_quantite");
@@ -116,7 +123,51 @@
             validateQuantity();
         });
 
-        updatePrixTotal();
+        // Gestion de l'affichage du champ de carte de crédit
+        let paymentMethodSelect = document.getElementById('vente_methodepayement');
+        let cardElementContainer = document.getElementById('card-element-container');
+
+        paymentMethodSelect.addEventListener('change', function() {
+            if (paymentMethodSelect.value === 'carte_bancaire') {
+                cardElementContainer.style.display = 'block';
+            } else {
+                cardElementContainer.style.display = 'none';
+            }
+        });
+
+        // Initialisation de Stripe
+        var stripe = Stripe('{{ stripe_public_key }}');
+        var elements = stripe.elements();
+        var cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        var form = document.querySelector('.contact-form');
+        form.addEventListener('submit', function(event) {
+            if (paymentMethodSelect.value === 'carte_bancaire') {
+                event.preventDefault();
+
+                // Créer un token Stripe
+                stripe.createToken(cardElement).then(function(result) {
+                    if (result.error) {
+                        // Afficher l'erreur à l'utilisateur
+                        document.getElementById('card-errors').textContent = result.error.message;
+                    } else {
+                        // Insérer le token dans le formulaire
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.setAttribute('type', 'hidden');
+                        hiddenInput.setAttribute('name', 'stripeToken');
+                        hiddenInput.setAttribute('value', result.token.id);
+                        form.appendChild(hiddenInput);
+
+                        // Soumettre le formulaire
+                        form.submit();
+                    }
+                });
+            } else {
+                // Pour les autres méthodes de paiement, soumettez simplement le formulaire
+                form.submit();
+            }
+        });
     });
 </script>
 {% endblock %}

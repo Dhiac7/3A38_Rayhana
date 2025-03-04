@@ -93,16 +93,31 @@
                                     {{ form_label(form.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
                                     {{ form_widget(form.adresse, {'attr': {'class': 'form-select'}}) }}
                                 </div>
+                                <div class="col-md-6">
+                                    {{ form_errors(form.AnneeNaissance) }}
+                                    {{ form_label(form.AnneeNaissance, null, {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.AnneeNaissance, {'attr': {'class': 'form-select'}}) }}
+                                </div>
                             </div>
                             <br>
+                            <div class="row">
+                        <div class="col-md-6">
+                            {{ form_errors(form.genre) }}
+                            {{ form_label(form.genre, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.genre, {'attr': {'class': 'form-select'}}) }}
 
+                          {#  <div class="form-check form-check-inline">
+                                {{ form_widget(form.genre, {'attr': {'class': 'form-check-input'}}) }}
+                            </div>#}
+                        </div>
+                    </div><br>
 
-<div class="row">
-    <div class="col-md-6 d-flex align-items-center">  {# Keep the flexbox for side-by-side buttons #}
-        {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-primary me-2', 'icon': 'mdi mdi-content-save', 'label': 'Enregistrer'}}) }}
-        <a href="{{ path('app_user_listemploye') }}" class="btn btn-gradient-light">Annuler</a>
-    </div>
-</div>
+                <div class="row">
+                    <div class="col-md-6 d-flex align-items-center">  {# Keep the flexbox for side-by-side buttons #}
+                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-gradient-primary me-2', 'icon': 'mdi mdi-content-save', 'label': 'Enregistrer'}}) }}
+                        <a href="{{ path('app_user_listemploye') }}" class="btn btn-gradient-light">Annuler</a>
+                    </div>
+                </div>
 
                             {{ form_end(form) }}
                         </div>

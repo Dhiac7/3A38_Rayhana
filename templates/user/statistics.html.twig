@@ -1,12 +1,12 @@
 {% extends 'baseAdmin.html.twig' %}
 
 {% block body %}
-
 <style>
 .chart-container {
-    height: 500px; 
+    height: 300px; /* Adjusted height */
     width: 100%;    
     position: relative;
+    margin-bottom: 20px; /* Add spacing between charts */
 }
 
 canvas {
@@ -14,93 +14,155 @@ canvas {
     height: 100% !important; 
 }
 </style>
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <div class="row">
-                {# Age Statistics Chart #}
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2>Age Statistics</h2>
-                            <div class="chart-container">
-                                <canvas id="doughnutChart"></canvas>
+
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-12">  {# Use col-12 for full width #}
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <h4 class="card-title mb-0">Clients Statistics</h4>
+                        </div>
+                    </div>
+                    <div class="card-body p-4" style="background-color: #fff;">
+                        {# Client Statistics #}
+                        <div class="row">
+                            {# Client Age Statistics Chart #}
+                            <div class="col-md-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Age Statistics</h6>
+                                        <div class="chart-container">
+                                            <canvas id="clientDoughnutChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Client Gender Statistics Chart #}
+                            <div class="col-md-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Gender Statistics</h6>
+                                        <div class="chart-container">
+                                            <canvas id="clientBarChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+         </div><br>
+            <div class="col-12">  {# Use col-12 for full width #}
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header py-3" style="background-color: #49a760; color: white;">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <h4 class="card-title mb-0">Employees Statistics</h4>
+                        </div>
+                    </div>
+                    <div class="card-body p-4" style="background-color: #fff;">
+                        {# Employee Statistics #}
+                        <div class="row">
+                            {# Employee Age Statistics Chart #}
+                            <div class="col-md-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Age Statistics</h6>
+                                        <div class="chart-container">
+                                            <canvas id="employeeDoughnutChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                {# Gender Statistics Chart #}
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h2>Gender Statistics</h2>
-                            <div class="chart-container">
-                                <canvas id="barChart"></canvas>
+                            {# Employee Gender Statistics Chart #}
+                            <div class="col-md-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6>Gender Statistics</h6>
+                                        <div class="chart-container">
+                                            <canvas id="employeeBarChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+    
+</div>
     </div>
-
+</div>
 
 {# Initialize the charts #}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Age Statistics (Doughnut Chart)
-        const ageLabels = {{ ageStats|map(v => v['age_range'])|json_encode()|raw }};
-        const ageData = {{ ageStats|map(v => v['user_count'])|json_encode()|raw }};
+        // Client Charts
+        initializeClientCharts(
+            {{ clientAgeStats|json_encode()|raw }},
+            {{ clientGenderStats|json_encode()|raw }}
+        );
 
-        var doughnutPieData = {
+        // Employee Charts
+        initializeEmployeeCharts(
+            {{ employeeAgeStats|json_encode()|raw }},
+            {{ employeeGenderStats|json_encode()|raw }}
+        );
+    });
+
+    function initializeClientCharts(clientAgeStats, clientGenderStats) {
+        // Client Age Statistics (Doughnut Chart)
+        const clientAgeLabels = clientAgeStats.map(v => v['age_range']);
+        const clientAgeData = clientAgeStats.map(v => v['user_count']);
+
+        var clientDoughnutPieData = {
             datasets: [{
-                data: ageData,
+                data: clientAgeData,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
                     'rgba(255, 206, 86, 0.5)',
-                    'rgba(75, 192, 192, 0.5)',
-                    'rgba(153, 102, 255, 0.5)',
-                    'rgba(255, 159, 64, 0.5)'
+                    'rgba(75, 192, 192, 0.5)'
                 ],
                 borderColor: [
                     'rgba(255,99,132,1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
+                    'rgba(75, 192, 192, 1)'
                 ],
             }],
-            labels: ageLabels
+            labels: clientAgeLabels
         };
 
-        var doughnutPieOptions = {
+        var clientDoughnutPieOptions = {
             responsive: true,
+            maintainAspectRatio: false, // Allow the chart to adjust its aspect ratio
             animation: {
                 animateScale: true,
                 animateRotate: true
             }
         };
 
-        if ($("#doughnutChart").length) {
-            var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
-            var doughnutChart = new Chart(doughnutChartCanvas, {
+        if ($("#clientDoughnutChart").length) {
+            var clientDoughnutChartCanvas = $("#clientDoughnutChart").get(0).getContext("2d");
+            new Chart(clientDoughnutChartCanvas, {
                 type: 'doughnut',
-                data: doughnutPieData,
-                options: doughnutPieOptions
+                data: clientDoughnutPieData,
+                options: clientDoughnutPieOptions
             });
         }
 
-        // Gender Statistics (Bar Chart)
-        const genderLabels = {{ genderStats|map(v => v['genre'])|json_encode()|raw }};
-        const genderData = {{ genderStats|map(v => v['user_count'])|json_encode()|raw }};
+        // Client Gender Statistics (Bar Chart)
+        const clientGenderLabels = clientGenderStats.map(v => v['genre']);
+        const clientGenderData = clientGenderStats.map(v => v['user_count']);
 
-        var barChartData = {
-            labels: genderLabels,
+        var clientBarChartData = {
+            labels: clientGenderLabels,
             datasets: [{
-                label: '# of Users',
-                data: genderData,
+                label: '# of Clients',
+                data: clientGenderData,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -115,14 +177,14 @@ canvas {
             }]
         };
 
-        var barChartOptions = {
+        var clientBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false, // Allow the chart to adjust its aspect ratio
             scales: {
                 y: {
                     beginAtZero: true
                 }
             },
-            responsive: true,
-            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
@@ -130,14 +192,104 @@ canvas {
             }
         };
 
-        if ($("#barChart").length) {
-            var barChartCanvas = $("#barChart").get(0).getContext("2d");
-            var barChart = new Chart(barChartCanvas, {
+        if ($("#clientBarChart").length) {
+            var clientBarChartCanvas = $("#clientBarChart").get(0).getContext("2d");
+            new Chart(clientBarChartCanvas, {
                 type: 'bar',
-                data: barChartData,
-                options: barChartOptions
+                data: clientBarChartData,
+                options: clientBarChartOptions
             });
         }
-    });
+    }
+
+    function initializeEmployeeCharts(employeeAgeStats, employeeGenderStats) {
+        // Employee Age Statistics (Doughnut Chart)
+        const employeeAgeLabels = employeeAgeStats.map(v => v['age_range']);
+        const employeeAgeData = employeeAgeStats.map(v => v['user_count']);
+
+        var employeeDoughnutPieData = {
+            datasets: [{
+                data: employeeAgeData,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+            }],
+            labels: employeeAgeLabels
+        };
+
+        var employeeDoughnutPieOptions = {
+            responsive: true,
+            maintainAspectRatio: false, // Allow the chart to adjust its aspect ratio
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+
+        if ($("#employeeDoughnutChart").length) {
+            var employeeDoughnutChartCanvas = $("#employeeDoughnutChart").get(0).getContext("2d");
+            new Chart(employeeDoughnutChartCanvas, {
+                type: 'doughnut',
+                data: employeeDoughnutPieData,
+                options: employeeDoughnutPieOptions
+            });
+        }
+
+        // Employee Gender Statistics (Bar Chart)
+        const employeeGenderLabels = employeeGenderStats.map(v => v['genre']);
+        const employeeGenderData = employeeGenderStats.map(v => v['user_count']);
+
+        var employeeBarChartData = {
+            labels: employeeGenderLabels,
+            datasets: [{
+                label: '# of Employees',
+                data: employeeGenderData,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        var employeeBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false, // Allow the chart to adjust its aspect ratio
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        };
+
+        if ($("#employeeBarChart").length) {
+            var employeeBarChartCanvas = $("#employeeBarChart").get(0).getContext("2d");
+            new Chart(employeeBarChartCanvas, {
+                type: 'bar',
+                data: employeeBarChartData,
+                options: employeeBarChartOptions
+            });
+        }
+    }
 </script>
 {% endblock %}

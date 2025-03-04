@@ -1,0 +1,514 @@
+{% extends 'baseAdmin.html.twig' %}
+
+{% block title %}Admin Chat{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #f4f7f6;
+        margin-top: 20px;
+    }
+    .card {
+        background: #fff;
+        transition: .5s;
+        border: 0;
+        margin-bottom: 30px;
+        border-radius: .55rem;
+        position: relative;
+        width: 100%;
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
+    }
+    .chat-app .people-list {
+        width: 280px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 20px;
+        z-index: 7;
+        height: 100%; /* Ensure the list takes full height */
+        overflow-y: auto; /* Enable vertical scrolling */
+        scrollbar-width: thin; /* For modern browsers */
+        scrollbar-color: #888 #f4f7f6; /* Custom scrollbar colors */
+    }
+    /* Custom scrollbar styling for WebKit browsers (Chrome, Safari) */
+    .chat-app .people-list::-webkit-scrollbar {
+        width: 8px;
+    }
+    .chat-app .people-list::-webkit-scrollbar-track {
+        background: #f4f7f6;
+    }
+    .chat-app .people-list::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+    }
+    .chat-app .people-list::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
+    .chat-app .chat {
+        margin-left: 280px;
+        border-left: 1px solid #eaeaea;
+    }
+    .people-list .chat-list li {
+        padding: 10px 15px;
+        list-style: none;
+        border-radius: 3px;
+    }
+    .people-list .chat-list li:hover {
+        background: #efefef;
+        cursor: pointer;
+    }
+    .people-list .chat-list li.active {
+        background: #efefef;
+    }
+    .people-list .chat-list li .name {
+        font-size: 15px;
+    }
+    .people-list .about {
+        float: left;
+        padding-left: 8px;
+    }
+    .people-list .status {
+        color: #999;
+        font-size: 13px;
+    }
+    .chat .chat-header {
+        padding: 15px 20px;
+        border-bottom: 2px solid #f4f7f6;
+    }
+    .chat .chat-header .chat-about {
+        float: left;
+        padding-left: 10px;
+    }
+    .chat .chat-history {
+        padding: 20px;
+        border-bottom: 2px solid #fff;
+        max-height: 400px; /* Set a maximum height for the chat history */
+        overflow-y: auto; /* Enable vertical scrolling */
+        scrollbar-width: thin; /* For modern browsers */
+        scrollbar-color: #888 #f4f7f6; /* Custom scrollbar colors */
+    }
+    /* Custom scrollbar styling for WebKit browsers (Chrome, Safari) */
+    .chat .chat-history::-webkit-scrollbar {
+        width: 8px;
+    }
+    .chat .chat-history::-webkit-scrollbar-track {
+        background: #f4f7f6;
+    }
+    .chat .chat-history::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 4px;
+    }
+    .chat .chat-history::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
+    .chat .chat-history ul {
+        padding: 0;
+    }
+    .chat .chat-history ul li {
+        list-style: none;
+        margin-bottom: 30px;
+    }
+    .chat .chat-history ul li:last-child {
+        margin-bottom: 0px;
+    }
+    .chat .chat-history .message-data {
+        margin-bottom: 15px;
+    }
+    .chat .chat-history .message-data-time {
+        color: #434651;
+        padding-left: 6px;
+    }
+    .chat .chat-history .message {
+        color: #444;
+        padding: 18px 20px;
+        line-height: 26px;
+        font-size: 16px;
+        border-radius: 7px;
+        display: inline-block;
+        position: relative;
+    }
+    .chat .chat-history .message:after {
+        bottom: 100%;
+        left: 7%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-bottom-color: #fff;
+        border-width: 10px;
+        margin-left: -10px;
+    }
+    .chat .chat-history .my-message {
+        background: #efefef;
+    }
+    .chat .chat-history .my-message:after {
+        bottom: 100%;
+        left: 30px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-bottom-color: #efefef;
+        border-width: 10px;
+        margin-left: -10px;
+    }
+    .chat .chat-history .other-message {
+        background: #e8f1f3;
+        text-align: right;
+    }
+    .chat .chat-header img,
+    .chat .chat-history .message-data img,
+    .people-list .chat-list img {
+        border-radius: 10%;
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+    }
+    .people-list .chat-list img {
+        width: 45px;
+        height: 45px;
+    }
+    .chat .chat-history .other-message:after {
+        border-bottom-color: #e8f1f3;
+        left: 93%;
+    }
+    .chat .chat-message {
+        padding: 20px;
+        background: #fff;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        border-top: 1px solid #eaeaea;
+    }
+    .online,
+    .offline,
+    .me {
+        margin-right: 2px;
+        font-size: 8px;
+        vertical-align: middle;
+    }
+    .online {
+        color: #86c541;
+    }
+    .offline {
+        color: #e47297;
+    }
+    .me {
+        color: #1d8ecd;
+    }
+    .float-right {
+        float: right;
+    }
+    .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+    }
+    @media only screen and (max-width: 767px) {
+        .chat-app .people-list {
+            height: 300px;
+            width: 100%;
+            overflow-x: auto;
+            background: #fff;
+            left: -400px;
+            display: none;
+        }
+        .chat-app .people-list.open {
+            left: 0;
+        }
+        .chat-app .chat {
+            margin: 0;
+        }
+        .chat-app .chat .chat-header {
+            border-radius: 0.55rem 0.55rem 0 0;
+        }
+        .chat-app .chat-history {
+            height: calc(100vh - 400px); /* Adjust height for mobile */
+        }
+    }
+    @media only screen and (min-width: 768px) and (max-width: 992px) {
+        .chat-app .chat-history {
+            height: calc(100vh - 350px); /* Adjust height for tablets */
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card chat-app">
+                <!-- User List -->
+                <div id="plist" class="people-list">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </div>
+                    <ul class="list-unstyled chat-list mt-2 mb-0">
+                        {% for user in users %}
+                            <li class="clearfix {% if user.id == selectedUserId %}active{% endif %}" data-user-id="{{ user.id }}">
+                               <div class="about"> <img src="{{ asset('img/users/' ~ user.photo) }}" alt="avatar">{{ user.nom }}</div>
+                                {#<div class="about">
+                                    <div class="name">{{ user.nom }}</div>
+                                </div>#}
+                            </li>
+                        {% else %}
+                            <li>No users available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Chat Window -->
+                {% if selectedUser is not null %}
+                    <div class="chat">
+                        <!-- Chat Header -->
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                               <div class="col-lg-6">
+                                     {#
+                                    <div class="chat-about">
+                                        <h6 class="m-b-0">{{ selectedUser.nom }}</h6>
+                                    </div>#}
+                                </div>
+                                <div class="col-lg-6 hidden-sm text-right">
+                                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat History -->
+                        <div class="chat-history">
+                            <ul class="m-b-0">
+                                {% for message in conversation %}
+                                    <li class="clearfix">
+                                       {# <div class="message-data {% if message.sender.id == adminId %}text-right{% endif %}">
+                                            <img src="{{ asset('img/users/' ~ (message.sender.id == adminId ? loggedInUser.photo : selectedUser.photo)) }}" alt="avatar">
+                                        </div>#}
+                                        <div class="message {% if message.sender.id == adminId %}other-message float-right{% else %}my-message{% endif %}">
+                                            {{ message.content }}
+                                        </div>
+                                       {# <div> <span class="message-data-time">{{ message.createdAt|date('Y-m-d H:i:s') }}</span></div>#}
+
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <input type="text" id="messageInput" class="form-control" placeholder="Enter text here...">
+                                <div class="input-group-append">
+                                    <input type="file" id="fileInput" style="display: none;">
+                                    <label for="fileInput" class="btn btn-outline-secondary">
+                                        <i class="fa fa-paperclip"></i>
+                                    </label>
+                                    <button id="sendButton" class="btn btn-gradient-primary me-2"><i class="fa fa-send"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Please select a user to start a conversation.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Function to auto-scroll to the bottom of the chat history
+    function scrollToBottom() {
+        const chatHistory = $('.chat-history');
+        chatHistory.scrollTop(chatHistory[0].scrollHeight);
+    }
+
+    // Function to fetch and display the conversation for the selected user
+    function fetchAndDisplayConversation(targetUserId) {
+        $.ajax({
+            url: '{{ path("fetch_user_details") }}',
+            type: 'GET',
+            data: {
+                targetUserId: targetUserId,
+                senderId: {{ loggedInUser.id }} // Replace with the logged-in user's ID
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    // Update the chat header with the selected user's details
+                    $('.chat-header .chat-about h6').text(response.selectedUser.nom);
+                    $('.chat-header img').attr('src', '{{ asset("img/users/") }}' + response.selectedUser.photo);
+
+                    // Clear the existing chat history
+                    $('.chat-history ul').empty();
+
+                    // Render the new conversation
+                    response.conversation.forEach(function (message) {
+                        const messageClass = message.sender.id === {{ loggedInUser.id }} ? 'other-message float-right' : 'my-message';
+                        const messageHtml = `
+                            <li class="clearfix">
+                                <div class="message-data ${messageClass.includes('other-message') ? 'text-right' : ''}">
+                                    <span class="message-data-time">${message.timestamp}</span>
+                                    <img src="{{ asset('img/users/') }}${message.sender.photo}" alt="avatar">
+                                </div>
+                                <div class="message ${messageClass}">
+                                    ${message.content}
+                                </div>
+                            </li>`;
+                        $('.chat-history ul').append(messageHtml);
+                    });
+
+                    // Scroll to the top of the chat history
+                    $('.chat-history').scrollTop(0);
+
+                    // Update the active state in the user list
+                    $('.people-list .chat-list li').removeClass('active'); // Remove active class from all users
+                    $(`.people-list .chat-list li[data-user-id="${targetUserId}"]`).addClass('active'); // Add active class to the selected user
+                } else {
+                    alert('Error fetching conversation.');
+                }
+            },
+            error: function () {
+                alert('Error fetching conversation.');
+            }
+        });
+    }
+
+    // Function to send a message via AJAX
+    function sendMessage() {
+        const messageInput = $('#messageInput');
+        const message = messageInput.val().trim();
+        const targetUserId = $('.people-list .active').data('user-id');
+        const fileInput = $('#fileInput')[0];
+        const formData = new FormData();
+
+        if (message !== "" || fileInput.files.length > 0) {
+            formData.append('message', message);
+            formData.append('targetUserId', targetUserId);
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            $.ajax({
+                url: '{{ path("send_message") }}', // Symfony route for sending messages
+                type: 'POST',
+                data: formData,
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Allow sending file as multipart/form-data
+                success: function (response) {
+                    console.log('Server Response:', response); // Debugging: Log the response
+                    if (response.status === 'success') {
+                        // Clear the input fields after sending the message
+                        messageInput.val('');
+                        $('#fileInput').val('');
+                        $('#filePreviewZone').html(''); // Clear the preview area
+
+                        // Display the sent message in the chat history
+                        displayMessage(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error sending message.');
+                }
+            });
+        } else {
+            alert('Please enter a message or attach a file.');
+        }
+    }
+
+    // Display the sent message in the chat history
+    function displayMessage(message) {
+        const messageList = $('.chat-history ul');
+        const newMessage = `
+            <li class="clearfix">
+                <div class="message-data text-right">
+                    <span class="message-data-time">${message.timestamp}</span>
+                    <img src="{{ asset('img/users/') }}${message.sender.photo}" alt="avatar">
+                </div>
+                <div class="message other-message float-right">
+                    ${message.content}
+                    ${message.fileUrl ? renderFilePreview(message.fileUrl) : ''}
+                </div>
+            </li>`;
+        messageList.append(newMessage);
+        scrollToBottom(); // Auto-scroll to the bottom
+    }
+
+    // Render file preview based on file type
+    function renderFilePreview(fileurl) {
+        const fileType = fileurl.split('.').pop().toLowerCase(); // Get file extension
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const videoExtensions = ['mp4', 'webm', 'ogg'];
+        const audioExtensions = ['mp3', 'wav', 'ogg'];
+
+        if (imageExtensions.includes(fileType)) {
+            return `<img src="${fileurl}" class="file-preview" style="max-width: 200px; max-height: 200px;"/>`;
+        } else if (videoExtensions.includes(fileType)) {
+            return `<video controls><source src="${fileurl}" type="video/${fileType}">Your browser does not support the video element.</video>`;
+        } else if (audioExtensions.includes(fileType)) {
+            return `<audio controls><source src="${fileurl}" type="audio/${fileType}">Your browser does not support the audio element.</audio>`;
+        } else {
+            return `<a href="${fileurl}" target="_blank">Download File</a>`;
+        }
+    }
+
+    // Handle file preview
+    $('#fileInput').on('change', function () {
+        const file = this.files[0];
+        const previewZone = $('#filePreviewZone');
+        previewZone.html(''); // Clear previous preview
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                // Check file type and provide appropriate preview
+                const fileType = file.type.split('/')[0]; // "image", "audio", etc.
+
+                if (fileType === 'image') {
+                    previewZone.append('<img src="' + e.target.result + '" class="file-preview" style="max-width: 200px; max-height: 200px;"/>');
+                } else if (fileType === 'audio') {
+                    previewZone.append('<audio controls><source src="' + e.target.result + '" type="' + file.type + '">Your browser does not support the audio element.</audio>');
+                } else if (fileType === 'video') {
+                    previewZone.append('<video controls><source src="' + e.target.result + '" type="' + file.type + '">Your browser does not support the video element.</video>');
+                } else {
+                    previewZone.append('<p>File preview is not available for this type.</p>');
+                }
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Trigger the send message on button click
+    $('#sendButton').on('click', function () {
+        sendMessage();
+    });
+
+    // Optionally, allow the Enter key to trigger message sending
+    $('#messageInput').on('keypress', function (e) {
+        if (e.which === 13) {
+            sendMessage();
+        }
+    });
+
+    // Handle user selection to switch conversations
+    $('.people-list .chat-list li').on('click', function () {
+        const targetUserId = $(this).data('user-id');
+        fetchAndDisplayConversation(targetUserId);
+    });
+});
+</script>
+{% endblock %}

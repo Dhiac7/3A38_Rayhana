@@ -1,2 +1,16 @@
+<<<<<<< HEAD
 # translations/messages.fr.yaml
 your_key: "Bonjour tout le monde!"
+=======
+nouvelle_vente: "Nouvelle Vente"
+informations_vente: "Informations de la vente"
+nom_produit: "Nom du produit"
+quantite: "Quantité"
+prix_total: "Prix Total (€)"
+methode_paiement: "Méthode de paiement"
+informations_carte: "Informations de carte de crédit"
+quantite_disponible: "Quantité Disponible:"
+prix_vente: "Prix de Vente:"
+aucune_image: "Aucune image disponible."
+aucun_produit: "Aucun produit sélectionné."
+>>>>>>> 0c8b4d356170a6916422d78e37f717aef3fa8d5f

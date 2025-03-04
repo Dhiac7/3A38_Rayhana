@@ -17,6 +17,10 @@ class UserAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $years = [];
+        for ($i = 1990; $i <= date("Y"); $i++) {
+            $years[$i] = $i;
+        }
         $builder
         ->add('nom')
         ->add('prenom')
@@ -88,6 +92,21 @@ class UserAdminType extends AbstractType
                 'Zaghouan' => 'Zaghouan'
             ],
             'placeholder' => 'Choisir un gouvernorat',
+            'attr' => ['class' => 'form-select']
+        ])
+        ->add('genre', ChoiceType::class, [
+            'choices' => [
+                'Homme' => 'Homme',
+                'Femme' => 'Femme',
+            ],
+            'placeholder' => 'Choisir un genre', // This will be ignored for checkboxes
+            'expanded' => true, // Render as checkboxes
+            'multiple' => false, // Allow only one selection (radio buttons)
+            'attr' => ['class' => 'form-check-input'], // Add a class for styling
+        ])
+        ->add('AnneeNaissance', ChoiceType::class, [
+            'choices' => $years,
+            'placeholder' => 'Choisir une année de naissance',
             'attr' => ['class' => 'form-select']
         ])
         ->add('save', SubmitType::class, ['label' => 'Confirmer']);   

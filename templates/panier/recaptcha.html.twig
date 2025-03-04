@@ -1,0 +1,15 @@
+{% block body %}
+    <div class="g-recaptcha" data-sitekey="6Le6C-IqAAAAAAohhyWsJKxJCgc1nSt_liCAD6pQ" data-callback="onSubmit"></div>
+    <input type="hidden" name="recaptcha-response" id="recaptcha-response">
+    <div id="recaptchaError" class="text-danger" style="display: none;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+        function onSubmit(token) {
+            document.getElementById('recaptcha-response').value = token;
+            document.getElementById('recaptchaError').style.display = 'none';
+        }
+    </script>
+{% endblock %}

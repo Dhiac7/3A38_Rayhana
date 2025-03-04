@@ -16,16 +16,28 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
-
+use App\Service\MailService;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailTrait;
+use SymfonyCasts\Bundle\VerifyEmail\Model\VerifyEmailInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use App\Service\EmailVerifier;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
     private SluggerInterface $slugger;
-
-    public function __construct(SluggerInterface $slugger)
+    private EmailVerifier $emailVerifier;
+    
+    public function __construct(SluggerInterface $slugger , EmailVerifier $emailVerifier)
     {
         $this->slugger = $slugger;
+        $this->emailVerifier=$emailVerifier;
     }
 
     #[Route(name: 'app_user_index', methods: ['GET'])]
@@ -44,75 +56,73 @@ final class UserController extends AbstractController
     }
 
     #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-    #[Route('/login', name: 'app_user_login', methods: ['GET', 'POST'])]
-public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
-{
-    $error = null;
-
-    if ($request->isMethod('POST')) {
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-
-        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-
-        if (!$user || !password_verify($password, $user->getPassword())) {
-            $error = 'Invalid email or password';
-        } elseif ($user->getRole() === 'agriculteur' || $user->getRole() === 'inspecteur') {
-            $error = 'Accès refusé';
-        } elseif ($user->getStatut() === 'banni') {
-            $error = 'Vous avez un ban , Accès refusé';
-        } else {
-            // If another session is active, force logout previous session
-            if ($user->getSessionId() !== null && $user->getSessionId() !== $session->getId()) {
-                $error = 'Une session est déjà active pour cet utilisateur.';
+    public function login(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $error = null;
+    
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
+    
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+    
+            if (!$user || !password_verify($password, $user->getPassword())) {
+                $error = 'Invalid email or password';
+            } elseif ($user->getRole() === 'agriculteur' || $user->getRole() === 'inspecteur') {
+                $error = 'Accès refusé';
+            } elseif ($user->getStatut() === 'banni') {
+                $error = 'Vous avez un ban, Accès refusé';
+            } elseif (!$user->isVerified()) { 
+                $error = 'Votre adresse e-mail n\'a pas été vérifiée. Veuillez vérifier votre e-mail pour continuer.';
+            } elseif (User::getCurrentUser()!=null) { 
+                        $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
+            } elseif ($session->get('user_id')!=null) { 
+                $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
             } else {
-                // Ensure no other user is logged in
-                if ($session->has('user_id') && $session->get('user_id') !== $user->getId()) {
-                    $error = 'Un autre utilisateur est déjà connecté. Veuillez vous déconnecter avant de continuer.';
-                } else {
-                    // Set session data
-                    $session->set('user_id', $user->getId());
-                    $user->setSessionId($session->getId());
-                    $user->setStatut('actif');
+                        $session->set('user_id', $user->getId());
+                        $user->setStatut('actif');
+                        User::setCurrentUser($user);
+                        $entityManager->flush();
+    
+                        return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
+                    }
+            
+        }
+    
+        return $this->render('user/login.html.twig', [
+            'error' => $error,
+        ]);
+    }
+    #[Route('/logout', name: 'app_user_logout', methods: ['GET'])]
+    public function logout(EntityManagerInterface $entityManager, SessionInterface $session): Response
+    {
+        $loggedInUserId = $session->get('user_id');
+        User::setCurrentUser(null);
 
-                    $entityManager->flush();
-
-                    return $this->redirectToRoute('role_interface', ['role' => $user->getRole()]);
-                }
+        /*if ($loggedInUserId) {
+            $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
+            if ($user) {
+                $entityManager->createQueryBuilder()
+                ->update(User::class, 'u')
+                ->set('u.SessionId', ':nullValue')
+                ->set('u.statut', ':statut')
+                ->where('u.id = :userId')
+                ->setParameter('nullValue', null)
+                ->setParameter('statut', 'inactif')
+                ->setParameter('userId', $loggedInUserId)
+                ->getQuery()
+                ->execute();
+                $entityManager->flush();
             }
-        }
+        }*/
+        $session->set('user_id', null);
+
+        //$session->clear();
+
+        return $this->redirectToRoute('app_user_login');
     }
-
-    return $this->render('user/login.html.twig', [
-        'error' => $error,
-    ]);
-}
-
-
-#[Route('/logout', name: 'app_user_logout', methods: ['GET'])]
-public function logout(EntityManagerInterface $entityManager, SessionInterface $session): Response
-{
-    $loggedInUserId = $session->get('user_id');
-
-    if ($loggedInUserId) {
-        $user = $entityManager->getRepository(User::class)->find($loggedInUserId);
-        if ($user) {
-            $user->setSessionId(null);
-            $user->setStatut('inactif');
-            $entityManager->flush();
-        }
-    }
-
-    $session->clear();
-    User::setCurrentUser(null);
-
-    return $this->redirectToRoute('app_user_login');
-}
-
-
-
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager,NotificationService $notificationService,UserPasswordHasherInterface $passwordHasher, SessionInterface $session,SluggerInterface $slugger): Response
+public function new(Request $request, EntityManagerInterface $entityManager, NotificationService $notificationService, UserPasswordHasherInterface $passwordHasher, SessionInterface $session, SluggerInterface $slugger): Response
 {
     $user = new User();
     $form = $this->createForm(UserType::class, $user);
@@ -122,15 +132,14 @@ public function new(Request $request, EntityManagerInterface $entityManager,Noti
         $photoFile = $form->get('photo')->getData();
 
         if ($photoFile instanceof UploadedFile) {
-            dump($photoFile); 
-            $uploadsDirectory = $this->getParameter('uploads_directory'); 
+            $uploadsDirectory = $this->getParameter('uploads_directory');
             $newFilename = uniqid().'.'.$photoFile->guessExtension();
-
             $photoFile->move($uploadsDirectory, $newFilename);
 
             $user->setPhoto($newFilename);
         } else {
-            dump('No file uploaded'); 
+            $defaultAvatar = 'img/users/avatar.jpg'; 
+            $user->setPhoto($defaultAvatar); 
         }
 
         $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
@@ -143,17 +152,19 @@ public function new(Request $request, EntityManagerInterface $entityManager,Noti
 
         $user->setCreatedAt(new \DateTime());
 
-    
-    /*  $currentUser = $this->getUser();  
-        if ($currentUser) {
-            $user->setCreatedBy($currentUser);  
-        }*/
         $entityManager->persist($user);
         $entityManager->flush();
+        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+        (new TemplatedEmail())
+            ->from(new Address('mailer@example.com', 'AcmeMailBot'))
+            ->to($user->getEmail())
+            ->subject('Please Confirm your Email')
+            ->htmlTemplate('user/verify_email.html.twig')
+    );
 
-         // Send a notification to the admin
         $notificationMessage = sprintf('New user created: %s %s', $user->getNom(), $user->getPrenom());
         $notificationService->createNotification($notificationMessage);
+
         return $this->redirectToRoute('app_user_login', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -163,37 +174,81 @@ public function new(Request $request, EntityManagerInterface $entityManager,Noti
     ]);
 }
 
+#[Route('/verify/email', name: 'app_verify_email')]
+public function verifyUserEmail(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+{
+    $id = $request->query->get('id'); 
+
+    if (null === $id) {
+        return $this->redirectToRoute('app_home');
+    }
+
+    $user = $entityManager->getRepository(User::class)->find($id);
+
+    if (null === $user) {
+        return $this->redirectToRoute('app_home');
+    }
+
+    try {
+        $this->emailVerifier->handleEmailConfirmation($request, $user);
+    } catch (VerifyEmailExceptionInterface $exception) {
+        $this->addFlash('verify_email_error', $exception->getReason());
+
+        return $this->redirectToRoute('app_register');
+    }
+
+    $this->addFlash('success', 'Your email address has been verified.');
+
+    return $this->redirectToRoute('app_user_login');
+}
+
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $form = $this->createForm(UserEditType::class, $user);
+    public function edit(
+        Request $request, 
+        EntityManagerInterface $entityManager, 
+        UserPasswordHasherInterface $passwordHasher, 
+        SessionInterface $session
+    ): Response {
+        $loggedInUserId = $session->get('user_id');
+    
+        if (!$loggedInUserId) {
+            throw new \Exception("User ID is missing from the session.");
+        }
+    
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            throw new \Exception("User with ID $loggedInUserId not found.");
+        }
+    
+        
+        $form = $this->createForm(UserEditType::class, $loggedInUser);
         $form->handleRequest($request);
     
-        //dump($form->getErrors(true));
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle Photo Upload
             $photoFile = $form->get('photo')->getData();
             if ($photoFile instanceof UploadedFile) {
                 $uploadsDirectory = $this->getParameter('uploads_directory'); 
                 $newFilename = uniqid().'.'.$photoFile->guessExtension();
                 $photoFile->move($uploadsDirectory, $newFilename);
-                $user->setPhoto($newFilename);
+                $loggedInUser->setPhoto($newFilename);
             }
     
             $plainPassword = $form->get('mdp')->getData();
             if (!empty($plainPassword)) { 
-                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($hashedPassword);
+                $hashedPassword = $passwordHasher->hashPassword($loggedInUser, $plainPassword);
+                $loggedInUser->setPassword($hashedPassword);
             }
     
             $entityManager->flush();
     
-            return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('user_profile', ['slug' => $loggedInUser->getSlug()]);//, [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('user/edit.html.twig', [
-            'user' => $user,
+            'user' => $loggedInUser,
             'form' => $form,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
     
