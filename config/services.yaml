@@ -2,12 +2,9 @@ parameters:
     uploads_directory: '%kernel.project_dir%/public/img/users'
     image_directory: '%kernel.project_dir%/public/img/stock'
     atelier_directory: '%kernel.project_dir%/public/img/atelier'
-<<<<<<< HEAD
-    stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     botman.driver.web.config:
         matchingData:
             driver: web
-=======
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     twilio_sid: '%env(TWILIO_SID)%'
     face_recognition_script: '%kernel.project_dir%/python/recognize_faces.py'
@@ -24,7 +21,6 @@ parameters:
             classes:
                 model: App\Entity\Produit
                 repository: App\Repository\ProduitRepository
->>>>>>> 0c8b4d356170a6916422d78e37f717aef3fa8d5f
 
 
 

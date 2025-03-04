@@ -18,7 +18,6 @@ predict:
   #  controller: App\Controller\StatistiquesController::statistiques
    # methods: [GET]
 
-<<<<<<< HEAD
 chat:
   path: /chat
   controller: App\Controller\ChatbotController::chat
@@ -26,11 +25,10 @@ chat:
 chatbot:
   path: /chatbot
   controller: App\Controller\ChatbotController::chatbot
-=======
+
 reserve_place:
     path: /reserve-place
     controller: App\Controller\SeatController::reservePlace
->>>>>>> 0c8b4d356170a6916422d78e37f717aef3fa8d5f
 
     
 some_endpoint:
