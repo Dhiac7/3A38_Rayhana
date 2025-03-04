@@ -75,6 +75,18 @@
               {{ form_label(form.adresse, null, {'label_attr': {'class': 'form-label'}}) }}
               {{ form_widget(form.adresse, {'attr': {'class': 'form-select'}}) }}
             </div>
+            <div class="col-md-6">
+              {{ form_errors(form.AnneeNaissance)}}
+              {{ form_label(form.AnneeNaissance, null, {'label_attr': {'class': 'form-label'}}) }}
+              {{ form_widget(form.AnneeNaissance, {'attr': {'class': 'form-control'}}) }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              {{ form_errors(form.genre)}}
+              {{ form_label(form.genre, null, {'label_attr': {'class': 'form-label'}}) }}
+              {{ form_widget(form.genre, {'attr': {'class': 'form-select'}}) }}
+            </div>
           </div>
 <br>
           <div class="row">
