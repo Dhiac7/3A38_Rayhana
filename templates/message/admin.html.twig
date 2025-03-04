@@ -292,13 +292,14 @@
                             <ul class="m-b-0">
                                 {% for message in conversation %}
                                     <li class="clearfix">
-                                        <div class="message-data {% if message.sender.id == adminId %}text-right{% endif %}">
-                                            <span class="message-data-time">{{ message.createdAt|date('Y-m-d H:i:s') }}</span>
+                                       {# <div class="message-data {% if message.sender.id == adminId %}text-right{% endif %}">
                                             <img src="{{ asset('img/users/' ~ (message.sender.id == adminId ? loggedInUser.photo : selectedUser.photo)) }}" alt="avatar">
-                                        </div>
+                                        </div>#}
                                         <div class="message {% if message.sender.id == adminId %}other-message float-right{% else %}my-message{% endif %}">
                                             {{ message.content }}
                                         </div>
+                                       {# <div> <span class="message-data-time">{{ message.createdAt|date('Y-m-d H:i:s') }}</span></div>#}
+
                                     </li>
                                 {% endfor %}
                             </ul>
