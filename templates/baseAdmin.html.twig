@@ -17,6 +17,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="{{ asset('assetsback/vendors/select2/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assetsback/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .btn-gradient-primary {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+        }
+        .btn-gradient-primary:hover {
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+        }
+        .btn-gradient-info {
+            background: linear-gradient(45deg, #17a2b8, #1abc9c);
+            color: white;
+            border: none;
+        }
+        .btn-gradient-info:hover {
+            background: linear-gradient(45deg, #1abc9c, #17a2b8);
+        }
+        .btn-gradient-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+        }
+        .btn-gradient-danger:hover {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+        }
+    </style>
 
     <!-- endinject -->
 
@@ -225,6 +260,12 @@
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{{ path('predict_model2') }}">model2</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('predict_model3') }}">model3</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('chat') }}">chatbot</a>
                   </li>
                 </ul>
               </div>
@@ -744,6 +785,8 @@
     <script src="{{ asset('assetsback/js/dashboard.js')}}"></script>
     <!-- End custom js for this page -->
     <!-- Popper.js and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <script src="{{ asset('assetsback/vendors/select2/select2.min.js') }}"></script>
     <script>
