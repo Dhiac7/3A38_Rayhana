@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-
+use Stripe\StripeClient;
 use App\Entity\Vente;
 use App\Entity\Produit;
 use Stripe\Stripe;
@@ -174,12 +174,11 @@ final class VenteController extends AbstractController
                     return $this->redirectToRoute('app_vente_new', ['id' => $produitId]);
                 }
             } else {
-                if ($paymentMethod !== 'carte_bancaire') {
-                    $userImage = $loggedInUser->getPhoto();
-                    if (!$faceRecognitionService->verifyFace($userImage)) {
-                        $this->addFlash('error', 'Reconnaissance faciale échouée.');
-                        return $this->redirectToRoute('app_vente_index');
-                    }
+                // Pour les autres méthodes de paiement, valider avec reconnaissance faciale
+                $userImage = $loggedInUser->getPhoto();
+                if (!$faceRecognitionService->verifyFace($userImage)) {
+                    $this->addFlash('error', 'Reconnaissance faciale échouée.');
+                    return $this->redirectToRoute('app_vente_index');
                 }
             }
 
@@ -197,6 +196,7 @@ final class VenteController extends AbstractController
             $transaction->setDate(new \DateTime());
             $transaction->setType('Revenue'); // Définir le type de la transaction
             $transaction->setVente($vente); // Associer la transaction à la vente
+            $transaction->setUser($loggedInUser); // Set the selected user
 
             // Associer la transaction à la vente
             $vente->setTransaction($transaction);
@@ -215,8 +215,10 @@ final class VenteController extends AbstractController
             'form' => $form->createView(),
             'produit' => $produit,
             'loggedInUser' => $loggedInUser,
+            'stripe_public_key' => $this->getParameter('stripe_public_key'), // Passer la clé publique
         ]);
     }
+
 
     #[Route('/indexback', name: 'app_vente_indexback', methods: ['GET'])]
     public function indexback(Request $request, VenteRepository $venteRepository, PaginatorInterface $paginator,SessionInterface $session,EntityManagerInterface $entityManager): Response
@@ -419,6 +421,7 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
         'atelier' => $atelier,  // Passer l'atelier à la vue
     ]);
 }
+
 }
 
 

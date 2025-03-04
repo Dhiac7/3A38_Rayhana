@@ -23,14 +23,8 @@
                             </div>
 
                             <div class="form-group">
-                                {{ form_label(form.user, 'Employé') }}
-                                {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.user) }}
-                            </div>
-
-                            <div class="form-group">
                                 {{ form_label(form.montant, 'Montant') }}
-                                {{ form_widget(form.montant, {'attr': {'class': 'form-control', 'placeholder': 'Montant'}}) }}
+                                {{ form_widget(form.montant, {'attr': {'class': 'form-control'}}) }}
                                 {{ form_errors(form.montant) }}
                             </div>
 
