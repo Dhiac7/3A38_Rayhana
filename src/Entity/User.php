@@ -820,12 +820,13 @@ public function getPassword(): ?string
         return $this->atelierLikes;
     }
 
-    public function addAtelierLike(AtelierLikes $atelierLike): static
+    public function addAtelierLike(AtelierLikes $atelierLike)
     {
         if (!$this->atelierLikes->contains($atelierLike)) {
             $this->atelierLikes->add($atelierLike);
             $atelierLike->setUser($this);
          }
+    }
 
       /**
      * @return Collection<int, Message>
@@ -845,7 +846,7 @@ public function getPassword(): ?string
         return $this;
     }
 
-    public function removeAtelierLike(AtelierLikes $atelierLike): static
+    public function removeAtelierLike(AtelierLikes $atelierLike)
     {
         if ($this->atelierLikes->removeElement($atelierLike)) {
             // set the owning side to null (unless already changed)
@@ -853,6 +854,8 @@ public function getPassword(): ?string
                 $atelierLike->setUser(null);
              }
         }
+    }
+
     public function removeMessage(Message $message): static
     {
         if ($this->messages->removeElement($message)) {
@@ -861,7 +864,6 @@ public function getPassword(): ?string
                 $message->setSender(null);
             }
         }
-
         return $this;
     }
 
