@@ -12,11 +12,8 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
-
-        "excelwebzone/recaptcha-bundle": "^1.5",
-
         "endroid/qr-code-bundle": "^5.0",
-
+        "excelwebzone/recaptcha-bundle": "^1.5",
         "guzzlehttp/guzzle": "^7.9",
         "knplabs/knp-menu-bundle": "*",
         "knplabs/knp-paginator-bundle": "^6.6",
