@@ -17,7 +17,7 @@
         "doctrine/orm": "^3.3",
         "endroid/qr-code-bundle": "^5.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
-        "friendsofsymfony/ckeditor-bundle": "*",
+        "friendsofsymfony/ckeditor-bundle": "^2.6",
         "guzzlehttp/guzzle": "^7.9",
         "knplabs/knp-menu-bundle": "*",
         "knplabs/knp-paginator-bundle": "^6.6",
