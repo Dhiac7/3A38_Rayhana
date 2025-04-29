@@ -1,3 +1,6 @@
+# config/packages/mailer.yaml
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        transports:
+            dsn: '%env(MAILER_DSN)%' # Your existing mailer configuration
+            mailtrap: '%env(MAILTRAP_DSN)%' # Custom transport for Mailtrap
