@@ -15,24 +15,18 @@ class CustomUserProvider implements UserProviderInterface
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * Load user by identifier (email or username)
-     */
+   
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        // Assuming the identifier is the email
         return $this->entityManager->getRepository(User::class)->findOneBy(['email' => $identifier]);
     }
 
     public function refreshUser(UserInterface $user)
     {
-        // Refresh the user from the database if needed
         return $user;
     }
 
-    /**
-     * Return true if this provider supports the User class
-     */
+   
     public function supportsClass($class)
     {
         return User::class === $class;

@@ -473,8 +473,7 @@ public function adminChat(SessionInterface $session, EntityManagerInterface $ent
 
     User::setCurrentUser($loggedInUser);
 
-    // Fetch all users except the logged-in user and users with the role 'client'
-    $users = $entityManager->getRepository(User::class)->createQueryBuilder('u')
+        $users = $entityManager->getRepository(User::class)->createQueryBuilder('u')
         ->where('u.id != :loggedInUserId')
         ->andWhere('u.role != :clientRole')
         ->setParameter('loggedInUserId', $loggedInUser->getId())
@@ -482,7 +481,6 @@ public function adminChat(SessionInterface $session, EntityManagerInterface $ent
         ->getQuery()
         ->getResult();
 
-    // If no users are found, redirect or handle accordingly
     if (empty($users)) {
         return $this->render('message/admin.html.twig', [
             'loggedInUser' => $loggedInUser,
@@ -495,11 +493,9 @@ public function adminChat(SessionInterface $session, EntityManagerInterface $ent
         ]);
     }
 
-    // Select the first user in the list as the default selected user
     $selectedUserId = $users[0]->getId();
     $selectedUser = $entityManager->getRepository(User::class)->find($selectedUserId);
 
-    // Fetch the conversation between the logged-in user and the selected user
     $conversation = $messageRepository->findConversation($loggedInUser->getId(), $selectedUserId);
 
     return $this->render('message/admin.html.twig', [
@@ -560,7 +556,6 @@ public function sendMessage(Request $request, EntityManagerInterface $entityMana
     $senderId = $session->get('user_id');
     $file = $request->files->get('file');
 
-    // Validate required fields
     if (empty($messageContent) || empty($targetUserId) || empty($senderId)) {
         return new JsonResponse([
             'status' => 'error',
@@ -568,7 +563,6 @@ public function sendMessage(Request $request, EntityManagerInterface $entityMana
         ]);
     }
 
-    // Fetch sender and target user entities
     $sender = $entityManager->getRepository(User::class)->find($senderId);
     $target = $entityManager->getRepository(User::class)->find($targetUserId);
 
@@ -579,15 +573,13 @@ public function sendMessage(Request $request, EntityManagerInterface $entityMana
         ]);
     }
 
-    // Handle file upload (if any)
     $fileUrl = null;
     if ($file) {
         $fileName = uniqid() . '.' . $file->guessExtension();
         $file->move($this->getParameter('files_directory'), $fileName);
-        $fileUrl = '/img/files/' . $fileName; // Adjust the path as needed
+        $fileUrl = '/img/files/' . $fileName;
     }
 
-    // Create and persist the message
     $message = new Message();
     $message->setSender($sender);
     $message->setRecipient($target);
@@ -598,7 +590,6 @@ public function sendMessage(Request $request, EntityManagerInterface $entityMana
     $entityManager->persist($message);
     $entityManager->flush();
 
-    // Return the sent message in the response
     return new JsonResponse([
         'status' => 'success',
         'message' => [

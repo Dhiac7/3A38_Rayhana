@@ -3,9 +3,7 @@
 {% block title %}Cultures Agricoles{% endblock %}
 
 {% block body %}
-<div class="container">
-    <h2 class="heading">Liste des Cultures Agricoles</h2>
-    
+<div class="container">    
     <div class="row">
         {% set start = (currentPage - 1) * 4 %}
         {% set end = start + 4 %}
@@ -54,5 +52,10 @@
             {% endif %}
         </ul>
     </nav>
+
+    <!-- Link to Create New Parcelle -->
+<div class="text-center mt-4">
+    ______________________
+</div>
 </div>
 {% endblock %}

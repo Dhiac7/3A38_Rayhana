@@ -1,0 +1,33 @@
+{% for atelier in pagination %}
+    <div class="card mb-3 atelier-card" data-id="{{ atelier.id }}" style="width: 80%; max-width: 600px;">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-4">
+                {% if atelier.photo %}
+                    <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" alt="Photo de l'atelier" width="150px" height="150px">
+                {% else %}
+                    <p>Aucune photo disponible.</p>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ atelier.nom }}</h5>
+                    <p class="card-text">{{ atelier.description }}</p>
+                    <p class="card-text"><strong>Date:</strong> {{ atelier.dateAtelier|date("d/m/Y") }}</p>
+                    <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
+                    <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
+                    <div class="d-flex">
+                        <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier</a>
+                        <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-sm btn-delete" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ atelier.id }}">Supprimer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p class="text-center">Aucun atelier trouvé.</p>
+{% endfor %}
+
+<!-- Pagination centrée -->
+<div class="d-flex justify-content-center">
+    {{ knp_pagination_render(pagination) }}
+</div>

@@ -57,78 +57,101 @@ final class AtelierbackController extends AbstractController
      }
 
     #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $em, SessionInterface $session , EntityManagerInterface $entityManager): Response
-{    $loggedInUserId = $session->get('user_id');
+    #[Route('/new', name: 'app_atelier_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $em, SessionInterface $session , EntityManagerInterface $entityManager): Response
+    {    $loggedInUserId = $session->get('user_id');
+        
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
     
-    if (!$loggedInUserId) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-
-    if (!$loggedInUser) {
-        return $this->redirectToRoute('app_user_loginback');
-    }
-
-    $atelier = new Atelier();
-    $form = $this->createForm(AtelierType::class, $atelier);
-    $form->handleRequest($request);
-    dump($form->getData()->getDateAtelier());
-
-    if ($form->isSubmitted() && $form->isValid()) 
-    {
-        // Vérifie si un atelier existe déjà à la même date
-        $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
-            'date_atelier' => $atelier->getDateAtelier()
-        ]);
-
-        // Gestion de l'upload de la photo
-        $photoFile = $form->get('photo')->getData();
-
-        if ($photoFile instanceof UploadedFile) {
-            $uploadsDirectory = $this->getParameter('atelier_directory'); 
-            $newFilename = uniqid().'.'.$photoFile->guessExtension();
-
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+    
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_loginback');
+        }
+    
+        $atelier = new Atelier();
+        
+        // Récupérer la date depuis l'URL si elle existe
+        $dateStr = $request->query->get('date');
+        if ($dateStr) {
             try {
-                $photoFile->move($uploadsDirectory, $newFilename);
-                $atelier->setPhoto($newFilename);
-            } catch (FileException $e) {
-                $this->addFlash('error', "Erreur lors de l'upload de l'image.");
+                $date = new \DateTime($dateStr);
+                $atelier->setDateAtelier($date);
+            } catch (\Exception $e) {
+                // En cas d'erreur de format de date, on ne fait rien
             }
         }
-
-        $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
-
-        // Sauvegarde de l’atelier en base de données
-        $em->persist($atelier);
-        $em->flush(); // Flush to generate the atelier ID
-
-        // Now create the places for this atelier
-        $placeCodes = ['A', 'B', 'C'];
-        $numPlacesPerCode = 10;
-
-        foreach ($placeCodes as $code) {
-            for ($i = 1; $i <= $numPlacesPerCode; $i++) {
-                $place = new Place();
-                $place->setCode($code . $atelier->getId() . "." . $i);
-                $place->setAtelier($atelier); // Assuming Place has a ManyToOne relation with Atelier
-                $em->persist($place);
+        
+        $form = $this->createForm(AtelierType::class, $atelier);
+        $form->handleRequest($request);
+        dump($form->getData()->getDateAtelier());
+    
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            // Vérifie si un atelier existe déjà à la même date
+            $existingAtelier = $em->getRepository(Atelier::class)->findOneBy([
+                'date_atelier' => $atelier->getDateAtelier()
+            ]);
+    
+            // Gestion de l'upload de la photo
+            $photoFile = $form->get('photo')->getData();
+    
+            if ($photoFile instanceof UploadedFile) {
+                $uploadsDirectory = $this->getParameter('atelier_directory'); 
+                $newFilename = uniqid().'.'.$photoFile->guessExtension();
+    
+                try {
+                    $photoFile->move($uploadsDirectory, $newFilename);
+                    $atelier->setPhoto($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', "Erreur lors de l'upload de l'image.");
+                }
             }
+    
+            $atelier->setNbrplacedispo($atelier->getCapaciteMax() ?? 0);
+            $atelier->setTitle($atelier->getNom());
+            //$atelier->setCapaciteMax(30);
+            $atelier->setStartAt($atelier->getDateAtelier());
+            $atelier->setStartAt($atelier->getDateAtelier());
+            $atelier->setEndAt($atelier->getDateAtelier());  
+           // $atelier->setIsAvailable($atelier->getDateAtelier());
+    
+    
+    
+            // Sauvegarde de l’atelier en base de données
+            $em->persist($atelier);
+            $em->flush(); // Flush to generate the atelier ID
+    
+            // Now create the places for this atelier
+            $placeCodes = ['A', 'B', 'C'];
+            $numPlacesPerCode = 10;
+    
+            foreach ($placeCodes as $code) {
+                for ($i = 1; $i <= $numPlacesPerCode; $i++) {
+                    $place = new Place();
+                    $place->setCode($code . $atelier->getId() . "." . $i);
+                    $place->setAtelier($atelier); // Assuming Place has a ManyToOne relation with Atelier
+                    $place->setIsAvailable(true);
+    
+                    $em->persist($place);
+                }
+            }
+    
+            $em->flush(); // Persist places in database
+    
+            $this->addFlash('success', "L'atelier a été ajouté avec succès avec ses places.");
+            return $this->redirectToRoute('app_atelier_indexBack', [], Response::HTTP_SEE_OTHER);
         }
-
-        $em->flush(); // Persist places in database
-
-        $this->addFlash('success', "L'atelier a été ajouté avec succès avec ses places.");
-        return $this->redirectToRoute('app_atelier_indexBack', [], Response::HTTP_SEE_OTHER);
+    
+        return $this->render('atelier/new.html.twig', [
+            'atelier' => $atelier,
+            'form' => $form->createView(), 
+            'loggedInUser' => $loggedInUser,
+    
+        ]);
     }
-
-    return $this->render('atelier/new.html.twig', [
-        'atelier' => $atelier,
-        'form' => $form->createView(), 
-        'loggedInUser' => $loggedInUser,
-
-    ]);
-}
       
     #[Route('/{id}', name: 'app_atelier_show', methods: ['GET'])]
     public function show(Atelier $atelier,  EntityManagerInterface $entityManager, SessionInterface $session ): Response
@@ -254,19 +277,8 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
     #[Route('/atelier/list', name: 'atelier_list_ajax')]
     public function listAteliers(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, PaginatorInterface $paginator): Response
     {   
-        // Vérification de la session de l'utilisateur
-        $loggedInUserId = $session->get('user_id');
-            
-        if (!$loggedInUserId) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
-    
-        // Récupération de l'utilisateur
-        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
-    
-        if (!$loggedInUser) {
-            return $this->redirectToRoute('app_user_loginback');
-        }
+        // Pas de vérification d'authentification pour permettre l'accès sans connexion
+        $loggedInUser = null;
      
         // Récupération des paramètres de tri et de recherche
         $sortOrder = $request->query->get('sort', '');
@@ -281,14 +293,9 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
                          ->setParameter('search', '%' . $searchQuery . '%');
         }
     
-        if ($sortOrder === "asc") {
-            $queryBuilder->orderBy('a.nom', 'ASC');
-        } elseif ($sortOrder === "desc") {
-            $queryBuilder->orderBy('a.nom', 'DESC');
-        }
+        // Pas de tri spécifique
     
         // Pagination avec KnpPaginator
-        
         $pagination = $paginator->paginate(
             $queryBuilder, // La requête avec les filtres de recherche et tri
             $request->query->getInt('page', 1), // Le numéro de la page
@@ -297,12 +304,22 @@ public function new(Request $request, EntityManagerInterface $em, SessionInterfa
         // Récupération de la clé API de Mapbox
         $mapboxApiKey = $_ENV['MAPBOX_API_KEY']; // Charger depuis le fichier .env
         
-        // Rendu de la vue avec les données
-        return $this->render('atelier/_list.html.twig', [
-            'pagination' => $pagination,
-            'MAPBOX_API_KEY' => $mapboxApiKey,
-            'loggedInUser' => $loggedInUser,
-        ]);
+        // Vérifier si c'est une requête AJAX (pour la pagination)
+        if ($request->isXmlHttpRequest()) {
+            // Si c'est une requête AJAX, on rend uniquement le contenu partiel
+            return $this->render('atelier/_list_content.html.twig', [
+                'pagination' => $pagination,
+                'MAPBOX_API_KEY' => $mapboxApiKey,
+                'loggedInUser' => $loggedInUser,
+            ]);
+        } else {
+            // Sinon, on rend la vue complète
+            return $this->render('atelier/_list.html.twig', [
+                'pagination' => $pagination,
+                'MAPBOX_API_KEY' => $mapboxApiKey,
+                'loggedInUser' => $loggedInUser,
+            ]);
+        }
     }
 
 

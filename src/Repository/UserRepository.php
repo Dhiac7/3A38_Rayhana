@@ -51,8 +51,8 @@ class UserRepository extends ServiceEntityRepository
     public function findByRole(string $role)
     {
         return $this->createQueryBuilder('u')
-            ->where('u.role = :role') // Direct comparison
-            ->setParameter('role', $role) // No need for wildcards
+            ->where('u.role = :role') 
+            ->setParameter('role', $role) 
             ->getQuery()
             ->getResult();
     }

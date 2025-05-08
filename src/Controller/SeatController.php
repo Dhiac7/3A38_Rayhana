@@ -11,11 +11,23 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class SeatController extends AbstractController
 {#[Route('/choisir-place', name: 'choose_seat')]
-    public function index(Request $request, EntityManagerInterface $entityManager,PlaceRepository $placeRepository): Response
+    public function index(Request $request, EntityManagerInterface $entityManager,PlaceRepository $placeRepository,SessionInterface $session): Response
     {
+        $loggedInUserId = $session->get('user_id');
+        if (!$loggedInUserId) {
+            return $this->redirectToRoute('app_user_login');
+        }
+        $loggedInUser = $entityManager->getRepository(User::class)->find($loggedInUserId);
+        if (!$loggedInUser) {
+            return $this->redirectToRoute('app_user_login');
+        }
+
         $places = $placeRepository->findAll();
         $nom = $request->query->get('nom');
         $prix = $request->query->get('prix');
@@ -36,6 +48,7 @@ class SeatController extends AbstractController
         return $this->render('seat/choose_seat.html.twig', [
             'places' => $places,
             'atelier' => $atelier,
+            'loggedInUser' => $loggedInUser,
         ]);
     }
     

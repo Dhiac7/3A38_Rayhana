@@ -256,13 +256,13 @@
                     <a class="nav-link" href="{{ path('app_culture_agricole_dashboard_index') }}">Culture Agricole</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ path('predict_model1') }}">model1</a>
+                    <a class="nav-link" href="{{ path('predict_model1') }}">Healthy & Rotten</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ path('predict_model2') }}">model2</a>
+                    <a class="nav-link" href="{{ path('predict_model2') }}">Classification </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ path('predict_model3') }}">model3</a>
+                    <a class="nav-link" href="{{ path('predict_model3') }}">Detection maladie des plantes</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{{ path('chat') }}">chatbot</a>
@@ -308,7 +308,10 @@
                     <a class="nav-link" href=" {{ path('app_dechet_index')}}">dechet</a>
                   </li>
                   <li class="nav-item">
-                   <a class="nav-link" href="#">statistique sur les participants</a>
+                    <a class="nav-link" href="{{path('place_stats') }} ">Statistiques des atelier</a>
+                  </li> 
+                  <li class="nav-item">
+                    <a class="nav-link" href=" {{ path('calendar')}}">Calendrier des atelier</a>
                   </li>
                 </ul>
               </div>
@@ -798,6 +801,13 @@
             });
         });
     </script>
+    
+    <!-- Script pour l'empreinte carbone -->
+    <script src="{{ asset('js/carbon-footprint.js') }}"></script>
+    
+    <!-- Bibliothèque pour l'exportation PDF - html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="{{ asset('js/pdf-export.js') }}"></script>
 
     {% endblock %}
 

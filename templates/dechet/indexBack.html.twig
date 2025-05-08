@@ -10,6 +10,9 @@
                 <div class="card shadow-lg border-0 rounded-lg">
                   <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
                   <h4 class="card-title mb-0" style="flex-grow: 1;">Dechet</h4>  {# Title takes up available space #}
+                  <button id="export-dechets-pdf" class="btn me-2" style="background-color: #fff; color: #d9534f;">
+                      <i class="fas fa-file-pdf me-2"></i> Exporter PDF
+                  </button>
                   <a href="{{ path('app_dechet_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
                       <i class="fas fa-plus me-2"></i> Nouveau Dechet
                   </a>
@@ -52,6 +55,16 @@
        .then(response => response.text())
        .then(data => {
          document.getElementById("dechhet-list").innerHTML = data;
+         // Initialiser les boutons d'empreinte carbone après le chargement AJAX
+         console.log("Contenu chargé via AJAX, tentative d'initialisation des boutons");
+         setTimeout(function() {
+           if (typeof initCarbonFootprintButtons === 'function') {
+             console.log("Fonction initCarbonFootprintButtons trouvée, initialisation...");
+             initCarbonFootprintButtons();
+           } else {
+             console.error('La fonction initCarbonFootprintButtons n\'est pas disponible');
+           }
+         }, 300); // Délai plus long pour s'assurer que tout est chargé
        });
    }
 
@@ -73,17 +86,23 @@
    // Chargement initial des déchets
    fetchDechhets();
 
-   // Ouvrir le formulaire d'ajout de déchet lors du clic sur le bouton "+"
-   document.getElementById("addDechetBtn").addEventListener("click", function () {
-     // Afficher le formulaire d'ajout en envoyant une requête AJAX
-     fetch("{{ path('app_dechet_new') }}")
-       .then(response => response.text())
-       .then(data => {
-         // Charger le formulaire dans le conteneur
-         document.getElementById("dechetFormContainer").style.display = "block";
-         document.getElementById("dechetFormContent").innerHTML = data;
-       });
-   });
+   // Vérifier si le bouton d'ajout de déchet existe avant d'ajouter l'écouteur
+   const addDechetBtn = document.querySelector('a[href="{{ path('app_dechet_new') }}"]');
+   if (addDechetBtn) {
+     addDechetBtn.addEventListener("click", function (e) {
+       e.preventDefault(); // Empêcher la navigation par défaut
+       // Afficher le formulaire d'ajout en envoyant une requête AJAX
+       fetch("{{ path('app_dechet_new') }}")
+         .then(response => response.text())
+         .then(data => {
+           // Charger le formulaire dans le conteneur
+           document.getElementById("dechetFormContainer").style.display = "block";
+           document.getElementById("dechetFormContent").innerHTML = data;
+         });
+     });
+   } else {
+     console.log("Le bouton d'ajout de déchet n'a pas été trouvé");
+   }
  });
 </script>
 

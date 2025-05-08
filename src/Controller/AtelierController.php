@@ -108,6 +108,48 @@ final class AtelierController extends AbstractController
 
         ]);
     }
+    
+    #[Route('/list/all', name: 'app_atelier_list_all', methods: ['GET'])]
+    public function listAllForExport(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier si c'est une requête AJAX ou si on demande explicitement du JSON
+        $isAjax = $request->isXmlHttpRequest() || $request->query->get('format') === 'json';
+        
+        try {
+            // Récupérer tous les ateliers sans pagination
+            $ateliers = $entityManager->getRepository(Atelier::class)->findAll();
+            
+            // Si c'est une requête AJAX ou format=json, renvoyer du JSON
+            if ($isAjax) {
+                // Transformer les objets en tableau pour la sérialisation JSON
+                $result = [];
+                foreach ($ateliers as $atelier) {
+                    $result[] = [
+                        'id' => $atelier->getId(),
+                        'nom' => $atelier->getNom(),
+                        'description' => $atelier->getDescription(),
+                        'date' => $atelier->getDate() ? $atelier->getDate()->format('Y-m-d') : null,
+                        'lieu' => $atelier->getLieu(),
+                        'capacite' => $atelier->getCapacite(),
+                        'image' => $atelier->getImage()
+                    ];
+                }
+                
+                return new JsonResponse($result);
+            } else {
+                // Sinon, rediriger vers la page principale des ateliers
+                return $this->redirectToRoute('app_atelier_index');
+            }
+        } catch (\Exception $e) {
+            if ($isAjax) {
+                return new JsonResponse(['error' => $e->getMessage()], 500);
+            } else {
+                // Ajouter un message flash et rediriger
+                $this->addFlash('error', 'Une erreur est survenue lors de la récupération des données: ' . $e->getMessage());
+                return $this->redirectToRoute('app_atelier_index');
+            }
+        }
+    }
 
 
     #[Route('/{id}/like', name: 'app_atelier_like', methods: ['POST'])]

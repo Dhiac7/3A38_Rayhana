@@ -10,6 +10,9 @@
                 <div class="card shadow-lg border-0 rounded-lg">
                   <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
     <h4 class="card-title mb-0" style="flex-grow: 1;">Atelier</h4>  {# Title takes up available space #}
+    <button id="export-ateliers-pdf" class="btn me-2" style="background-color: #fff; color: #d9534f;">
+        <i class="fas fa-file-pdf me-2"></i> Exporter PDF
+    </button>
     <a href="{{ path('app_atelier_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
         <i class="fas fa-plus me-2"></i> Nouveau Atelier
     </a>
@@ -18,13 +21,9 @@
                             <div class="table-responsive">
           <p class="card-description text-center">Mettez à jour les informations / suppression des ateliers </p>
 
-          <!-- Zone de recherche et tri -->
+          <!-- Zone de recherche -->
           <div class="d-flex justify-content-between mb-3">
             <input type="text" id="search" class="form-control w-50" placeholder="Rechercher un atelier...">
-            <div>
-              <button class="btn btn-outline-green" id="sortAsc">Tri Croissant</button>
-              <button class="btn btn-outline-green" id="sortDesc">Tri Décroissant</button>
-            </div>
           </div>
 
 
@@ -70,37 +69,35 @@ document.addEventListener("DOMContentLoaded", function () {
       fetchAteliers("", this.value);
     });
 
-     // Tri croiss
-   document.getElementById("sortAsc").addEventListener("click", function () {
-     fetchDechhets("asc", document.getElementById("search").value);
-   });
-
-   // Tri décroi
-   document.getElementById("sortDesc").addEventListener("click", function () {
-     fetchDechhets("desc", document.getElementById("search").value);
-   });
+     // Tri supprimé
 
     // Charger les ateliers au début
     fetchAteliers();
 
     // Ajouter un atelier : afficher le formulaire
-    document.getElementById("addAtelierBtn").addEventListener("click", function () {
-      let formContainer = document.getElementById("atelierFormContainer");
-      let formContent = document.getElementById("atelierFormContent");
+    const addAtelierBtn = document.querySelector('a[href="{{ path('app_atelier_new') }}"]');
+    if (addAtelierBtn) {
+      addAtelierBtn.addEventListener("click", function (e) {
+        e.preventDefault(); // Empêcher la navigation par défaut
+        let formContainer = document.getElementById("atelierFormContainer");
+        let formContent = document.getElementById("atelierFormContent");
 
-      if (formContainer.style.display === "none") {
-        // Charger le formulaire via AJAX
-        fetch("{{ path('app_atelier_new') }}")
-          .then(response => response.text())
-          .then(data => {
-            formContent.innerHTML = data;
-            formContainer.style.display = "block";
-          })
-          .catch(error => console.error("Erreur lors du chargement du formulaire :", error));
-      } else {
-        formContainer.style.display = "none";
-      }
-    });
+        if (formContainer.style.display === "none") {
+          // Charger le formulaire via AJAX
+          fetch("{{ path('app_atelier_new') }}")
+            .then(response => response.text())
+            .then(data => {
+              formContent.innerHTML = data;
+              formContainer.style.display = "block";
+            })
+            .catch(error => console.error("Erreur lors du chargement du formulaire :", error));
+        } else {
+          formContainer.style.display = "none";
+        }
+      });
+    } else {
+      console.log("Le bouton d'ajout d'atelier n'a pas été trouvé");
+    }
   });
 </script>
 

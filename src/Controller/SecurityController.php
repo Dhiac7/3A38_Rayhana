@@ -21,16 +21,14 @@ class SecurityController extends AbstractController
     public function connectGoogle(ClientRegistry $clientRegistry): RedirectResponse
     {
         return $clientRegistry->getClient('google')->redirect(
-            ['email', 'profile'], // Scopes
-            [] // Options (empty array if not needed)
+            ['email', 'profile'],
+            [] 
         );
     }
     
     #[Route('/connect/google/check', name: 'connect_google_check', methods: ['GET', 'POST'])]
     public function connectGoogleCheck(Request $request): void
     {
-        // This method should never be executed because the GoogleAuthenticator
-        // intercepts requests to this route.
         throw new \LogicException('This route is handled by the GoogleAuthenticator.');
     }
 }
