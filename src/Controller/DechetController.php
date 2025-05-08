@@ -214,4 +214,45 @@ public function listdechet(Request $request, EntityManagerInterface $entityManag
     ]);
 }
 
+#[Route('/list/all', name: 'app_dechet_list_all', methods: ['GET'])]
+public function listAllForExport(Request $request, EntityManagerInterface $entityManager): Response
+{
+    // Vérifier si c'est une requête AJAX ou si on demande explicitement du JSON
+    $isAjax = $request->isXmlHttpRequest() || $request->query->get('format') === 'json';
+    
+    try {
+        // Récupérer tous les déchets sans pagination
+        $dechets = $entityManager->getRepository(Dechet::class)->findAll();
+        
+        // Si c'est une requête AJAX ou format=json, renvoyer du JSON
+        if ($isAjax) {
+            // Transformer les objets en tableau pour la sérialisation JSON
+            $result = [];
+            foreach ($dechets as $dechet) {
+                $result[] = [
+                    'id' => $dechet->getId(),
+                    'type' => $dechet->getType(),
+                    'quantite' => $dechet->getQuantite(),
+                    'dateProduction' => $dechet->getDateProduction()->format('Y-m-d'),
+                    'statut' => $dechet->getStatut(),
+                    'dateExpiration' => $dechet->getDateExpiration() ? $dechet->getDateExpiration()->format('Y-m-d') : null
+                ];
+            }
+            
+            return new JsonResponse($result);
+        } else {
+            // Sinon, rediriger vers la page principale des déchets
+            return $this->redirectToRoute('app_dechet_index');
+        }
+    } catch (\Exception $e) {
+        if ($isAjax) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        } else {
+            // Ajouter un message flash et rediriger
+            $this->addFlash('error', 'Une erreur est survenue lors de la récupération des données: ' . $e->getMessage());
+            return $this->redirectToRoute('app_dechet_index');
+        }
+    }
+}
+
 }

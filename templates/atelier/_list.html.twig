@@ -1,90 +1,86 @@
-{% extends 'baseAdmin.html.twig' %}
-
-{% block title %} Atelier{% endblock %}
 
 {% block body %}
 <div class="main-panel">
     <div class="content-wrapper">
-            <div class="row">
+        <div class="row justify-content-center">
             <div class="col-12">
                 <div class="card shadow-lg border-0 rounded-lg">
-                  <div class="card-header py-3" style="background-color: #49a760; color: white; display: flex; align-items: center;">
-    <h4 class="card-title mb-0" style="flex-grow: 1;">Atelier</h4>  {# Title takes up available space #}
-    <a href="{{ path('app_atelier_new') }}" class="btn" style="background-color: #fff; color: #2F4F4F;">
-        <i class="fas fa-plus me-2"></i> Nouveau Atelier
-    </a>
-</div>
-                        <div class="mb-4"> {# Margin bottom for spacing #}
-                            <div class="table-responsive">
-          <p class="card-description text-center">Mettez à jour les informations / suppression des ateliers </p>
-
-          <!-- Conteneur des ateliers -->
-          <div id="atelier-container">
-              {% for atelier in pagination %}
-                  <div class="card mb-3 atelier-card" data-id="{{ atelier.id }}">
-                      <div class="row g-0 align-items-center">
-                          <div class="col-md-4">
-                               {% if atelier.photo %}
-                            <img src="{{ asset('img/atelier/' ~ atelier.photo) }}" alt="Photo de l'atelier" width=150px , height=150px>
-                        {% else %}
-                            <p>Aucune photo disponible.</p>
-                        {% endif %}
-                          </div>
-                          <div class="col-md-8">
-                              <div class="card-body">
-                                  <h5 class="card-title">{{ atelier.nom }}</h5>
-                                  <p class="card-text">{{ atelier.description }}</p>
-                                  <p class="card-text"><strong>Date:</strong> {{ atelier.dateAtelier|date("d/m/Y") }}</p>
-                                  <p class="card-text"><strong>Prix:</strong> {{ atelier.prix }} TND</p>
-                                  <p class="card-text"><strong>Statut:</strong> {{ atelier.statut }}</p>
-                                                                     <div class="d-flex" >
-    <a href="{{ path('app_atelier_edit', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:green; color: rgb(189, 196, 190);">Modifier </a> 
-    <a href="{{ path('app_atelier_back_delete', {'id': atelier.id}) }}" class="btn btn-sm" style="background-color:red; color: rgb(189, 196, 190);" data-id="{{ atelier.id }}">  Supprimer</a>
-</div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              {% else %}
-                  <p class="text-center">Aucun atelier trouvé.</p>
-              {% endfor %}
-          </div>
-
+                    <div class="mb-4"> {# Margin bottom for spacing #}
+                        <div class="table-responsive">
+                            <!-- Conteneur des ateliers centré -->
+                            <div id="ateliers-table-container" class="d-flex flex-column align-items-center">
+                                <!-- Le contenu des ateliers sera chargé ici -->
+                                {% include 'atelier/_list_content.html.twig' with {'pagination': pagination} %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Pagination incluse dans le template partiel -->
+                </div>
+            </div>
         </div>
-    <div class="d-flex justify-content-center">
-        {{ knp_pagination_render(pagination) }}
     </div>
+</div>
 
-<!-- Script JavaScript pour la suppression AJAX -->
+<!-- Script JavaScript pour la suppression AJAX et la pagination AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Supprimer un atelier
-    document.querySelectorAll('.btn-delete').forEach(function (button) {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            let atelierId = this.getAttribute('data-id');
+    // Fonction pour initialiser les boutons de suppression
+    function initDeleteButtons() {
+        document.querySelectorAll('.btn-delete').forEach(function (button) {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                let atelierId = this.getAttribute('data-id');
 
-            fetch("{{ path('app_atelier_delete_ajax') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ id: atelierId }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Si la suppression a réussi, tu peux supprimer l'élément de la page
-                    document.querySelector(`[data-id='${atelierId}']`).closest('.atelier-card').remove();
-                } else {
-                    alert("Erreur lors de la suppression : " + data.message);
-                }
+                fetch("{{ path('app_atelier_delete_ajax') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: atelierId }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Si la suppression a réussi, tu peux supprimer l'élément de la page
+                        document.querySelector(`[data-id='${atelierId}']`).closest('.atelier-card').remove();
+                    } else {
+                        alert("Erreur lors de la suppression : " + data.message);
+                    }
+                });
             });
         });
-    });
+    }
+
+    // Fonction pour initialiser les liens de pagination
+    function initPaginationLinks() {
+        document.querySelectorAll('#ateliers-table-container .pagination a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                
+                // Ajouter un paramètre pour indiquer que c'est une requête AJAX
+                const ajaxUrl = url + (url.includes('?') ? '&' : '?') + 'ajax=1';
+                
+                fetch(ajaxUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('ateliers-table-container').innerHTML = html;
+                    // Réinitialiser les événements après le chargement du nouveau contenu
+                    initDeleteButtons();
+                    initPaginationLinks();
+                })
+                .catch(error => console.error('Erreur lors du chargement de la page:', error));
+            });
+        });
+    }
+
+    // Initialiser les boutons de suppression et les liens de pagination au chargement
+    initDeleteButtons();
+    initPaginationLinks();
 });
-
-
-
 </script>
 {% endblock %}

@@ -392,6 +392,7 @@ public function newVenteAtelier(Request $request, EntityManagerInterface $entity
         $transaction->setDate(new \DateTime());
         $transaction->setType('Revenue');
         $transaction->setVente($vente);
+        $transaction->setUser($loggedInUser); // Set the selected user
 
         // Associer la transaction à la vente
         $vente->setTransaction($transaction);

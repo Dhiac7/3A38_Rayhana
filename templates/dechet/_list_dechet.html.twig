@@ -1,11 +1,23 @@
 {% block body %}
+<script>
+// Appeler la fonction d'initialisation des boutons d'empreinte carbone
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé dans _list_dechet.html.twig');
+    if (typeof initCarbonFootprintButtons === 'function') {
+        console.log('Fonction initCarbonFootprintButtons trouvée, initialisation...');
+        initCarbonFootprintButtons();
+    } else {
+        console.error('La fonction initCarbonFootprintButtons n\'est pas disponible dans _list_dechet.html.twig');
+    }
+});
+</script>
         <div class="card-body">
           <h4 class="card-title text-center">Liste des déchets</h4>
           <p class="card-description text-center">Voici tous les déchets disponibles.</p>
 
           {% if dechets is not empty %}
           <!-- Tableau sans bordure -->
-          <div class="table-responsive">
+          <div id="dechets-table-container" class="table-responsive">
             <table class="table table-borderless">
               <thead>
                 <tr class="text-center">
@@ -35,6 +47,9 @@
                                 <i class="mdi mdi-delete"></i> Supprimer
                             </button>
                         </form>
+                        <button type="button" class="btn btn-sm carbon-footprint-btn" style="background-color: #fff; color: #2F8F4F;" data-id="{{ dechet.id }}" data-type="{{ dechet.type }}" data-quantite="{{ dechet.quantite }}">
+                            <i class="mdi mdi-leaf"></i> Empreinte Carbone
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -73,6 +88,11 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     });
+    
+    // Initialiser les boutons d'empreinte carbone si la fonction est disponible
+    if (typeof initCarbonFootprintButtons === 'function') {
+        initCarbonFootprintButtons();
+    }
 });
 </script>
 {% endblock %}

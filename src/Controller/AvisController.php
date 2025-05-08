@@ -83,7 +83,7 @@ public function new(
         
         // Création et envoi de l'email automatique
         $email = (new Email())
-            ->from('no-reply@votredomaine.com')
+            ->from('iheb.1603@hotmail.com')
             ->to($loggedInUser->getEmail())
             ->subject('Votre avis est en cours de traitement')
             ->html('<p>Nous avons bien reçu votre réclamation. Nous la traitons.</p>');
